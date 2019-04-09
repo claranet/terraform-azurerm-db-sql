@@ -65,7 +65,7 @@ module "sql" {
 | databases\_collation | SQL Collation for the database | string | `"SQL_LATIN1_GENERAL_CP1_CI_AS"` | no |
 | environment |  | string | n/a | yes |
 | extra\_tags | Extra tags to add | map | `<map>` | no |
-| location | Azure location for App Service Plan. | string | n/a | yes |
+| location | Azure location for SQL Server. | string | n/a | yes |
 | location\_short | Short string for Azure location. | string | n/a | yes |
 | logs\_retention | Retention in days for audit logs on Storage Account | string | `"30"` | no |
 | logs\_storage\_account\_name | Storage Account name for database logs | string | n/a | yes |

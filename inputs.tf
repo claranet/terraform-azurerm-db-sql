@@ -15,7 +15,7 @@ variable "resource_group_name" {
 }
 
 variable "location" {
-  description = "Azure location for App Service Plan."
+  description = "Azure location for SQL Server."
   type        = "string"
 }
 

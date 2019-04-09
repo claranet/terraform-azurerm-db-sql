@@ -120,6 +120,7 @@ resource "azurerm_monitor_diagnostic_setting" "log_settings" {
     }
   }
 
+  # FIXME Do not work ? https://github.com/MicrosoftDocs/azure-docs/issues/29071
   log {
     category = "Audit"
 
@@ -135,6 +136,15 @@ resource "azurerm_monitor_diagnostic_setting" "log_settings" {
     "retention_policy" {
       enabled = true
       days    = "${var.logs_retention}"
+    }
+  }
+
+  metric {
+    category = "AllMetrics"
+    enabled  = false
+
+    retention_policy {
+      enabled = false
     }
   }
 }
