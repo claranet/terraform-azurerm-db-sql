@@ -48,14 +48,26 @@ variable "server_extra_tags" {
   default     = {}
 }
 
-variable "database_extra_tags" {
-  description = "Extra tags to add on the SQL database"
+variable "elastic_pool_extra_tags" {
+  description = "Extra tags to add on the SQL Elastic Pool"
   type        = "map"
   default     = {}
 }
 
-variable "custom_name" {
+variable "databases_extra_tags" {
+  description = "Extra tags to add on the SQL databases"
+  type        = "map"
+  default     = {}
+}
+
+variable "server_custom_name" {
   description = "Name of the SQL Server, generated if not set."
+  type        = "string"
+  default     = ""
+}
+
+variable "elastic_pool_custom_name" {
+  description = "Name of the SQL Elastic Pool, generated if not set."
   type        = "string"
   default     = ""
 }
@@ -70,38 +82,61 @@ variable "administrator_password" {
   type        = "string"
 }
 
-variable "database_name" {
-  description = "Name of the database to create for this server"
+variable "elastic_pool_max_size" {
+  description = "Maximum size of the Elastic Pool in gigabytes"
   type        = "string"
 }
 
-variable "database_sku" {
-  description = "SKU for the database with tier and size. Example {tier=\"Standard\", size=\"S1\"}"
-  type        = "map"
+variable "sku_tier" {
+  description = "SKU tier for the Elastic Pool. Premium tier with zone redundancy is mandatory for high availability. Possible values are \"Basic\", \"Standard\", or \"Premium\"."
+  type        = "string"
 }
 
-variable "database_max_size" {
-  description = "Maximum size of the database in bytes"
+variable "sku_capacity" {
+  description = "SKU capacity (eDTUs) for the Elastic Pool. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools"
   type        = "string"
+}
+
+variable "zone_redundant" {
+  description = "Whether or not the Elastic Pool is zone redundant, SKU tier must be Premium to use it. This is mandatory for high availability."
+  type        = "string"
+  default     = "false"
+}
+
+variable "database_min_dtu_capacity" {
+  description = "The minimum capacity all databases are guaranteed in the Elastic Pool. Defaults to 0."
+  type        = "string"
+  default     = "0"
+}
+
+variable "database_max_dtu_capacity" {
+  description = "The maximum capacity any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity."
+  type        = "string"
+  default     = ""
+}
+
+variable "databases_names" {
+  description = "Names of the databases to create for this server"
+  type        = "list"
 }
 
 variable "databases_collation" {
-  description = "SQL Collation for the database"
+  description = "SQL Collation for the databases"
   default     = "SQL_LATIN1_GENERAL_CP1_CI_AS"
 }
 
 variable "logs_retention" {
-  description = "Retention in days for audit logs on Storage Account"
+  description = "Retention in days for databases logs on Storage Account"
   type        = "string"
   default     = "30"
 }
 
 variable "logs_storage_account_name" {
-  description = "Storage Account name for database logs"
+  description = "Storage Account name for databases logs"
   type        = "string"
 }
 
 variable "logs_storage_account_rg" {
-  description = "Storage Account Resource Group name for database logs"
+  description = "Storage Account Resource Group name for databases logs"
   type        = "string"
 }

@@ -8,17 +8,22 @@ output "sql_server_fqdn" {
   value       = "${azurerm_sql_server.server.fully_qualified_domain_name}"
 }
 
-output "sql_database_id" {
-  description = "Id of the SQL Database"
-  value       = "${azurerm_sql_database.db.id}"
+output "sql_elastic_pool_id" {
+  description = "Id of the SQL Elastic Pool"
+  value       = "${azurerm_mssql_elasticpool.elastic_pool.id}"
 }
 
-output "sql_database_creation_date" {
-  description = "Creation date of the SQL Database"
-  value       = "${azurerm_sql_database.db.creation_date}"
+output "sql_databases_id" {
+  description = "Id of the SQL Databases"
+  value       = "${azurerm_sql_database.db.*.id}"
 }
 
-output "sql_database_default_secondary_location" {
-  description = "The default secondary location of the SQL Database."
-  value       = "${azurerm_sql_database.db.default_secondary_location}"
+output "sql_databases_creation_date" {
+  description = "Creation date of the SQL Databases"
+  value       = "${azurerm_sql_database.db.*.creation_date}"
+}
+
+output "sql_databases_default_secondary_location" {
+  description = "The default secondary location of the SQL Databases"
+  value       = "${azurerm_sql_database.db.*.default_secondary_location}"
 }

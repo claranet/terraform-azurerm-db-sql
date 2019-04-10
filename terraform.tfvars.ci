@@ -4,13 +4,11 @@ client_name="test"
 environment="test"
 stack="ci"
 resource_group_name="rg-test"
-database_sku = {
-  tier = "Standard"
-  size = "S1"
-}
+databases_names=["users", "documents"]
+sku_tier= "Standard"
+sku_capacity="100"
+elastic_pool_max_size="50"
 administrator_login="claranet"
 administrator_password="claranet"
-database_name="ci_db"
-database_max_size="107374182400"
 logs_storage_account_name="logsstorage"
 logs_storage_account_rg="rg-test"
