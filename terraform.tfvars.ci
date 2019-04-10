@@ -5,8 +5,10 @@ environment="test"
 stack="ci"
 resource_group_name="rg-test"
 databases_names=["users", "documents"]
-sku_tier= "Standard"
-sku_capacity="100"
+sku= {
+  tier = "Standard"
+  capacity = "100"
+}
 elastic_pool_max_size="50"
 administrator_login="claranet"
 administrator_password="claranet"

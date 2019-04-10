@@ -43,8 +43,10 @@ module "sql" {
   administrator_login    = "claranet"
   administrator_password = "${var.sql_admin_password}"
 
-  sku_tier     = "Standard"
-  sku_capacity = "100"
+  sku = {
+    tier     = "Standard"
+    capacity = "100"
+  }
 
   elastic_pool_max_size = "50"
 
@@ -79,10 +81,9 @@ module "sql" {
 | resource\_group\_name |  | string | n/a | yes |
 | server\_custom\_name | Name of the SQL Server, generated if not set. | string | `""` | no |
 | server\_extra\_tags | Extra tags to add on SQL Server | map | `<map>` | no |
-| sku\_capacity | SKU capacity (eDTUs) for the Elastic Pool. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools | string | n/a | yes |
-| sku\_tier | SKU tier for the Elastic Pool. Premium tier with zone redundancy is mandatory for high availability. Possible values are "Basic", "Standard", or "Premium". | string | n/a | yes |
+| sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.     Possible values for tier are "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.     See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | map | n/a | yes |
 | stack |  | string | n/a | yes |
-| version | Versio of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version | string | `"12.0"` | no |
+| version | Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version | string | `"12.0"` | no |
 | zone\_redundant | Whether or not the Elastic Pool is zone redundant, SKU tier must be Premium to use it. This is mandatory for high availability. | string | `"false"` | no |
 
 ## Outputs

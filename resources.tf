@@ -25,7 +25,7 @@ resource "azurerm_mssql_elasticpool" "elastic_pool" {
   server_name = "${azurerm_sql_server.server.name}"
 
   per_database_settings {
-    max_capacity = "${coalesce(var.database_max_dtu_capacity, var.sku_capacity)}"
+    max_capacity = "${coalesce(var.database_max_dtu_capacity, lookup(var.sku, "capacity"))}"
     min_capacity = "${var.database_min_dtu_capacity}"
   }
 

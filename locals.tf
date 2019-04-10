@@ -10,8 +10,8 @@ locals {
   elastic_pool_name = "${coalesce(var.elastic_pool_custom_name, "${local.name_prefix}${var.stack}-${var.client_name}-${var.location_short}-${var.environment}-pool")}"
 
   elastic_pool_sku = {
-    name     = "${var.sku_tier}Pool"
-    capacity = "${var.sku_capacity}"
-    tier     = "${var.sku_tier}"
+    name     = "${lookup(var.sku, "tier")}Pool"
+    capacity = "${lookup(var.sku, "capacity")}"
+    tier     = "${lookup(var.sku, "tier")}"
   }
 }

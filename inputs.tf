@@ -31,7 +31,7 @@ variable "name_prefix" {
 }
 
 variable "version" {
-  description = "Versio of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version"
+  description = "Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version"
   type        = "string"
   default     = "12.0"
 }
@@ -87,14 +87,14 @@ variable "elastic_pool_max_size" {
   type        = "string"
 }
 
-variable "sku_tier" {
-  description = "SKU tier for the Elastic Pool. Premium tier with zone redundancy is mandatory for high availability. Possible values are \"Basic\", \"Standard\", or \"Premium\"."
-  type        = "string"
-}
+variable "sku" {
+  description = <<DESC
+    SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.
+    Possible values for tier are "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.
+    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools"
+  DESC
 
-variable "sku_capacity" {
-  description = "SKU capacity (eDTUs) for the Elastic Pool. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools"
-  type        = "string"
+  type = "map"
 }
 
 variable "zone_redundant" {
