@@ -4,7 +4,8 @@
 This Terraform module creates an [Azure SQL Server](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-servers) 
 and associated databases in an [SQL Elastic Pool](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-elastic-pool) 
 with [DTU purchasing model](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-dtu) 
-only and [Diagnostic settings](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-metrics-diag-logging) 
+only along with [Firewall rules](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-firewall-configure) 
+and [Diagnostic settings](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-metrics-diag-logging) 
 enabled.
 
 The [vCore-based model](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-vcore)
@@ -61,6 +62,7 @@ module "sql" {
 |------|-------------|:----:|:-----:|:-----:|
 | administrator\_login | Administrator login for SQL Server | string | n/a | yes |
 | administrator\_password | Administrator password for SQL Server | string | n/a | yes |
+| allowed\_cidr\_list | Allowed IP addresses to access the server in CIDR format. Default to all Azure services | list | `<list>` | no |
 | client\_name |  | string | n/a | yes |
 | database\_max\_dtu\_capacity | The maximum capacity any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity. | string | `""` | no |
 | database\_min\_dtu\_capacity | The minimum capacity all databases are guaranteed in the Elastic Pool. Defaults to 0. | string | `"0"` | no |

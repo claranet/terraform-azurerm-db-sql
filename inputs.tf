@@ -36,6 +36,12 @@ variable "version" {
   default     = "12.0"
 }
 
+variable "allowed_cidr_list" {
+  description = "Allowed IP addresses to access the server in CIDR format. Default to all Azure services"
+  type        = "list"
+  default     = ["0.0.0.0/32"]
+}
+
 variable "extra_tags" {
   description = "Extra tags to add"
   type        = "map"
