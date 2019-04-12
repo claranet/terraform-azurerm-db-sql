@@ -56,8 +56,11 @@ resource "azurerm_sql_database" "db" {
   requested_service_objective_name = "ElasticPool"
   elastic_pool_name                = "${azurerm_mssql_elasticpool.elastic_pool.name}"
 
-  # FIXME make this works if it can
-  # threat_detection_policy {}
+  threat_detection_policy {
+    email_account_admins = "${var.enable_advanced_data_security_admin_emails ? "Enabled" : "Disabled"}"
+    email_addresses      = "${var.advanced_data_security_additional_emails}"
+    state                = "${var.enable_advanced_data_security ? "Enabled" : "Disabled"}"
+  }
 
   tags = "${merge(local.default_tags, var.extra_tags, var.databases_extra_tags)}"
 }

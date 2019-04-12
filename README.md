@@ -51,6 +51,9 @@ module "sql" {
 
   elastic_pool_max_size = "50"
 
+  # This can costs you money https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security
+  enable_advanced_data_security = "true"
+
   enable_logs_to_storage  = "true"
   logs_storage_account_id = "${data.terraform_remote_state.run.logs_storage_account_id}"
 
@@ -65,6 +68,7 @@ module "sql" {
 |------|-------------|:----:|:-----:|:-----:|
 | administrator\_login | Administrator login for SQL Server | string | n/a | yes |
 | administrator\_password | Administrator password for SQL Server | string | n/a | yes |
+| advanced\_data\_security\_additional\_emails | List of addiional email addresses for Advanced Data Security alerts. | list | `<list>` | no |
 | allowed\_cidr\_list | Allowed IP addresses to access the server in CIDR format. Default to all Azure services | list | `<list>` | no |
 | client\_name |  | string | n/a | yes |
 | database\_max\_dtu\_capacity | The maximum capacity any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity. | string | `""` | no |
@@ -75,6 +79,8 @@ module "sql" {
 | elastic\_pool\_custom\_name | Name of the SQL Elastic Pool, generated if not set. | string | `""` | no |
 | elastic\_pool\_extra\_tags | Extra tags to add on the SQL Elastic Pool | map | `<map>` | no |
 | elastic\_pool\_max\_size | Maximum size of the Elastic Pool in gigabytes | string | n/a | yes |
+| enable\_advanced\_data\_security | Boolean flag to enable Advanced Data Security. The cost of ADS is aligned with Azure Security Center standard tier pricing. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security | string | `"false"` | no |
+| enable\_advanced\_data\_security\_admin\_emails | Boolean flag to define if account administrators should be emailed with Advanced Data Security alerts. | string | `"false"` | no |
 | enable\_logs\_to\_log\_analytics | Boolean flag to specify whether the logs should be sent to Log Analytics | string | `"false"` | no |
 | enable\_logs\_to\_storage | Boolean flag to specify whether the logs should be sent to the Storage Account | string | `"false"` | no |
 | environment |  | string | n/a | yes |

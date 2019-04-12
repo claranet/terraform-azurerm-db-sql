@@ -160,3 +160,23 @@ variable "logs_log_analytics_workspace_id" {
   type        = "string"
   default     = ""
 }
+
+variable "enable_advanced_data_security" {
+  description = "Boolean flag to enable Advanced Data Security. The cost of ADS is aligned with Azure Security Center standard tier pricing. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security"
+  type        = "string"
+  default     = "false"
+}
+
+variable "enable_advanced_data_security_admin_emails" {
+  description = "Boolean flag to define if account administrators should be emailed with Advanced Data Security alerts."
+  type        = "string"
+  default     = "false"
+}
+
+variable "advanced_data_security_additional_emails" {
+  description = "List of addiional email addresses for Advanced Data Security alerts."
+  type        = "list"
+
+  # https://github.com/terraform-providers/terraform-provider-azurerm/issues/1974
+  default = ["john.doe@azure.com"]
+}
