@@ -51,8 +51,11 @@ module "sql" {
 
   elastic_pool_max_size = "50"
 
-  logs_storage_account_name = "${data.terraform_remote_state.run.logs_storage_account_name}"
-  logs_storage_account_rg   = "${data.terraform_remote_state.run.resource_group_name}"
+  enable_logs_to_storage  = "true"
+  logs_storage_account_id = "${data.terraform_remote_state.run.logs_storage_account_id}"
+
+  enable_logs_to_log_analytics    = "true"
+  logs_log_analytics_workspace_id = "${data.terraform_remote_state.run.log_analytics_id}"
 }
 ```
 
@@ -72,13 +75,15 @@ module "sql" {
 | elastic\_pool\_custom\_name | Name of the SQL Elastic Pool, generated if not set. | string | `""` | no |
 | elastic\_pool\_extra\_tags | Extra tags to add on the SQL Elastic Pool | map | `<map>` | no |
 | elastic\_pool\_max\_size | Maximum size of the Elastic Pool in gigabytes | string | n/a | yes |
+| enable\_logs\_to\_log\_analytics | Boolean flag to specify whether the logs should be sent to Log Analytics | string | `"false"` | no |
+| enable\_logs\_to\_storage | Boolean flag to specify whether the logs should be sent to the Storage Account | string | `"false"` | no |
 | environment |  | string | n/a | yes |
 | extra\_tags | Extra tags to add | map | `<map>` | no |
 | location | Azure location for SQL Server. | string | n/a | yes |
 | location\_short | Short string for Azure location. | string | n/a | yes |
-| logs\_retention | Retention in days for databases logs on Storage Account | string | `"30"` | no |
-| logs\_storage\_account\_name | Storage Account name for databases logs | string | n/a | yes |
-| logs\_storage\_account\_rg | Storage Account Resource Group name for databases logs | string | n/a | yes |
+| logs\_log\_analytics\_workspace\_id | Log Analytics Workspace id for logs | string | `""` | no |
+| logs\_storage\_account\_id | Storage Account id for logs | string | `""` | no |
+| logs\_storage\_retention | Retention in days for logs on Storage Account | string | `"30"` | no |
 | name\_prefix | Optional prefix for the generated name | string | `""` | no |
 | resource\_group\_name |  | string | n/a | yes |
 | server\_custom\_name | Name of the SQL Server, generated if not set. | string | `""` | no |
@@ -92,6 +97,7 @@ module "sql" {
 
 | Name | Description |
 |------|-------------|
+| default\_administrator\_databases\_connection\_strings | Connection strings of the SQL Databases with administrator credentials |
 | sql\_databases\_creation\_date | Creation date of the SQL Databases |
 | sql\_databases\_default\_secondary\_location | The default secondary location of the SQL Databases |
 | sql\_databases\_id | Id of the SQL Databases |
