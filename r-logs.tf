@@ -107,7 +107,7 @@ resource "azurerm_monitor_diagnostic_setting" "log_settings_storage" {
   }
 
   metric {
-    category = "AllMetrics"
+    category = "Basic"
     enabled  = false
 
     retention_policy {
@@ -214,7 +214,7 @@ resource "azurerm_monitor_diagnostic_setting" "log_settings_log_analytics" {
   }
 
   metric {
-    category = "AllMetrics"
+    category = "Basic"
     enabled  = false
 
     retention_policy {
