@@ -1,6 +1,5 @@
-# Azure SQL Database
+# Azure SQL
 
-## Purpose
 This Terraform module creates an [Azure SQL Server](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-servers) 
 and associated databases in an [SQL Elastic Pool](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-elastic-pool) 
 with [DTU purchasing model](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-dtu) 
@@ -23,10 +22,10 @@ module "az-region" {
 module "rg" {
   source = "git::ssh://git@git.fr.clara.net/claranet/cloudnative/projects/cloud/azure/terraform/modules/rg.git?ref=vX.X.X"
 
-  azure_region = "${module.az-region.location}"
-  client_name  = "${var.client_name}"
-  environment  = "${var.environment}"
-  stack        = "${var.stack}"
+  location    = "${module.az-region.location}"
+  client_name = "${var.client_name}"
+  environment = "${var.environment}"
+  stack       = "${var.stack}"
 }
 
 module "sql" {

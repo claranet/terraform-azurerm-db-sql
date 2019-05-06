@@ -1,3 +1,4 @@
 # Unreleased
 
-* AZ-70: First version
+Added
+  * AZ-70: First version
