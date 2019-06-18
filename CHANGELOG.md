@@ -1,4 +1,4 @@
-# Unreleased
+# v1.1.0 - 2019-06-18
 
 Changed
   * AZ-94 Rename `version` input to `server_version` for Terraform 0.12 compatibility
