@@ -30,7 +30,7 @@ variable "name_prefix" {
   default     = ""
 }
 
-variable "version" {
+variable "server_version" {
   description = "Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version"
   type        = "string"
   default     = "12.0"
