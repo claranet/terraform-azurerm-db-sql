@@ -33,3 +33,15 @@ output "default_administrator_databases_connection_strings" {
   value       = "${formatlist("Server=tcp:%s;Database=%s;User ID=%s;Password=%s;Encrypt=true;", azurerm_sql_server.server.fully_qualified_domain_name, azurerm_sql_database.db.*.name, var.administrator_login, var.administrator_password)}"
   sensitive   = true
 }
+
+output "databases_users" {
+  description = "List of usernames of created users corresponding to input databases names."
+  value       = "${formatlist("%s_user", var.databases_names)}"
+  sensitive   = true
+}
+
+output "databases_users_passwords" {
+  description = "List of passwords of created users corresponding to input databases names."
+  value       = "${random_string.db_passwords.*.result}"
+  sensitive   = true
+}

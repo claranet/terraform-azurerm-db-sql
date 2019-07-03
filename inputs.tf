@@ -180,3 +180,9 @@ variable "advanced_data_security_additional_emails" {
   # https://github.com/terraform-providers/terraform-provider-azurerm/issues/1974
   default = ["john.doe@azure.com"]
 }
+
+variable "create_databases_users" {
+  description = "True to create a user names <db>_user per database with generated password."
+  type        = "string"
+  default     = "true"
+}
