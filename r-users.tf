@@ -1,7 +1,8 @@
 resource "random_string" "db_passwords" {
   count = "${var.create_databases_users ? length(var.databases_names) : 0}"
 
-  length = 32
+  special = "false"
+  length  = 32
 }
 
 resource "null_resource" "db_users" {
