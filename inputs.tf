@@ -182,7 +182,7 @@ variable "advanced_data_security_additional_emails" {
 }
 
 variable "create_databases_users" {
-  description = "True to create a user names <db>_user per database with generated password."
+  description = "True to create a user named <db>_user per database with generated password and role db_owner."
   type        = "string"
   default     = "true"
 }
