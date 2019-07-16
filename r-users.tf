@@ -1,14 +1,14 @@
 resource "random_string" "db_passwords" {
-  count = "${var.create_databases_users ? length(var.databases_names) : 0}"
+  count = var.create_databases_users ? length(var.databases_names) : 0
 
   special = "false"
   length  = 32
 }
 
 resource "null_resource" "db_users" {
-  count = "${var.create_databases_users ? length(var.databases_names) : 0}"
+  count = var.create_databases_users ? length(var.databases_names) : 0
 
-  depends_on = ["azurerm_sql_database.db"]
+  depends_on = [azurerm_sql_database.db]
 
   provisioner "local-exec" {
     command = <<EOC

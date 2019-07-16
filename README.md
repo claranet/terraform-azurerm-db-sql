@@ -11,6 +11,7 @@ The [vCore-based model](https://docs.microsoft.com/en-us/azure/sql-database/sql-
 is not available.
 
 ## Requirements
+* Terraform >= 0.12
 * PowerShell with module `SqlServer` is needed for databases users creation
 
 ## Usage
@@ -19,32 +20,32 @@ You can use this module by including it this way:
 module "az-region" {
   source = "git::ssh://git@git.fr.clara.net/claranet/cloudnative/projects/cloud/azure/terraform/modules/regions.git?ref=vX.X.X"
 
-  azure_region = "${var.azure_region}"
+  azure_region = var.azure_region
 }
 
 module "rg" {
   source = "git::ssh://git@git.fr.clara.net/claranet/cloudnative/projects/cloud/azure/terraform/modules/rg.git?ref=vX.X.X"
 
-  location    = "${module.az-region.location}"
-  client_name = "${var.client_name}"
-  environment = "${var.environment}"
-  stack       = "${var.stack}"
+  location    = module.az-region.location
+  client_name = var.client_name
+  environment = var.environment
+  stack       = var.stack
 }
 
 module "sql" {
   source = "git::ssh://git@git.fr.clara.net/claranet/cloudnative/projects/cloud/azure/terraform/features/db-sql.git?ref=vX.X.X"
 
-  client_name         = "${var.client_name}"
-  environment         = "${var.environment}"
-  location            = "${module.az-region.location}"
-  location_short      = "${module.az-region.location-short}"
-  resource_group_name = "${module.rg.resource_group_name}"
-  stack               = "${var.stack}"
+  client_name         = var.client_name
+  environment         = var.environment
+  location            = module.az-region.location
+  location_short      = module.az-region.location-short
+  resource_group_name = module.rg.resource_group_name
+  stack               = var.stack
 
   databases_names = ["users", "documents"]
 
   administrator_login    = "claranet"
-  administrator_password = "${var.sql_admin_password}"
+  administrator_password = var.sql_admin_password
 
   sku = {
     tier     = "Standard"
@@ -56,11 +57,8 @@ module "sql" {
   # This can costs you money https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security
   enable_advanced_data_security = "true"
 
-  enable_logs_to_storage  = "true"
-  logs_storage_account_id = "${data.terraform_remote_state.run.logs_storage_account_id}"
-
-  enable_logs_to_log_analytics    = "true"
-  logs_log_analytics_workspace_id = "${data.terraform_remote_state.run.log_analytics_id}"
+  logs_storage_account_id         = data.terraform_remote_state.run.outputs.logs_storage_account_id
+  logs_log_analytics_workspace_id = data.terraform_remote_state.run.outputs.log_analytics_workspace_id
 }
 ```
 
@@ -84,8 +82,6 @@ module "sql" {
 | elastic\_pool\_max\_size | Maximum size of the Elastic Pool in gigabytes | string | n/a | yes |
 | enable\_advanced\_data\_security | Boolean flag to enable Advanced Data Security. The cost of ADS is aligned with Azure Security Center standard tier pricing. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security | string | `"false"` | no |
 | enable\_advanced\_data\_security\_admin\_emails | Boolean flag to define if account administrators should be emailed with Advanced Data Security alerts. | string | `"false"` | no |
-| enable\_logs\_to\_log\_analytics | Boolean flag to specify whether the logs should be sent to Log Analytics | string | `"false"` | no |
-| enable\_logs\_to\_storage | Boolean flag to specify whether the logs should be sent to the Storage Account | string | `"false"` | no |
 | environment |  | string | n/a | yes |
 | extra\_tags | Extra tags to add | map | `<map>` | no |
 | location | Azure location for SQL Server. | string | n/a | yes |
