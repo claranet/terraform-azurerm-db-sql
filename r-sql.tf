@@ -44,11 +44,7 @@ resource "azurerm_mssql_elasticpool" "elastic_pool" {
     tier     = local.elastic_pool_sku.tier
   }
 
-  tags = merge(
-    local.default_tags,
-    var.extra_tags,
-    var.elastic_pool_extra_tags,
-  )
+  tags = merge(local.default_tags, var.extra_tags, var.elastic_pool_extra_tags)
 }
 
 resource "azurerm_sql_database" "db" {
