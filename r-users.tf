@@ -8,6 +8,8 @@ resource "random_string" "db_passwords" {
 resource "null_resource" "db_users" {
   count = "${var.create_databases_users ? length(var.databases_names) : 0}"
 
+  depends_on = ["azurerm_sql_database.db"]
+
   provisioner "local-exec" {
     command = <<EOC
       Invoke-Sqlcmd -Query "CREATE LOGIN ${format("%s_user", replace(element(var.databases_names, count.index), "-", "_"))} WITH PASSWORD = '${element(random_string.db_passwords.*.result, count.index)}';" -ServerInstance ${azurerm_sql_server.server.fully_qualified_domain_name} -Username ${var.administrator_login} -Password ${var.administrator_password}
