@@ -11,7 +11,10 @@ The [vCore-based model](https://docs.microsoft.com/en-us/azure/sql-database/sql-
 is not available.
 
 ## Requirements
-* PowerShell with module `SqlServer` is needed for databases users creation
+
+* [Terraform](https://www.terraform.io/downloads.html) >= 0.12
+* [AzureRM Terraform provider](https://www.terraform.io/docs/providers/azurerm/) >= 1.31
+* [PowerShell with module `SqlServer`](https://docs.microsoft.com/en-us/sql/powershell/sql-server-powershell) is needed for databases users creation
 
 ## Usage
 You can use this module by including it this way:
@@ -19,32 +22,32 @@ You can use this module by including it this way:
 module "az-region" {
   source = "git::ssh://git@git.fr.clara.net/claranet/cloudnative/projects/cloud/azure/terraform/modules/regions.git?ref=vX.X.X"
 
-  azure_region = "${var.azure_region}"
+  azure_region = var.azure_region
 }
 
 module "rg" {
   source = "git::ssh://git@git.fr.clara.net/claranet/cloudnative/projects/cloud/azure/terraform/modules/rg.git?ref=vX.X.X"
 
-  location    = "${module.az-region.location}"
-  client_name = "${var.client_name}"
-  environment = "${var.environment}"
-  stack       = "${var.stack}"
+  location    = module.az-region.location
+  client_name = var.client_name
+  environment = var.environment
+  stack       = var.stack
 }
 
 module "sql" {
   source = "git::ssh://git@git.fr.clara.net/claranet/cloudnative/projects/cloud/azure/terraform/features/db-sql.git?ref=vX.X.X"
 
-  client_name         = "${var.client_name}"
-  environment         = "${var.environment}"
-  location            = "${module.az-region.location}"
-  location_short      = "${module.az-region.location-short}"
-  resource_group_name = "${module.rg.resource_group_name}"
-  stack               = "${var.stack}"
+  client_name         = var.client_name
+  environment         = var.environment
+  location            = module.az-region.location
+  location_short      = module.az-region.location_short
+  resource_group_name = module.rg.resource_group_name
+  stack               = var.stack
 
   databases_names = ["users", "documents"]
 
   administrator_login    = "claranet"
-  administrator_password = "${var.sql_admin_password}"
+  administrator_password = var.sql_admin_password
 
   sku = {
     tier     = "Standard"
@@ -57,10 +60,10 @@ module "sql" {
   enable_advanced_data_security = "true"
 
   enable_logs_to_storage  = "true"
-  logs_storage_account_id = "${data.terraform_remote_state.run.logs_storage_account_id}"
+  logs_storage_account_id = data.terraform_remote_state.run.logs_storage_account_id
 
   enable_logs_to_log_analytics    = "true"
-  logs_log_analytics_workspace_id = "${data.terraform_remote_state.run.log_analytics_id}"
+  logs_log_analytics_workspace_id = data.terraform_remote_state.run.log_analytics_id
 }
 ```
 

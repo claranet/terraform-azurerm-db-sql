@@ -1,4 +1,8 @@
 # Unreleased
+
+Breaking:
+  * AZ-94 Terraform 0.12 / HCL2 format
+
 Added
   * AZ-107 Manage databases users creation
 
