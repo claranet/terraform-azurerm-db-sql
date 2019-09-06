@@ -1,10 +1,11 @@
 # Unreleased
 
-Breaking:
+Breaking
   * AZ-94 Terraform 0.12 / HCL2 format
 
 Added
   * AZ-107 Manage databases users creation
+  * AZ-118: Add LICENSE, NOTICE & Github badges
 
 # v1.1.0 - 2019-06-18
 
