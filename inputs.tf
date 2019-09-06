@@ -90,7 +90,17 @@ variable "administrator_password" {
 
 variable "elastic_pool_max_size" {
   description = "Maximum size of the Elastic Pool in gigabytes"
-  type        = string
+  type        = "string"
+}
+
+variable "sku" {
+  description = <<DESC
+    SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.
+    Possible values for tier are "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.
+    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools"
+  DESC
+
+  type = map
 }
 
 variable "zone_redundant" {
@@ -120,6 +130,18 @@ variable "databases_collation" {
   description = "SQL Collation for the databases"
   type        = string
   default     = "SQL_LATIN1_GENERAL_CP1_CI_AS"
+}
+
+variable "enable_logs_to_storage" {
+  description = "Boolean flag to specify whether the logs should be sent to the Storage Account"
+  type        = string
+  default     = "false"
+}
+
+variable "enable_logs_to_log_analytics" {
+  description = "Boolean flag to specify whether the logs should be sent to Log Analytics"
+  type        = string
+  default     = "false"
 }
 
 variable "logs_storage_retention" {
@@ -164,14 +186,4 @@ variable "create_databases_users" {
   description = "True to create a user named <db>_user per database with generated password and role db_owner."
   type        = string
   default     = "true"
-}
-
-variable "sku" {
-  description = <<DESC
-    SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.
-    Possible values for tier are "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.
-    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools"
-DESC
-
-  type = map(string)
 }
