@@ -10,6 +10,9 @@ enabled.
 The [vCore-based model](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-vcore)
 is not available.
 
+## Requirements
+* PowerShell with module `SqlServer` is needed for databases users creation
+
 ## Usage
 You can use this module by including it this way:
 ```hcl
@@ -70,6 +73,7 @@ module "sql" {
 | advanced\_data\_security\_additional\_emails | List of addiional email addresses for Advanced Data Security alerts. | list | `<list>` | no |
 | allowed\_cidr\_list | Allowed IP addresses to access the server in CIDR format. Default to all Azure services | list | `<list>` | no |
 | client\_name |  | string | n/a | yes |
+| create\_databases\_users | True to create a user named <db>_user per database with generated password and role db_owner. | string | `"true"` | no |
 | database\_max\_dtu\_capacity | The maximum capacity any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity. | string | `""` | no |
 | database\_min\_dtu\_capacity | The minimum capacity all databases are guaranteed in the Elastic Pool. Defaults to 0. | string | `"0"` | no |
 | databases\_collation | SQL Collation for the databases | string | `"SQL_LATIN1_GENERAL_CP1_CI_AS"` | no |
@@ -102,6 +106,8 @@ module "sql" {
 
 | Name | Description |
 |------|-------------|
+| databases\_users | List of usernames of created users corresponding to input databases names. |
+| databases\_users\_passwords | List of passwords of created users corresponding to input databases names. |
 | default\_administrator\_databases\_connection\_strings | Connection strings of the SQL Databases with administrator credentials |
 | sql\_databases\_creation\_date | Creation date of the SQL Databases |
 | sql\_databases\_default\_secondary\_location | The default secondary location of the SQL Databases |
@@ -111,6 +117,7 @@ module "sql" {
 | sql\_server\_id | Id of the SQL Server |
 
 ## Related documentation
+
 Terraform SQL Server documentation: [https://www.terraform.io/docs/providers/azurerm/r/sql_server.html]
 
 Terraform SQL Database documentation: [https://www.terraform.io/docs/providers/azurerm/r/sql_database.html]

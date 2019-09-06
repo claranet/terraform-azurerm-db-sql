@@ -1,3 +1,7 @@
+# Unreleased
+Added
+  * AZ-107 Manage databases users creation
+
 # v1.1.0 - 2019-06-18
 
 Changed
