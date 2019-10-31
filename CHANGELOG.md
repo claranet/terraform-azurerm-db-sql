@@ -1,5 +1,8 @@
 # Unreleased
 
+Added
+  * AZ-138 Allow to configure SQL Server PITR retention
+
 Changed
   * AZ-140: Make SQL user creation idempotent
   * AZ-133: Use 3rd party logging module 

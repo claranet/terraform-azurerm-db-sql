@@ -15,7 +15,8 @@ is not available.
 
 * [Terraform](https://www.terraform.io/downloads.html) >= 0.12
 * [AzureRM Terraform provider](https://www.terraform.io/docs/providers/azurerm/) >= 1.31
-* [PowerShell with module `SqlServer`](https://docs.microsoft.com/en-us/sql/powershell/sql-server-powershell) is needed for databases users creation
+* [PowerShell with Az.Sql module](https://docs.microsoft.com/en-us/powershell/module/az.sql/) >= 1.3 is mandatory and is used for backup retention configuration
+* [`SqlServer` Powershell module](https://docs.microsoft.com/en-us/sql/powershell/sql-server-powershell) is needed for databases users creation
 
 ## Usage
 You can use this module by including it this way:

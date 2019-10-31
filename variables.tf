@@ -181,3 +181,9 @@ variable "create_databases_users" {
   type        = string
   default     = "true"
 }
+
+variable "backup_retention" {
+  description = "Retention in days for the Point In Time Restore backup. Value can be 7, 14, 21, 28 or 35."
+  type        = number
+  default     = 35
+}
