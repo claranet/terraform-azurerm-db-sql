@@ -98,9 +98,9 @@ variable "sku" {
     SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.
     Possible values for tier are "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.
     See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools"
-  DESC
+DESC
 
-  type = map
+  type = map(string)
 }
 
 variable "zone_redundant" {
@@ -182,8 +182,32 @@ variable "create_databases_users" {
   default     = "true"
 }
 
-variable "backup_retention" {
-  description = "Retention in days for the Point In Time Restore backup. Value can be 7, 14, 21, 28 or 35."
+variable "daily_backup_retention" {
+  description = "Retention in days for the databases backup. Value can be 7, 14, 21, 28 or 35."
   type        = number
   default     = 35
+}
+
+variable "weekly_backup_retention" {
+  description = "Retention in weeks for the weekly databases backup."
+  type        = number
+  default     = 0
+}
+
+variable "monthly_backup_retention" {
+  description = "Retention in months for the monthly databases backup."
+  type        = number
+  default     = 3
+}
+
+variable "yearly_backup_retention" {
+  description = "Retention in years for the yearly backup."
+  type        = number
+  default     = 0
+}
+
+variable "yearly_backup_time" {
+  description = "Week number taken in account for the yearly backup retention."
+  type        = number
+  default     = 52
 }
