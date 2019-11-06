@@ -1,3 +1,8 @@
+# Unreleased 
+
+Changed
+  * AZ-140: Make SQL user creation idempotent
+
 # v2.0.0 - 2019-09-06
 
 Breaking
