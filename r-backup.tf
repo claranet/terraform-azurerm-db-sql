@@ -7,6 +7,7 @@ resource "null_resource" "backup" {
     command = <<EOC
       $accessToken = az account get-access-token -s ${data.azurerm_subscription.current.subscription_id} --query "accessToken" -o tsv
       $accountId = az account show -s ${data.azurerm_subscription.current.subscription_id} --query "user.name" -o tsv
+      Disconnect-AzAccount
       Connect-AzAccount -AccessToken $accessToken -AccountId $accountId -Force
       Get-AzSubscription -SubscriptionId ${data.azurerm_subscription.current.subscription_id} | Set-AzContext -Name "terraform-${data.azurerm_subscription.current.subscription_id}" -Force
 
