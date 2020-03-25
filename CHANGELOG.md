@@ -1,7 +1,8 @@
-# Unreleased 
+# Unreleased
 
 Changed
   * AZ-140: Make SQL user creation idempotent
+  * AZ-133: Use 3rd party logging module 
 
 # v2.0.0 - 2019-09-06
 

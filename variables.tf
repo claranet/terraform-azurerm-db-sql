@@ -90,7 +90,7 @@ variable "administrator_password" {
 
 variable "elastic_pool_max_size" {
   description = "Maximum size of the Elastic Pool in gigabytes"
-  type        = "string"
+  type        = string
 }
 
 variable "sku" {
@@ -132,16 +132,10 @@ variable "databases_collation" {
   default     = "SQL_LATIN1_GENERAL_CP1_CI_AS"
 }
 
-variable "enable_logs_to_storage" {
-  description = "Boolean flag to specify whether the logs should be sent to the Storage Account"
-  type        = string
-  default     = "false"
-}
-
-variable "enable_logs_to_log_analytics" {
-  description = "Boolean flag to specify whether the logs should be sent to Log Analytics"
-  type        = string
-  default     = "false"
+variable "enable_logging" {
+  description = "Boolean flag to specify whether logging is enabled"
+  type        = bool
+  default     = true
 }
 
 variable "logs_storage_retention" {
