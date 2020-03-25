@@ -90,7 +90,7 @@ variable "administrator_password" {
 
 variable "elastic_pool_max_size" {
   description = "Maximum size of the Elastic Pool in gigabytes"
-  type        = "string"
+  type        = string
 }
 
 variable "sku" {
