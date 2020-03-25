@@ -1,5 +1,5 @@
 # Azure SQL
-[![Changelog](https://img.shields.io/badge/changelog-release-green.svg)](CHANGELOG.md) [![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](LICENSE)
+[![Changelog](https://img.shields.io/badge/changelog-release-green.svg)](CHANGELOG.md) [![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/claranet/db-sql/azurerm/)
 
 This Terraform module creates an [Azure SQL Server](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-servers) 
 and associated databases in an [SQL Elastic Pool](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-elastic-pool) 
@@ -33,28 +33,31 @@ is not available.
 
 You can use this module by including it this way:
 ```hcl
-module "az-region" {
-  source = "git::ssh://git@git.fr.clara.net/claranet/cloudnative/projects/cloud/azure/terraform/modules/regions.git?ref=vX.X.X"
+module "azure-region" {
+  source  = "claranet/regions/azurerm"
+  version = "x.x.x"
 
   azure_region = var.azure_region
 }
 
 module "rg" {
-  source = "git::ssh://git@git.fr.clara.net/claranet/cloudnative/projects/cloud/azure/terraform/modules/rg.git?ref=vX.X.X"
+  source  = "claranet/rg/azurerm"
+  version = "x.x.x"
 
-  location    = module.az-region.location
+  location    = module.azure-region.location
   client_name = var.client_name
   environment = var.environment
   stack       = var.stack
 }
 
 module "sql" {
-  source = "git::ssh://git@git.fr.clara.net/claranet/cloudnative/projects/cloud/azure/terraform/features/db-sql.git?ref=vX.X.X"
+  source  = "claranet/db-sql/azurerm"
+  version = "x.x.x"
 
   client_name         = var.client_name
   environment         = var.environment
-  location            = module.az-region.location
-  location_short      = module.az-region.location_short
+  location            = module.azure-region.location
+  location_short      = module.azure-region.location_short
   resource_group_name = module.rg.resource_group_name
   stack               = var.stack
 
@@ -90,7 +93,7 @@ module "sql" {
 | advanced\_data\_security\_additional\_emails | List of addiional email addresses for Advanced Data Security alerts. | `list(string)` | <pre>[<br>  "john.doe@azure.com"<br>]</pre> | no |
 | allowed\_cidr\_list | Allowed IP addresses to access the server in CIDR format. Default to all Azure services | `list(string)` | <pre>[<br>  "0.0.0.0/32"<br>]</pre> | no |
 | client\_name | n/a | `string` | n/a | yes |
-| create\_databases\_users | True to create a user named <db>\_user per database with generated password and role db\_owner. | `string` | `"true"` | no |
+| create\_databases\_users | True to create a user named <db>\_user per database with generated password and role db\_owner. | `bool` | `true` | no |
 | daily\_backup\_retention | Retention in days for the databases backup. Value can be 7, 14, 21, 28 or 35. | `number` | `35` | no |
 | database\_max\_dtu\_capacity | The maximum capacity any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity. | `string` | `""` | no |
 | database\_min\_dtu\_capacity | The minimum capacity all databases are guaranteed in the Elastic Pool. Defaults to 0. | `string` | `"0"` | no |
@@ -100,8 +103,8 @@ module "sql" {
 | elastic\_pool\_custom\_name | Name of the SQL Elastic Pool, generated if not set. | `string` | `""` | no |
 | elastic\_pool\_extra\_tags | Extra tags to add on the SQL Elastic Pool | `map(string)` | `{}` | no |
 | elastic\_pool\_max\_size | Maximum size of the Elastic Pool in gigabytes | `string` | n/a | yes |
-| enable\_advanced\_data\_security | Boolean flag to enable Advanced Data Security. The cost of ADS is aligned with Azure Security Center standard tier pricing. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security | `string` | `"false"` | no |
-| enable\_advanced\_data\_security\_admin\_emails | Boolean flag to define if account administrators should be emailed with Advanced Data Security alerts. | `string` | `"false"` | no |
+| enable\_advanced\_data\_security | Boolean flag to enable Advanced Data Security. The cost of ADS is aligned with Azure Security Center standard tier pricing. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security | `bool` | `false` | no |
+| enable\_advanced\_data\_security\_admin\_emails | Boolean flag to define if account administrators should be emailed with Advanced Data Security alerts. | `bool` | `false` | no |
 | enable\_logging | Boolean flag to specify whether logging is enabled | `bool` | `true` | no |
 | environment | n/a | `string` | n/a | yes |
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
@@ -109,7 +112,7 @@ module "sql" {
 | location\_short | Short string for Azure location. | `string` | n/a | yes |
 | logs\_log\_analytics\_workspace\_id | Log Analytics Workspace id for logs | `string` | n/a | yes |
 | logs\_storage\_account\_id | Storage Account id for logs | `string` | n/a | yes |
-| logs\_storage\_retention | Retention in days for logs on Storage Account | `string` | `"30"` | no |
+| logs\_storage\_retention | Retention in days for logs on Storage Account | `number` | `30` | no |
 | monthly\_backup\_retention | Retention in months for the monthly databases backup. | `number` | `3` | no |
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
 | resource\_group\_name | n/a | `string` | n/a | yes |
@@ -121,7 +124,7 @@ module "sql" {
 | weekly\_backup\_retention | Retention in weeks for the weekly databases backup. | `number` | `0` | no |
 | yearly\_backup\_retention | Retention in years for the yearly backup. | `number` | `0` | no |
 | yearly\_backup\_time | Week number taken in account for the yearly backup retention. | `number` | `52` | no |
-| zone\_redundant | Whether or not the Elastic Pool is zone redundant, SKU tier must be Premium to use it. This is mandatory for high availability. | `string` | `"false"` | no |
+| zone\_redundant | Whether or not the Elastic Pool is zone redundant, SKU tier must be Premium to use it. This is mandatory for high availability. | `bool` | `false` | no |
 
 ## Outputs
 
@@ -139,10 +142,10 @@ module "sql" {
 
 ## Related documentation
 
-Terraform SQL Server documentation: [https://www.terraform.io/docs/providers/azurerm/r/sql_server.html]
+Terraform SQL Server documentation: [terraform.io/docs/providers/azurerm/r/sql_server.html](https://www.terraform.io/docs/providers/azurerm/r/sql_server.html)
 
-Terraform SQL Database documentation: [https://www.terraform.io/docs/providers/azurerm/r/sql_database.html]
+Terraform SQL Database documentation: [terraform.io/docs/providers/azurerm/r/sql_database.html](https://www.terraform.io/docs/providers/azurerm/r/sql_database.html)
 
-Terraform SQL Elastic Pool documentation: [https://www.terraform.io/docs/providers/azurerm/r/mssql_elasticpool.html]
+Terraform SQL Elastic Pool documentation: [terraform.io/docs/providers/azurerm/r/mssql_elasticpool.html](https://www.terraform.io/docs/providers/azurerm/r/mssql_elasticpool.html)
 
-Microsoft Azure root documentation: [https://docs.microsoft.com/en-us/azure/sql-database/]
+Microsoft Azure root documentation: [docs.microsoft.com/en-us/azure/sql-database/](https://docs.microsoft.com/en-us/azure/sql-database/)
