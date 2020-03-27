@@ -1,4 +1,4 @@
-# Unreleased
+# v2.1.0 - 2020-03-27
 
 Added
   * AZ-138 Allow to configure SQL Server PITR retention
