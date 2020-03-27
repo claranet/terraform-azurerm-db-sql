@@ -98,15 +98,15 @@ variable "sku" {
     SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.
     Possible values for tier are "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.
     See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools"
-  DESC
+DESC
 
-  type = map
+  type = map(string)
 }
 
 variable "zone_redundant" {
   description = "Whether or not the Elastic Pool is zone redundant, SKU tier must be Premium to use it. This is mandatory for high availability."
-  type        = string
-  default     = "false"
+  type        = bool
+  default     = false
 }
 
 variable "database_min_dtu_capacity" {
@@ -140,8 +140,8 @@ variable "enable_logging" {
 
 variable "logs_storage_retention" {
   description = "Retention in days for logs on Storage Account"
-  type        = string
-  default     = "30"
+  type        = number
+  default     = 30
 }
 
 variable "logs_storage_account_id" {
@@ -158,14 +158,14 @@ variable "logs_log_analytics_workspace_id" {
 
 variable "enable_advanced_data_security" {
   description = "Boolean flag to enable Advanced Data Security. The cost of ADS is aligned with Azure Security Center standard tier pricing. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security"
-  type        = string
-  default     = "false"
+  type        = bool
+  default     = false
 }
 
 variable "enable_advanced_data_security_admin_emails" {
   description = "Boolean flag to define if account administrators should be emailed with Advanced Data Security alerts."
-  type        = string
-  default     = "false"
+  type        = bool
+  default     = false
 }
 
 variable "advanced_data_security_additional_emails" {
@@ -178,6 +178,36 @@ variable "advanced_data_security_additional_emails" {
 
 variable "create_databases_users" {
   description = "True to create a user named <db>_user per database with generated password and role db_owner."
-  type        = string
-  default     = "true"
+  type        = bool
+  default     = true
+}
+
+variable "daily_backup_retention" {
+  description = "Retention in days for the databases backup. Value can be 7, 14, 21, 28 or 35."
+  type        = number
+  default     = 35
+}
+
+variable "weekly_backup_retention" {
+  description = "Retention in weeks for the weekly databases backup."
+  type        = number
+  default     = 0
+}
+
+variable "monthly_backup_retention" {
+  description = "Retention in months for the monthly databases backup."
+  type        = number
+  default     = 3
+}
+
+variable "yearly_backup_retention" {
+  description = "Retention in years for the yearly backup."
+  type        = number
+  default     = 0
+}
+
+variable "yearly_backup_time" {
+  description = "Week number taken in account for the yearly backup retention."
+  type        = number
+  default     = 52
 }
