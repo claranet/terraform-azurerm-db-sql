@@ -1,5 +1,5 @@
 # Azure SQL
-[![Changelog](https://img.shields.io/badge/changelog-release-green.svg)](CHANGELOG.md) [![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![Apache V2 License](https://img.shields.io/badge/license-Apache%20V2-orange.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/claranet/db-ql/azurerm/)
+[![Changelog](https://img.shields.io/badge/changelog-release-green.svg)](CHANGELOG.md) [![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![Apache V2 License](https://img.shields.io/badge/license-Apache%20V2-orange.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/claranet/db-sql/azurerm/)
 
 This Terraform module creates an [Azure SQL Server](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-servers) 
 and associated databases in an [SQL Elastic Pool](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-elastic-pool) 
@@ -87,7 +87,7 @@ module "sql" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | administrator\_login | Administrator login for SQL Server | `string` | n/a | yes |
 | administrator\_password | Administrator password for SQL Server | `string` | n/a | yes |
 | advanced\_data\_security\_additional\_emails | List of addiional email addresses for Advanced Data Security alerts. | `list(string)` | <pre>[<br>  "john.doe@azure.com"<br>]</pre> | no |
@@ -110,8 +110,8 @@ module "sql" {
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
 | location | Azure location for SQL Server. | `string` | n/a | yes |
 | location\_short | Short string for Azure location. | `string` | n/a | yes |
-| logs\_log\_analytics\_workspace\_id | Log Analytics Workspace id for logs | `string` | n/a | yes |
-| logs\_storage\_account\_id | Storage Account id for logs | `string` | n/a | yes |
+| logs\_log\_analytics\_workspace\_id | Log Analytics Workspace id for logs | `string` | `null` | no |
+| logs\_storage\_account\_id | Storage Account id for logs | `string` | `null` | no |
 | logs\_storage\_retention | Retention in days for logs on Storage Account | `number` | `30` | no |
 | monthly\_backup\_retention | Retention in months for the monthly databases backup. | `number` | `3` | no |
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
@@ -119,7 +119,7 @@ module "sql" {
 | server\_custom\_name | Name of the SQL Server, generated if not set. | `string` | `""` | no |
 | server\_extra\_tags | Extra tags to add on SQL Server | `map(string)` | `{}` | no |
 | server\_version | Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version | `string` | `"12.0"` | no |
-| sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.     Possible values for tier are "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.     See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | `map(string)` | n/a | yes |
+| sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | `map(string)` | n/a | yes |
 | stack | n/a | `string` | n/a | yes |
 | weekly\_backup\_retention | Retention in weeks for the weekly databases backup. | `number` | `0` | no |
 | yearly\_backup\_retention | Retention in years for the yearly backup. | `number` | `0` | no |
