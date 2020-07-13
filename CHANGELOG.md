@@ -1,4 +1,4 @@
-# v3.0.0 - Unreleased
+# v3.0.0 - 2020-07-13
 
 Changed
   * AZ-198: Update README and tag module compatible both AzureRM provider < 2.0 and >= 2.0
