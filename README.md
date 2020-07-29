@@ -74,12 +74,11 @@ module "sql" {
   elastic_pool_max_size = "50"
 
   # This can costs you money https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security
-  enable_advanced_data_security = "true"
+  enable_advanced_data_security = true
 
-  enable_logs_to_storage  = "true"
+  enable_logging  = true
+  
   logs_storage_account_id = data.terraform_remote_state.run.logs_storage_account_id
-
-  enable_logs_to_log_analytics    = "true"
   logs_log_analytics_workspace_id = data.terraform_remote_state.run.log_analytics_id
 }
 ```
