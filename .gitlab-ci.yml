@@ -1,6 +1,6 @@
 ---
 include:
   - project: 'claranet/projects/cloud/azure/terraform/ci'
-    ref: master
+    ref: AZ-273_tf013
     file: '/validate.yml'
 ...

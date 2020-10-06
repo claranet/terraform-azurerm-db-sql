@@ -100,7 +100,10 @@ variable "sku" {
     See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools"
 DESC
 
-  type = map(string)
+  type = object({
+    tier     = string,
+    capacity = number,
+  })
 }
 
 variable "zone_redundant" {
@@ -132,28 +135,9 @@ variable "databases_collation" {
   default     = "SQL_LATIN1_GENERAL_CP1_CI_AS"
 }
 
-variable "enable_logging" {
-  description = "Boolean flag to specify whether logging is enabled"
-  type        = bool
-  default     = true
-}
-
-variable "logs_storage_retention" {
-  description = "Retention in days for logs on Storage Account"
-  type        = number
-  default     = 30
-}
-
-variable "logs_storage_account_id" {
-  description = "Storage Account id for logs"
-  type        = string
-  default     = null
-}
-
-variable "logs_log_analytics_workspace_id" {
-  description = "Log Analytics Workspace id for logs"
-  type        = string
-  default     = null
+variable "logs_destinations_ids" {
+  type        = list(string)
+  description = "List of destination resources Ids for logs diagnostics destination. Can be Storage Account, Log Analytics Workspace and Event Hub. No more than one of each can be set. Empty list to disable logging."
 }
 
 variable "enable_advanced_data_security" {

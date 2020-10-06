@@ -76,10 +76,10 @@ module "sql" {
   # This can costs you money https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security
   enable_advanced_data_security = true
 
-  enable_logging  = true
-  
-  logs_storage_account_id = data.terraform_remote_state.run.logs_storage_account_id
-  logs_log_analytics_workspace_id = data.terraform_remote_state.run.log_analytics_id
+  logs_destinations_ids = [
+    data.terraform_remote_state.run.logs_storage_account_id,
+    data.terraform_remote_state.run.log_analytics_id,
+  ]
 }
 ```
 
@@ -104,21 +104,18 @@ module "sql" {
 | elastic\_pool\_max\_size | Maximum size of the Elastic Pool in gigabytes | `string` | n/a | yes |
 | enable\_advanced\_data\_security | Boolean flag to enable Advanced Data Security. The cost of ADS is aligned with Azure Security Center standard tier pricing. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security | `bool` | `false` | no |
 | enable\_advanced\_data\_security\_admin\_emails | Boolean flag to define if account administrators should be emailed with Advanced Data Security alerts. | `bool` | `false` | no |
-| enable\_logging | Boolean flag to specify whether logging is enabled | `bool` | `true` | no |
 | environment | n/a | `string` | n/a | yes |
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
 | location | Azure location for SQL Server. | `string` | n/a | yes |
 | location\_short | Short string for Azure location. | `string` | n/a | yes |
-| logs\_log\_analytics\_workspace\_id | Log Analytics Workspace id for logs | `string` | `null` | no |
-| logs\_storage\_account\_id | Storage Account id for logs | `string` | `null` | no |
-| logs\_storage\_retention | Retention in days for logs on Storage Account | `number` | `30` | no |
+| logs\_destinations\_ids | List of destination resources Ids for logs diagnostics destination. Can be Storage Account, Log Analytics Workspace and Event Hub. No more than one of each can be set. Empty list to disable logging. | `list(string)` | n/a | yes |
 | monthly\_backup\_retention | Retention in months for the monthly databases backup. | `number` | `3` | no |
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
 | resource\_group\_name | n/a | `string` | n/a | yes |
 | server\_custom\_name | Name of the SQL Server, generated if not set. | `string` | `""` | no |
 | server\_extra\_tags | Extra tags to add on SQL Server | `map(string)` | `{}` | no |
 | server\_version | Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version | `string` | `"12.0"` | no |
-| sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | `map(string)` | n/a | yes |
+| sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | <pre>object({<br>    tier = string,<br>    capacity = number,<br>  })</pre> | n/a | yes |
 | stack | n/a | `string` | n/a | yes |
 | weekly\_backup\_retention | Retention in weeks for the weekly databases backup. | `number` | `0` | no |
 | yearly\_backup\_retention | Retention in years for the yearly backup. | `number` | `0` | no |

@@ -14,40 +14,42 @@ output "sql_elastic_pool_id" {
 }
 
 output "sql_databases_id" {
-  description = "Id of the SQL Databases"
-  value       = azurerm_sql_database.db.*.id
+  description = "Map of the SQL Databases IDs"
+  value       = { for db in azurerm_sql_database.db : db.name => db.id }
 }
 
 output "sql_databases_creation_date" {
-  description = "Creation date of the SQL Databases"
-  value       = azurerm_sql_database.db.*.creation_date
+  description = "Map of the SQL Databases creation dates"
+  value       = { for db in azurerm_sql_database.db : db.name => db.creation_date }
 }
 
 output "sql_databases_default_secondary_location" {
-  description = "The default secondary location of the SQL Databases"
-  value       = azurerm_sql_database.db.*.default_secondary_location
+  description = "Map of the SQL Databases default secondary location"
+  value       = { for db in azurerm_sql_database.db : db.name => db.default_secondary_location }
 }
 
 output "default_administrator_databases_connection_strings" {
-  description = "Connection strings of the SQL Databases with administrator credentials"
-  value = formatlist(
-    "Server=tcp:%s;Database=%s;User ID=%s;Password=%s;Encrypt=true;",
-    azurerm_sql_server.server.fully_qualified_domain_name,
-    azurerm_sql_database.db.*.name,
-    var.administrator_login,
-    var.administrator_password,
-  )
+  description = "Map of the SQL Databases with administrator credentials connection strings"
+  value = {
+    for db in azurerm_sql_database.db : db.name => formatlist(
+      "Server=tcp:%s;Database=%s;User ID=%s;Password=%s;Encrypt=true;",
+      azurerm_sql_server.server.fully_qualified_domain_name,
+      db.name,
+      var.administrator_login,
+      var.administrator_password
+    )
+  }
   sensitive = true
 }
 
 output "databases_users" {
-  description = "List of usernames of created users corresponding to input databases names."
-  value       = formatlist("%s_user", var.databases_names)
+  description = "Map of the SQL Databases dedicated usernames"
+  value       = local.databases_users
   sensitive   = true
 }
 
 output "databases_users_passwords" {
-  description = "List of passwords of created users corresponding to input databases names."
-  value       = random_string.db_passwords.*.result
+  description = "Map of the SQL Databases dedicated passwords"
+  value       = { for db in azurerm_sql_database.db : db.name => random_password.db_passwords[db.name].result }
   sensitive   = true
 }
