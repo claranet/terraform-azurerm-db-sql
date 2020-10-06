@@ -50,6 +50,7 @@ output "default_administrator_databases_connection_strings" {
 output "databases_users" {
   description = "Map of the SQL Databases dedicated usernames"
   value       = local.databases_users
+  sensitive   = true
 }
 
 output "databases_users_passwords" {

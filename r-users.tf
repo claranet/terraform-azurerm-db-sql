@@ -1,12 +1,12 @@
 resource "random_password" "db_passwords" {
-  for_each = toset(var.create_databases_users ? var.databases_names : [])
+  for_each = var.create_databases_users ? toset(var.databases_names) : toset([])
 
   special = "false"
   length  = 32
 }
 
 resource "null_resource" "db_users" {
-  for_each = toset(var.create_databases_users ? var.databases_names : [])
+  for_each = var.create_databases_users ? toset(var.databases_names) : toset([])
 
   depends_on = [azurerm_sql_database.db]
 

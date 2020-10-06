@@ -22,6 +22,5 @@ locals {
     family   = contains(local.vcore_tiers, var.sku.tier) ? local.elastic_pool_vcore_family : null
   }
 
-
   databases_users = var.create_databases_users ? { for db in var.databases_names : db => format("%s_user", replace(db, "-", "_")) } : {}
 }
