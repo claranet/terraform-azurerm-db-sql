@@ -106,8 +106,8 @@ module "sql-vcore" {
   elastic_pool_max_size = "50"
 
   logs_destinations_ids = [
-    data.terraform_remote_state.run.logs_storage_account_id,
-    data.terraform_remote_state.run.log_analytics_id,
+    data.terraform_remote_state.run.outputs.log_analytics_workspace_id,
+    data.terraform_remote_state.run.outputs.logs_storage_account_id
   ]
 
   allowed_subnets_ids = [
