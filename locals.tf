@@ -15,10 +15,12 @@ locals {
     "${local.name_prefix}${var.stack}-${var.client_name}-${var.location_short}-${var.environment}-pool",
   )
 
+  elastic_pool_vcore_sku_name = var.sku.tier == "GeneralPurpose" ? "GP_Gen5" : "BC_Gen5"
   elastic_pool_sku = {
-    name     = format("%sPool", var.sku.tier)
+    name     = var.sku.tier == "GeneralPurpose" || var.sku.tier == "BusinessCritical" ? local.elastic_pool_vcore_sku_name : format("%sPool", var.sku.tier)
     capacity = var.sku.capacity
     tier     = var.sku.tier
+    family   = var.sku.tier == "GeneralPurpose" || var.sku.tier == "BusinessCritical" ? "Gen5" : ""
   }
 
   databases_users = var.create_databases_users ? { for db in var.databases_names : db => format("%s_user", replace(db, "-", "_")) } : {}

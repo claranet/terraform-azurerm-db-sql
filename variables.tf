@@ -96,7 +96,7 @@ variable "elastic_pool_max_size" {
 variable "sku" {
   description = <<DESC
     SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.
-    Possible values for tier are "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.
+    Possible values for tier are "GP_Ben5", "BC_Gen5", "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.
     See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools"
 DESC
 
@@ -112,14 +112,14 @@ variable "zone_redundant" {
   default     = false
 }
 
-variable "database_min_dtu_capacity" {
-  description = "The minimum capacity all databases are guaranteed in the Elastic Pool. Defaults to 0."
+variable "database_min_capacity" {
+  description = "The minimum capacity (DTU or vCore) all databases are guaranteed in the Elastic Pool. Defaults to 0."
   type        = string
   default     = "0"
 }
 
-variable "database_max_dtu_capacity" {
-  description = "The maximum capacity any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity."
+variable "database_max_capacity" {
+  description = "The maximum capacity (DTU or vCore) any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity."
   type        = string
   default     = ""
 }

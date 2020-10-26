@@ -8,9 +8,6 @@ only along with [Firewall rules](https://docs.microsoft.com/en-us/azure/sql-data
 and [Diagnostic settings](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-metrics-diag-logging) 
 enabled.
 
-The [vCore-based model](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-vcore)
-is not available.
-
 ## Requirements
 
 * [PowerShell with Az.Sql module](https://docs.microsoft.com/en-us/powershell/module/az.sql/) >= 1.3 is mandatory and is used for backup retention configuration
@@ -95,8 +92,8 @@ module "sql" {
 | client\_name | n/a | `string` | n/a | yes |
 | create\_databases\_users | True to create a user named <db>\_user per database with generated password and role db\_owner. | `bool` | `true` | no |
 | daily\_backup\_retention | Retention in days for the databases backup. Value can be 7, 14, 21, 28 or 35. | `number` | `35` | no |
-| database\_max\_dtu\_capacity | The maximum capacity any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity. | `string` | `""` | no |
-| database\_min\_dtu\_capacity | The minimum capacity all databases are guaranteed in the Elastic Pool. Defaults to 0. | `string` | `"0"` | no |
+| database\_max\_capacity | The maximum capacity (DTU or vCore) any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity. | `string` | `""` | no |
+| database\_min\_capacity | The minimum capacity (DTU or vCore) all databases are guaranteed in the Elastic Pool. Defaults to 0. | `string` | `"0"` | no |
 | databases\_collation | SQL Collation for the databases | `string` | `"SQL_LATIN1_GENERAL_CP1_CI_AS"` | no |
 | databases\_extra\_tags | Extra tags to add on the SQL databases | `map(string)` | `{}` | no |
 | databases\_names | Names of the databases to create for this server | `list(string)` | n/a | yes |
@@ -116,7 +113,7 @@ module "sql" {
 | server\_custom\_name | Name of the SQL Server, generated if not set. | `string` | `""` | no |
 | server\_extra\_tags | Extra tags to add on SQL Server | `map(string)` | `{}` | no |
 | server\_version | Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version | `string` | `"12.0"` | no |
-| sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | <pre>object({<br>    tier = string,<br>    capacity = number,<br>  })</pre> | n/a | yes |
+| sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are "GP\_Ben5", "BC\_Gen5", "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | <pre>object({<br>    tier     = string,<br>    capacity = number,<br>  })</pre> | n/a | yes |
 | stack | n/a | `string` | n/a | yes |
 | weekly\_backup\_retention | Retention in weeks for the weekly databases backup. | `number` | `0` | no |
 | yearly\_backup\_retention | Retention in years for the yearly backup. | `number` | `0` | no |
@@ -127,15 +124,12 @@ module "sql" {
 
 | Name | Description |
 |------|-------------|
-| databases\_users | List of usernames of created users corresponding to input databases names. |
-| databases\_users\_passwords | List of passwords of created users corresponding to input databases names. |
-| default\_administrator\_databases\_connection\_strings | Connection strings of the SQL Databases with administrator credentials |
-| sql\_databases\_creation\_date | Creation date of the SQL Databases |
-| sql\_databases\_default\_secondary\_location | The default secondary location of the SQL Databases |
-| sql\_databases\_id | Id of the SQL Databases |
-| sql\_elastic\_pool\_id | Id of the SQL Elastic Pool |
-| sql\_server\_fqdn | Fully qualified domain name of the SQL Server |
-| sql\_server\_id | Id of the SQL Server |
+| databases\_users | Map of the SQL Databases dedicated usernames |
+| databases\_users\_passwords | Map of the SQL Databases dedicated passwords |
+| default\_administrator\_databases\_connection\_strings | Map of the SQL Databases with administrator credentials connection strings |
+| sql\_databases | SQL Databases |
+| sql\_elastic\_pool | SQL Elastic Pool |
+| sql\_server | SQL Server |
 
 ## Related documentation
 

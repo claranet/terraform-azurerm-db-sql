@@ -31,8 +31,8 @@ resource "azurerm_mssql_elasticpool" "elastic_pool" {
   server_name = azurerm_sql_server.server.name
 
   per_database_settings {
-    max_capacity = coalesce(var.database_max_dtu_capacity, var.sku.capacity)
-    min_capacity = var.database_min_dtu_capacity
+    max_capacity = coalesce(var.database_max_capacity, var.sku.capacity)
+    min_capacity = var.database_min_capacity
   }
 
   max_size_gb    = var.elastic_pool_max_size
@@ -42,6 +42,7 @@ resource "azurerm_mssql_elasticpool" "elastic_pool" {
     capacity = local.elastic_pool_sku.capacity
     name     = local.elastic_pool_sku.name
     tier     = local.elastic_pool_sku.tier
+    family   = local.elastic_pool_sku.family
   }
 
   tags = merge(local.default_tags, var.extra_tags, var.elastic_pool_extra_tags)
