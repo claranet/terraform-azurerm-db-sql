@@ -3,7 +3,7 @@
 
 This Terraform module creates an [Azure SQL Server](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-servers) 
 and associated databases in an [SQL Elastic Pool](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-elastic-pool) 
-with [DTU purchasing model](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-dtu) 
+with [DTU purchasing model](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-dtu) or [vCore purchasing model](https://docs.microsoft.com/en-us/azure/azure-sql/database/resource-limits-vcore-elastic-pools) 
 only along with [Firewall rules](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-firewall-configure) 
 and [Diagnostic settings](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-metrics-diag-logging) 
 enabled.
@@ -48,7 +48,7 @@ module "rg" {
   stack       = var.stack
 }
 
-module "sql" {
+module "sql-dtu" {
   source  = "claranet/db-sql/azurerm"
   version = "x.x.x"
 
@@ -65,6 +65,7 @@ module "sql" {
   administrator_password = var.sql_admin_password
 
   sku = {
+    // Tier Basic/Standard/Premium are based on DTU
     tier     = "Standard"
     capacity = "100"
   }
@@ -77,6 +78,36 @@ module "sql" {
   logs_destinations_ids = [
     data.terraform_remote_state.run.outputs.log_analytics_workspace_id,
     data.terraform_remote_state.run.outputs.logs_storage_account_id,
+  ]
+}
+
+module "sql-vcore" {
+  source  = "claranet/db-sql/azurerm"
+  version = "x.x.x"
+
+  client_name         = var.client_name
+  environment         = var.environment
+  location            = module.azure-region.location
+  location_short      = module.azure-region.location_short
+  resource_group_name = module.rg.resource_group_name
+  stack               = var.stack
+
+  databases_names = ["users", "documents"]
+
+  administrator_login    = "claranet"
+  administrator_password = var.sql_admin_password
+
+  sku = {
+    // GeneralPurpose or BusinessCritical will actiate the vCore based model on Gen5 hardware
+    tier     = "GeneralPurpose"
+    capacity = 2
+  }
+
+  elastic_pool_max_size = "50"
+
+  logs_destinations_ids = [
+    data.terraform_remote_state.run.outputs.log_analytics_workspace_id,
+    data.terraform_remote_state.run.outputs.logs_storage_account_id
   ]
 }
 ```
