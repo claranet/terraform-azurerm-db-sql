@@ -1,5 +1,5 @@
 module "db_logging" {
-  for_each = var.logs_destinations_ids != [] ? toset(var.databases_names) : toset([])
+  for_each = toset(var.logs_destinations_ids != [] ? var.databases_names : [])
 
   source = "git::ssh://git@git.fr.clara.net/claranet/projects/cloud/azure/terraform/modules/diagnostic-settings.git?ref=AZ-160-revamp"
 
