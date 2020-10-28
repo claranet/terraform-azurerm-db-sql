@@ -23,4 +23,11 @@ locals {
   }
 
   databases_users = var.create_databases_users ? { for db in var.databases_names : db => format("%s_user", replace(db, "-", "_")) } : {}
+
+  allowed_subnets = [
+    for id in var.allowed_subnets_ids : {
+      name      = split("/", id)[10]
+      subnet_id = id
+    }
+  ]
 }
