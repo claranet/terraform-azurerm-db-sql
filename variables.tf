@@ -195,3 +195,9 @@ variable "yearly_backup_time" {
   type        = number
   default     = 52
 }
+
+variable "allowed_subnets_ids" {
+  description = "List of Subnet ID to allow to connect to the SQL Instance"
+  type        = list(string)
+  default     = []
+}

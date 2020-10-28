@@ -69,3 +69,11 @@ resource "azurerm_sql_database" "db" {
 
   tags = merge(local.default_tags, var.extra_tags, var.databases_extra_tags)
 }
+
+resource "azurerm_sql_virtual_network_rule" "vnet-rule" {
+  count               = length(var.allowed_subnets_ids)
+  name                = split("/", var.allowed_subnets_ids[count.index])[8]
+  resource_group_name = var.resource_group_name
+  server_name         = azurerm_sql_server.server.name
+  subnet_id           = var.allowed_subnets_ids[count.index]
+}

@@ -109,6 +109,10 @@ module "sql-vcore" {
     data.terraform_remote_state.run.outputs.log_analytics_workspace_id,
     data.terraform_remote_state.run.outputs.logs_storage_account_id
   ]
+
+  allowed_subnets_ids = [
+    "/subscriptions/xxxxxx/resourceGroups/xxxxxx/providers/Microsoft.Network/virtualNetworks/vnetxxxxxx/subnets/subnetxxxxx",
+  ]
 }
 
 module "sql-vcore" {
@@ -150,6 +154,7 @@ module "sql-vcore" {
 | administrator\_password | Administrator password for SQL Server | `string` | n/a | yes |
 | advanced\_data\_security\_additional\_emails | List of addiional email addresses for Advanced Data Security alerts. | `list(string)` | <pre>[<br>  "john.doe@azure.com"<br>]</pre> | no |
 | allowed\_cidr\_list | Allowed IP addresses to access the server in CIDR format. Default to all Azure services | `list(string)` | <pre>[<br>  "0.0.0.0/32"<br>]</pre> | no |
+| allowed\_subnets\_ids | List of Subnet ID to allow to connect to the SQL Instance | `list(string)` | `[]` | no |
 | client\_name | n/a | `string` | n/a | yes |
 | create\_databases\_users | True to create a user named <db>\_user per database with generated password and role db\_owner. | `bool` | `true` | no |
 | daily\_backup\_retention | Retention in days for the databases backup. Value can be 7, 14, 21, 28 or 35. | `number` | `35` | no |
