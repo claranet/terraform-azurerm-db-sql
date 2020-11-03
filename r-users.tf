@@ -36,3 +36,52 @@ EOC
     interpreter = ["pwsh", "-c"]
   }
 }
+
+resource "random_password" "custom-users" {
+  for_each = { for user_def in var.custom_users : format("%s-%s", user_def.name, user_def.database) => user_def }
+  length   = 32
+  special  = false
+}
+
+resource "null_resource" "custom-users" {
+  depends_on = [azurerm_sql_database.db]
+  for_each   = { for user_def in var.custom_users : format("%s-%s", user_def.name, user_def.database) => user_def }
+
+  triggers = {
+    user           = each.value.name
+    password       = random_password.custom-users[each.key].result
+    roles          = join(",", each.value.roles)
+    database       = each.value.database
+    server         = azurerm_sql_server.server.fully_qualified_domain_name
+    admin_login    = var.administrator_login
+    admin_password = var.administrator_password
+  }
+
+  provisioner "local-exec" {
+    command = <<EOC
+python3 -m pip install --upgrade pymssql==2.1.1;
+${path.module}/scripts/mssql_users.py --debug \
+                                              -s ${azurerm_sql_server.server.fully_qualified_domain_name} \
+                                              -d ${each.value.database} \
+                                              --admin-user ${var.administrator_login} \
+                                              --admin-password '${var.administrator_password}' \
+                                              --user ${each.value.name} \
+                                              --password '${random_password.custom-users[each.key].result}' \
+                                              --roles ${join(",", each.value.roles)}
+EOC
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOC
+${path.module}/scripts/mssql_users.py --debug \
+                                              -s ${self.triggers.server} \
+                                              -d ${self.triggers.database} \
+                                              --admin-user ${self.triggers.admin_login} \
+                                              --admin-password '${self.triggers.admin_password}' \
+                                              --user ${self.triggers.user} \
+                                              --delete
+EOC
+  }
+
+}

@@ -11,25 +11,6 @@ output "sql_elastic_pool" {
 output "sql_databases" {
   description = "SQL Databases"
   value       = azurerm_sql_database.db
-
-output "sql_elastic_pool_id" {
-  description = "Id of the SQL Elastic Pool"
-  value       = azurerm_mssql_elasticpool.elastic_pool.id
-}
-
-output "sql_databases_id" {
-  description = "Map of the SQL Databases IDs"
-  value       = { for db in azurerm_sql_database.db : db.name => db.id }
-}
-
-output "sql_databases_creation_date" {
-  description = "Map of the SQL Databases creation dates"
-  value       = { for db in azurerm_sql_database.db : db.name => db.creation_date }
-}
-
-output "sql_databases_default_secondary_location" {
-  description = "Map of the SQL Databases default secondary location"
-  value       = { for db in azurerm_sql_database.db : db.name => db.default_secondary_location }
 }
 
 output "sql_elastic_pool_id" {
@@ -75,5 +56,11 @@ output "databases_users" {
 output "databases_users_passwords" {
   description = "Map of the SQL Databases dedicated passwords"
   value       = { for db in azurerm_sql_database.db : db.name => random_password.db_passwords[db.name].result }
+  sensitive   = true
+}
+
+output "custom_users_passwords" {
+  description = "Map of the custom users passwords"
+  value       = var.custom_users == [] ? {} : { for user in var.custom_users : format("%s-%s", user.name, user.database) => random_password.custom-users[format("%s-%s", user.name, user.database)].result }
   sensitive   = true
 }

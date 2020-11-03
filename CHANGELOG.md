@@ -1,20 +1,17 @@
-# Unreleased
-
-Changed
-  * AZ-398: Force lowercase on default generated name
-
 # v4.0.0 - Unreleased
 
 Breaking
-  * AZ-273: Use for_each to iterate over databases
+  * AZ-273: Use for\_each to iterate over databases
   * AZ-160: Revamp diagnostic settings
   * AZ-351: Allow usage of vCore model
-  
+
 Added
   * AZ-354: Allow do add vnet rules
+  * AZ-362: Allow to create custom login/users with builtin roles assigned on databases.
 
 Changed
   * AZ-273: Terraform 0.13+ compatible
+  * AZ-398: Force lowercase on default generated name
 
 # v2.1.2/v3.0.1 - 2020-07-29
 
@@ -33,7 +30,7 @@ Added
 
 Changed
   * AZ-140: Make SQL user creation idempotent
-  * AZ-133: Use 3rd party logging module 
+  * AZ-133: Use 3rd party logging module
 
 # v2.0.0 - 2019-09-06
 
