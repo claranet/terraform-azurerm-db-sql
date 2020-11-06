@@ -96,7 +96,7 @@ variable "elastic_pool_max_size" {
 variable "sku" {
   description = <<DESC
     SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.
-    Possible values for tier are "GP_Ben5", "BC_Gen5", "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.
+    Possible values for tier are "GP_Ben5", "BC_Gen5" for vCore models and "Basic", "Standard", or "Premium" for DTU based models. Example {tier="Standard", capacity="50"}.
     See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools"
 DESC
 

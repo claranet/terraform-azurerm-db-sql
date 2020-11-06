@@ -13,6 +13,26 @@ output "sql_databases" {
   value       = azurerm_sql_database.db
 }
 
+output "sql_elastic_pool_id" {
+  description = "Id of the SQL Elastic Pool"
+  value       = azurerm_mssql_elasticpool.elastic_pool.id
+}
+
+output "sql_databases_id" {
+  description = "Map of the SQL Databases IDs"
+  value       = { for db in azurerm_sql_database.db : db.name => db.id }
+}
+
+output "sql_databases_creation_date" {
+  description = "Map of the SQL Databases creation dates"
+  value       = { for db in azurerm_sql_database.db : db.name => db.creation_date }
+}
+
+output "sql_databases_default_secondary_location" {
+  description = "Map of the SQL Databases default secondary location"
+  value       = { for db in azurerm_sql_database.db : db.name => db.default_secondary_location }
+}
+
 output "default_administrator_databases_connection_strings" {
   description = "Map of the SQL Databases with administrator credentials connection strings"
   value = {
