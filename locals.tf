@@ -16,14 +16,14 @@ locals {
   )
 
   vcore_tiers                 = ["GeneralPurpose", "BusinessCritical"]
-  elastic_pool_family         = contains(local.vcore_tiers, var.sku.tier) ? "Gen5" : null
-  elastic_pool_vcore_sku_name = format("%s_%s", var.sku.tier == "GeneralPurpose" ? "GP" : "BC", local.elastic_pool_family)
+  elastic_pool_vcore_family   = "Gen5"
+  elastic_pool_vcore_sku_name = format("%s_%s", var.sku.tier == "GeneralPurpose" ? "GP" : "BC", local.elastic_pool_vcore_family)
   elastic_pool_dtu_sku_name   = format("%sPool", var.sku.tier)
   elastic_pool_sku = {
     name     = contains(local.vcore_tiers, var.sku.tier) ? local.elastic_pool_vcore_sku_name : local.elastic_pool_dtu_sku_name
     capacity = var.sku.capacity
     tier     = var.sku.tier
-    family   = local.elastic_pool_family
+    family   = contains(local.vcore_tiers, var.sku.tier) ? local.elastic_pool_vcore_family : null
   }
 
 
