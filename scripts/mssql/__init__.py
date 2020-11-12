@@ -23,6 +23,9 @@ class Mssql:
         :return: Connection object
         """
 
+        server = server_fqdn.split('.')[0]
+        admin_user = f'{admin_user}@{server}'
+
         return pymssql.connect(server=server_fqdn, user=admin_user, password=admin_password, database=database)
 
     def is_user_exists(self, username: str) -> bool:
@@ -203,7 +206,7 @@ WHERE m.NAME = '{username}'
         :param username: Name of the user to drop
         :return: None
         """
-        query = f'DROP USER {username}'
+        query = f'DROP USER "{username}"'
         cursor = self.db_conn.cursor()
         try:
             cursor.execute(query)
@@ -218,7 +221,7 @@ WHERE m.NAME = '{username}'
         :param loginname: Name of the login to drop
         :return: None
         """
-        query = f'DROP LOGIN {loginname}'
+        query = f'DROP LOGIN "{loginname}"'
         cursor = self.master_conn.cursor()
         try:
             cursor.execute(query)

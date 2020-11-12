@@ -12,18 +12,19 @@ enabled.
 
 * [PowerShell with Az.Sql module](https://docs.microsoft.com/en-us/powershell/module/az.sql/) >= 1.3 is mandatory and is used for backup retention configuration
 * [`SqlServer` Powershell module](https://docs.microsoft.com/en-us/sql/powershell/sql-server-powershell) is needed for databases users creation
-* [pymssql](https://www.pymssql.org/) >= 2.1.3
+* [pymssql](https://www.pymssql.org/) >= 2.1.5
 * [FreeTDS](https://www.freetds.org/) >= 0.9.1 (Only on OSX. Static copy of FreeTDS is embeeded on Linux and Windows pymssql bundle)
 * [Python](https://www.python.org) >= 3.8
 
 ## Version compatibility
 
-| Module version | Terraform version | AzureRM version |
-|----------------|-------------------| --------------- |
-| >= 4.x.x       | 0.13.x            | >= 2.0          |
-| >= 3.x.x       | 0.12.x            | >= 2.0          |
-| >= 2.x.x       | 0.12.x            | < 2.0           |
-| <  2.x.x       | 0.11.x            | < 2.0           |
+| Module version    | Terraform version | AzureRM version |
+|-------------------|-------------------|-----------------|
+| >= 5.x.x          | 0.14.x            | >= 2.0          |
+| >= 4.x.x          | 0.13.x            | >= 2.0          |
+| >= 3.x.x          | 0.12.x            | >= 2.0          |
+| >= 2.x.x, < 3.x.x | 0.12.x            | <  2.0          |
+| <  2.x.x          | 0.11.x            | <  2.0          |
 
 ## Limitations
 
@@ -62,7 +63,7 @@ module "sql-dtu" {
   resource_group_name = module.rg.resource_group_name
   stack               = var.stack
 
-  databases_names = ["users", "documents"]
+  elasticpool_databases = ["users", "documents"]
 
   administrator_login    = "claranet"
   administrator_password = var.sql_admin_password
@@ -118,7 +119,7 @@ module "sql-vcore" {
   ]
 }
 
-module "sql-vcore" {
+module "sql-custom-users" {
   source  = "claranet/db-sql/azurerm"
   version = "x.x.x"
 
@@ -161,6 +162,50 @@ module "sql-vcore" {
   ]
 
 }
+module "sql-single" {
+  source  = "claranet/db-sql/azurerm"
+  version = "x.x.x"
+
+  client_name         = var.client_name
+  environment         = var.environment
+  location            = module.azure-region.location
+  location_short      = module.azure-region.location_short
+  resource_group_name = module.rg.resource_group_name
+  stack               = var.stack
+
+  single_databases_configuration = [
+    {
+      name                        = "document"
+      max_size_gb                 = 100
+      sku_name                    = "GP_S_Gen5_4"
+      min_capacity                = 0.5
+      auto_pause_delay_in_minutes = 60
+      storage_account_type        = "GRS"
+      retention_days              = 14
+    },
+    {
+      name                        = "users"
+      max_size_gb                 = 100
+      sku_name                    = "GP_S_Gen5_4"
+      min_capacity                = 0.5
+      auto_pause_delay_in_minutes = 60
+      storage_account_type        = "GRS"
+      retention_days              = 14
+    }
+  ]
+
+  administrator_login    = "claranet"
+  administrator_password = var.sql_admin_password
+
+  enable_elasticpool = false
+
+
+  logs_destinations_ids = [
+    module.run.log_analytics_workspace_id,
+    module.run.logs_storage_account_id,
+  ]
+
+}
 ```
 
 ## Inputs
@@ -175,17 +220,17 @@ module "sql-vcore" {
 | client\_name | n/a | `string` | n/a | yes |
 | create\_databases\_users | True to create a user named <db>\_user per database with generated password and role db\_owner. | `bool` | `true` | no |
 | custom\_users | Create custom users with associated roles | <pre>list(object({<br>    name     = string,<br>    database = string,<br>    roles    = list(string)<br>  }))</pre> | `[]` | no |
-| daily\_backup\_retention | Retention in days for the databases backup. Value can be 7, 14, 21, 28 or 35. | `number` | `35` | no |
+| daily\_backup\_retention | Retention in days for the elastic pool databases backup. Value can be 7, 14, 21, 28 or 35. | `number` | `35` | no |
 | database\_max\_capacity | The maximum capacity (DTU or vCore) any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity. | `string` | `""` | no |
 | database\_min\_capacity | The minimum capacity (DTU or vCore) all databases are guaranteed in the Elastic Pool. Defaults to 0. | `string` | `"0"` | no |
 | databases\_collation | SQL Collation for the databases | `string` | `"SQL_LATIN1_GENERAL_CP1_CI_AS"` | no |
 | databases\_extra\_tags | Extra tags to add on the SQL databases | `map(string)` | `{}` | no |
-| databases\_names | Names of the databases to create for this server | `list(string)` | n/a | yes |
 | elastic\_pool\_custom\_name | Name of the SQL Elastic Pool, generated if not set. | `string` | `""` | no |
-| elastic\_pool\_extra\_tags | Extra tags to add on the SQL Elastic Pool | `map(string)` | `{}` | no |
-| elastic\_pool\_max\_size | Maximum size of the Elastic Pool in gigabytes | `string` | n/a | yes |
+| elastic\_pool\_max\_size | Maximum size of the Elastic Pool in gigabytes | `string` | `null` | no |
+| elasticpool\_databases | Names of the databases to create in elastic pool for this server. Use only if enable\_elasticpool is true. | `list(string)` | `[]` | no |
 | enable\_advanced\_data\_security | Boolean flag to enable Advanced Data Security. The cost of ADS is aligned with Azure Security Center standard tier pricing. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security | `bool` | `false` | no |
 | enable\_advanced\_data\_security\_admin\_emails | Boolean flag to define if account administrators should be emailed with Advanced Data Security alerts. | `bool` | `false` | no |
+| enable\_elasticpool | Deploy the databases in an ElasticPool if enabled. Otherwise, deploy single databases. | `bool` | `true` | no |
 | environment | n/a | `string` | n/a | yes |
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
 | location | Azure location for SQL Server. | `string` | n/a | yes |
@@ -195,7 +240,7 @@ module "sql-vcore" {
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
 | resource\_group\_name | n/a | `string` | n/a | yes |
 | server\_custom\_name | Name of the SQL Server, generated if not set. | `string` | `""` | no |
-| server\_extra\_tags | Extra tags to add on SQL Server | `map(string)` | `{}` | no |
+| server\_extra\_tags | Extra tags to add on SQL Server or ElasticPool | `map(string)` | `{}` | no |
 | server\_version | Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version | `string` | `"12.0"` | no |
 | sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are "GP\_Ben5", "BC\_Gen5" for vCore models and "Basic", "Standard", or "Premium" for DTU based models. Example {tier="Standard", capacity="50"}.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | <pre>object({<br>    tier     = string,<br>    capacity = number,<br>  })</pre> | n/a | yes |
 | stack | n/a | `string` | n/a | yes |
@@ -209,6 +254,7 @@ module "sql-vcore" {
 | Name | Description |
 |------|-------------|
 | custom\_users\_passwords | Map of the custom users passwords |
+| databases\_single\_ids | MSSQL Database single IDs |
 | databases\_users | Map of the SQL Databases dedicated usernames |
 | databases\_users\_passwords | Map of the SQL Databases dedicated passwords |
 | default\_administrator\_databases\_connection\_strings | Map of the SQL Databases with administrator credentials connection strings |

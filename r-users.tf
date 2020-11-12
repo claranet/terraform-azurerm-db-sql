@@ -1,12 +1,11 @@
 resource "random_password" "db_passwords" {
-  for_each = var.create_databases_users ? toset(var.databases_names) : []
-
-  special = "false"
-  length  = 32
+  for_each = var.create_databases_users ? toset(var.elasticpool_databases) : []
+  special  = "false"
+  length   = 32
 }
 
 resource "null_resource" "db_users" {
-  for_each = var.create_databases_users ? toset(var.databases_names) : []
+  for_each = var.create_databases_users ? toset(var.elasticpool_databases) : []
 
   depends_on = [azurerm_sql_database.db]
 
@@ -59,7 +58,7 @@ resource "null_resource" "custom-users" {
 
   provisioner "local-exec" {
     command = <<EOC
-python3 -m pip install --upgrade pymssql==2.1.1;
+python3 -m pip install --upgrade pymssql==2.1.5;
 ${path.module}/scripts/mssql_users.py --debug \
                                               -s ${azurerm_sql_server.server.fully_qualified_domain_name} \
                                               -d ${each.value.database} \

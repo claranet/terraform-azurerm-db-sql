@@ -15,7 +15,7 @@ output "sql_databases" {
 
 output "sql_elastic_pool_id" {
   description = "Id of the SQL Elastic Pool"
-  value       = azurerm_mssql_elasticpool.elastic_pool.id
+  value       = var.enable_elasticpool ? azurerm_mssql_elasticpool.elastic_pool.0.id : ""
 }
 
 output "sql_databases_id" {
@@ -63,4 +63,10 @@ output "custom_users_passwords" {
   description = "Map of the custom users passwords"
   value       = var.custom_users == [] ? {} : { for user in var.custom_users : format("%s-%s", user.name, user.database) => random_password.custom-users[format("%s-%s", user.name, user.database)].result }
   sensitive   = true
+}
+
+
+output "databases_single_ids" {
+  description = "MSSQL Database single IDs"
+  value       = { for db in azurerm_mssql_database.single-database : db.name => db.id }
 }
