@@ -12,10 +12,10 @@ sku= {
 elastic_pool_max_size="50"
 administrator_login="claranet"
 administrator_password="claranet"
-enable_logs_to_storage="true"
-logs_storage_account_id="/subscriptions/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/resourceGroups/rg-test/providers/Microsoft.Storage/storageAccounts/storageaccountname"
-enable_logs_to_log_analytics="true"
-logs_log_analytics_workspace_id="/subscriptions/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/resourceGroups/rg-test/providers/Microsoft.OperationalInsights/workspaces/my-log-analytics-workspace"
+logs_destinations_ids=[
+    "/subscriptions/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/resourceGroups/rg-test/providers/Microsoft.Storage/storageAccounts/storageaccountname",
+    "/subscriptions/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/resourceGroups/rg-test/providers/Microsoft.OperationalInsights/workspaces/my-log-analytics-workspace",
+]
 enable_advanced_data_security="true"
 enable_advanced_data_security_admin_emails="true"
 advanced_data_security_additional_emails=["admin@fr.clara.net", "devops@fr.clara.net"]

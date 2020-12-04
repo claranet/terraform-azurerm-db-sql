@@ -1,12 +1,12 @@
-resource "random_string" "db_passwords" {
-  count = var.create_databases_users ? length(var.databases_names) : 0
+resource "random_password" "db_passwords" {
+  for_each = toset(var.create_databases_users ? var.databases_names : [])
 
   special = "false"
   length  = 32
 }
 
 resource "null_resource" "db_users" {
-  count = var.create_databases_users ? length(var.databases_names) : 0
+  for_each = toset(var.create_databases_users ? var.databases_names : [])
 
   depends_on = [azurerm_sql_database.db]
 
@@ -16,27 +16,23 @@ resource "null_resource" "db_users" {
         IF NOT EXISTS `
             (SELECT name `
              FROM  master.sys.sql_logins `
-             WHERE name = '${format("%s_user", replace(element(var.databases_names, count.index), "-", "_"))}') `
+             WHERE name = '${local.databases_users[each.key]}') `
         BEGIN `
-            CREATE LOGIN ${format("%s_user", replace(element(var.databases_names, count.index), "-", "_"))} WITH PASSWORD = '${element(random_string.db_passwords.*.result, count.index)}';`
+            CREATE LOGIN ${local.databases_users[each.key]} WITH PASSWORD = '${random_password.db_passwords[each.key].result}';`
         END `
       " -ServerInstance ${azurerm_sql_server.server.fully_qualified_domain_name} -Username ${var.administrator_login} -Password ${var.administrator_password}
 
       Invoke-Sqlcmd -Query "`
         IF NOT EXISTS `
             (SELECT * FROM sys.database_principals `
-             WHERE name='${format("%s_user", replace(element(var.databases_names, count.index), "-", "_"))}') `
+             WHERE name='${local.databases_users[each.key]}') `
         BEGIN `
-            CREATE USER ${format("%s_user", replace(element(var.databases_names, count.index), "-", "_"))} FOR LOGIN ${format("%s_user", replace(element(var.databases_names, count.index), "-", "_"))} WITH DEFAULT_SCHEMA = ${element(var.databases_names, count.index)}; `
-            ALTER ROLE db_owner ADD MEMBER ${format("%s_user", replace(element(var.databases_names, count.index), "-", "_"))}; `
+            CREATE USER ${local.databases_users[each.value]} FOR LOGIN ${local.databases_users[each.key]} WITH DEFAULT_SCHEMA = dbo; `
+            ALTER ROLE db_owner ADD MEMBER ${local.databases_users[each.key]}; `
         END `
-      " -ServerInstance ${azurerm_sql_server.server.fully_qualified_domain_name} -Username ${var.administrator_login} -Password ${var.administrator_password} -Database ${element(var.databases_names, count.index)}
+      " -ServerInstance ${azurerm_sql_server.server.fully_qualified_domain_name} -Username ${var.administrator_login} -Password '${var.administrator_password}' -Database ${each.key}
 EOC
 
     interpreter = ["pwsh", "-c"]
-  }
-
-  triggers = {
-    database = element(var.databases_names, count.index)
   }
 }

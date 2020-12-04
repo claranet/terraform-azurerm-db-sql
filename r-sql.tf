@@ -48,9 +48,9 @@ resource "azurerm_mssql_elasticpool" "elastic_pool" {
 }
 
 resource "azurerm_sql_database" "db" {
-  count = length(var.databases_names)
+  for_each = toset(var.databases_names)
 
-  name                = var.databases_names[count.index]
+  name                = each.key
   location            = var.location
   resource_group_name = var.resource_group_name
 

@@ -21,17 +21,5 @@ locals {
     tier     = var.sku.tier
   }
 
-  log_categories = [
-    "SQLInsights",
-    "AutomaticTuning",
-    "QueryStoreRuntimeStatistics",
-    "QueryStoreWaitStatistics",
-    "Errors",
-    "DatabaseWaitStatistics",
-    "Timeouts",
-    "Blocks",
-    "Deadlocks",
-    "Audit",
-    "SQLSecurityAuditEvents",
-  ]
+  databases_users = var.create_databases_users ? { for db in var.databases_names : db => format("%s_user", replace(db, "-", "_")) } : {}
 }

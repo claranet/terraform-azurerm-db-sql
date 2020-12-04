@@ -1,10 +1,17 @@
-module "logging" {
-  source = "github.com/claranet/terraform-azurerm-diagnostic-settings.git?ref=multiple-resources"
+module "db_logging" {
+  for_each = toset(var.databases_names)
 
-  resources_count = var.enable_logging ? length(var.databases_names) : 0
-  resource_ids    = azurerm_sql_database.db[*].id
-  retention_days  = var.logs_storage_retention
+  source  = "claranet/diagnostic-settings/azurerm"
+  version = "4.0.1"
 
-  storage_account_id         = var.logs_storage_account_id
-  log_analytics_workspace_id = var.logs_log_analytics_workspace_id
+  resource_id           = azurerm_sql_database.db[each.key].id
+  logs_destinations_ids = var.logs_destinations_ids
+}
+
+module "pool_logging" {
+  source  = "claranet/diagnostic-settings/azurerm"
+  version = "4.0.1"
+
+  resource_id           = azurerm_mssql_elasticpool.elastic_pool.id
+  logs_destinations_ids = var.logs_destinations_ids
 }

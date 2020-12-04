@@ -1,3 +1,12 @@
+# v4.0.0 - Unreleased
+
+Breaking
+  * AZ-273: Use for_each to iterate over databases
+  * AZ-160: Revamp diagnostic settings
+
+Changed
+  * AZ-273: Terraform 0.13+ compatible
+
 # v2.1.2/v3.0.1 - 2020-07-29
 
 Changed
