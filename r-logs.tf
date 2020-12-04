@@ -1,5 +1,5 @@
 module "db_logging" {
-  for_each = var.databases_names
+  for_each = toset(var.databases_names)
 
   source  = "claranet/diagnostic-settings/azurerm"
   version = "4.0.1"
