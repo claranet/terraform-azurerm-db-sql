@@ -1,5 +1,5 @@
 module "db_logging" {
-  for_each = toset(var.logs_destinations_ids != [] ? var.databases_names : [])
+  for_each = var.databases_names
 
   source  = "claranet/diagnostic-settings/azurerm"
   version = "4.0.1"
@@ -9,8 +9,6 @@ module "db_logging" {
 }
 
 module "pool_logging" {
-  count = var.logs_destinations_ids != [] ? 1 : 0
-
   source  = "claranet/diagnostic-settings/azurerm"
   version = "4.0.1"
 
