@@ -30,7 +30,7 @@ resource "null_resource" "db_users" {
             CREATE USER ${local.databases_users[each.value]} FOR LOGIN ${local.databases_users[each.key]} WITH DEFAULT_SCHEMA = dbo; `
             ALTER ROLE db_owner ADD MEMBER ${local.databases_users[each.key]}; `
         END `
-      " -ServerInstance ${azurerm_sql_server.server.fully_qualified_domain_name} -Username ${var.administrator_login} -Password ${var.administrator_password} -Database ${each.key}
+      " -ServerInstance ${azurerm_sql_server.server.fully_qualified_domain_name} -Username ${var.administrator_login} -Password '${var.administrator_password}' -Database ${each.key}
 EOC
 
     interpreter = ["pwsh", "-c"]
