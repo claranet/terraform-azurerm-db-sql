@@ -3,13 +3,10 @@
 
 This Terraform module creates an [Azure SQL Server](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-servers) 
 and associated databases in an [SQL Elastic Pool](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-elastic-pool) 
-with [DTU purchasing model](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-dtu) 
+with [DTU purchasing model](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-dtu) or [vCore purchasing model](https://docs.microsoft.com/en-us/azure/azure-sql/database/resource-limits-vcore-elastic-pools) 
 only along with [Firewall rules](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-firewall-configure) 
 and [Diagnostic settings](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-metrics-diag-logging) 
 enabled.
-
-The [vCore-based model](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-vcore)
-is not available.
 
 ## Requirements
 
@@ -51,7 +48,7 @@ module "rg" {
   stack       = var.stack
 }
 
-module "sql" {
+module "sql-dtu" {
   source  = "claranet/db-sql/azurerm"
   version = "x.x.x"
 
@@ -68,6 +65,7 @@ module "sql" {
   administrator_password = var.sql_admin_password
 
   sku = {
+    // Tier Basic/Standard/Premium are based on DTU
     tier     = "Standard"
     capacity = "100"
   }
@@ -80,6 +78,36 @@ module "sql" {
   logs_destinations_ids = [
     data.terraform_remote_state.run.outputs.log_analytics_workspace_id,
     data.terraform_remote_state.run.outputs.logs_storage_account_id,
+  ]
+}
+
+module "sql-vcore" {
+  source  = "claranet/db-sql/azurerm"
+  version = "x.x.x"
+
+  client_name         = var.client_name
+  environment         = var.environment
+  location            = module.azure-region.location
+  location_short      = module.azure-region.location_short
+  resource_group_name = module.rg.resource_group_name
+  stack               = var.stack
+
+  databases_names = ["users", "documents"]
+
+  administrator_login    = "claranet"
+  administrator_password = var.sql_admin_password
+
+  sku = {
+    // GeneralPurpose or BusinessCritical will actiate the vCore based model on Gen5 hardware
+    tier     = "GeneralPurpose"
+    capacity = 2
+  }
+
+  elastic_pool_max_size = "50"
+
+  logs_destinations_ids = [
+    data.terraform_remote_state.run.outputs.log_analytics_workspace_id,
+    data.terraform_remote_state.run.outputs.logs_storage_account_id
   ]
 }
 ```
@@ -95,8 +123,8 @@ module "sql" {
 | client\_name | n/a | `string` | n/a | yes |
 | create\_databases\_users | True to create a user named <db>\_user per database with generated password and role db\_owner. | `bool` | `true` | no |
 | daily\_backup\_retention | Retention in days for the databases backup. Value can be 7, 14, 21, 28 or 35. | `number` | `35` | no |
-| database\_max\_dtu\_capacity | The maximum capacity any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity. | `string` | `""` | no |
-| database\_min\_dtu\_capacity | The minimum capacity all databases are guaranteed in the Elastic Pool. Defaults to 0. | `string` | `"0"` | no |
+| database\_max\_capacity | The maximum capacity (DTU or vCore) any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity. | `string` | `""` | no |
+| database\_min\_capacity | The minimum capacity (DTU or vCore) all databases are guaranteed in the Elastic Pool. Defaults to 0. | `string` | `"0"` | no |
 | databases\_collation | SQL Collation for the databases | `string` | `"SQL_LATIN1_GENERAL_CP1_CI_AS"` | no |
 | databases\_extra\_tags | Extra tags to add on the SQL databases | `map(string)` | `{}` | no |
 | databases\_names | Names of the databases to create for this server | `list(string)` | n/a | yes |
@@ -116,7 +144,7 @@ module "sql" {
 | server\_custom\_name | Name of the SQL Server, generated if not set. | `string` | `""` | no |
 | server\_extra\_tags | Extra tags to add on SQL Server | `map(string)` | `{}` | no |
 | server\_version | Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version | `string` | `"12.0"` | no |
-| sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | <pre>object({<br>    tier = string,<br>    capacity = number,<br>  })</pre> | n/a | yes |
+| sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are "GP\_Ben5", "BC\_Gen5", "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | <pre>object({<br>    tier     = string,<br>    capacity = number,<br>  })</pre> | n/a | yes |
 | stack | n/a | `string` | n/a | yes |
 | weekly\_backup\_retention | Retention in weeks for the weekly databases backup. | `number` | `0` | no |
 | yearly\_backup\_retention | Retention in years for the yearly backup. | `number` | `0` | no |
@@ -127,15 +155,12 @@ module "sql" {
 
 | Name | Description |
 |------|-------------|
-| databases\_users | List of usernames of created users corresponding to input databases names. |
-| databases\_users\_passwords | List of passwords of created users corresponding to input databases names. |
-| default\_administrator\_databases\_connection\_strings | Connection strings of the SQL Databases with administrator credentials |
-| sql\_databases\_creation\_date | Creation date of the SQL Databases |
-| sql\_databases\_default\_secondary\_location | The default secondary location of the SQL Databases |
-| sql\_databases\_id | Id of the SQL Databases |
-| sql\_elastic\_pool\_id | Id of the SQL Elastic Pool |
-| sql\_server\_fqdn | Fully qualified domain name of the SQL Server |
-| sql\_server\_id | Id of the SQL Server |
+| databases\_users | Map of the SQL Databases dedicated usernames |
+| databases\_users\_passwords | Map of the SQL Databases dedicated passwords |
+| default\_administrator\_databases\_connection\_strings | Map of the SQL Databases with administrator credentials connection strings |
+| sql\_databases | SQL Databases |
+| sql\_elastic\_pool | SQL Elastic Pool |
+| sql\_server | SQL Server |
 
 ## Related documentation
 

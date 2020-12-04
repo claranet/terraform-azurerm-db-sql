@@ -20,7 +20,7 @@ resource "null_resource" "db_users" {
         BEGIN `
             CREATE LOGIN ${local.databases_users[each.key]} WITH PASSWORD = '${random_password.db_passwords[each.key].result}';`
         END `
-      " -ServerInstance ${azurerm_sql_server.server.fully_qualified_domain_name} -Username ${var.administrator_login} -Password ${var.administrator_password}
+      " -ServerInstance ${azurerm_sql_server.server.fully_qualified_domain_name} -Username ${var.administrator_login} -Password '${var.administrator_password}'
 
       Invoke-Sqlcmd -Query "`
         IF NOT EXISTS `
