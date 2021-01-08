@@ -144,7 +144,7 @@ module "sql-vcore" {
 | server\_custom\_name | Name of the SQL Server, generated if not set. | `string` | `""` | no |
 | server\_extra\_tags | Extra tags to add on SQL Server | `map(string)` | `{}` | no |
 | server\_version | Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version | `string` | `"12.0"` | no |
-| sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are "GP\_Ben5", "BC\_Gen5", "Basic", "Standard", or "Premium". Example {tier="Standard", capacity="50"}.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | <pre>object({<br>    tier     = string,<br>    capacity = number,<br>  })</pre> | n/a | yes |
+| sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are "GP\_Ben5", "BC\_Gen5" for vCore models and "Basic", "Standard", or "Premium" for DTU based models. Example {tier="Standard", capacity="50"}.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | <pre>object({<br>    tier     = string,<br>    capacity = number,<br>  })</pre> | n/a | yes |
 | stack | n/a | `string` | n/a | yes |
 | weekly\_backup\_retention | Retention in weeks for the weekly databases backup. | `number` | `0` | no |
 | yearly\_backup\_retention | Retention in years for the yearly backup. | `number` | `0` | no |
@@ -159,7 +159,11 @@ module "sql-vcore" {
 | databases\_users\_passwords | Map of the SQL Databases dedicated passwords |
 | default\_administrator\_databases\_connection\_strings | Map of the SQL Databases with administrator credentials connection strings |
 | sql\_databases | SQL Databases |
+| sql\_databases\_creation\_date | Map of the SQL Databases creation dates |
+| sql\_databases\_default\_secondary\_location | Map of the SQL Databases default secondary location |
+| sql\_databases\_id | Map of the SQL Databases IDs |
 | sql\_elastic\_pool | SQL Elastic Pool |
+| sql\_elastic\_pool\_id | Id of the SQL Elastic Pool |
 | sql\_server | SQL Server |
 
 ## Related documentation
