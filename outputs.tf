@@ -58,3 +58,9 @@ output "databases_users_passwords" {
   value       = { for db in azurerm_sql_database.db : db.name => random_password.db_passwords[db.name].result }
   sensitive   = true
 }
+
+output "custom_users_passwords" {
+  description = "Map of the custom users passwords"
+  value       = var.custom_users == [] ? {} : { for user in var.custom_users : format("%s-%s", user.name, user.database) => random_password.custom-users[format("%s-%s", user.name, user.database)].result }
+  sensitive   = true
+}

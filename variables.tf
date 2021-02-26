@@ -201,3 +201,13 @@ variable "allowed_subnets_ids" {
   type        = list(string)
   default     = []
 }
+
+variable "custom_users" {
+  description = "Create custom users with associated roles"
+  type = list(object({
+    name     = string,
+    database = string,
+    roles    = list(string)
+  }))
+  default = []
+}

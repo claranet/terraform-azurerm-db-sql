@@ -1,17 +1,20 @@
 # Azure SQL
 [![Changelog](https://img.shields.io/badge/changelog-release-green.svg)](CHANGELOG.md) [![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![Apache V2 License](https://img.shields.io/badge/license-Apache%20V2-orange.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/claranet/db-sql/azurerm/)
 
-This Terraform module creates an [Azure SQL Server](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-servers) 
-and associated databases in an [SQL Elastic Pool](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-elastic-pool) 
-with [DTU purchasing model](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-dtu) or [vCore purchasing model](https://docs.microsoft.com/en-us/azure/azure-sql/database/resource-limits-vcore-elastic-pools) 
-only along with [Firewall rules](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-firewall-configure) 
-and [Diagnostic settings](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-metrics-diag-logging) 
+This Terraform module creates an [Azure SQL Server](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-servers)
+and associated databases in an [SQL Elastic Pool](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-elastic-pool)
+with [DTU purchasing model](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-dtu) or [vCore purchasing model](https://docs.microsoft.com/en-us/azure/azure-sql/database/resource-limits-vcore-elastic-pools)
+only along with [Firewall rules](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-firewall-configure)
+and [Diagnostic settings](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-metrics-diag-logging)
 enabled.
 
 ## Requirements
 
 * [PowerShell with Az.Sql module](https://docs.microsoft.com/en-us/powershell/module/az.sql/) >= 1.3 is mandatory and is used for backup retention configuration
 * [`SqlServer` Powershell module](https://docs.microsoft.com/en-us/sql/powershell/sql-server-powershell) is needed for databases users creation
+* [pymssql](https://www.pymssql.org/) >= 2.1.3
+* [FreeTDS](https://www.freetds.org/) >= 0.9.1 (Only on OSX. Static copy of FreeTDS is embeeded on Linux and Windows pymssql bundle)
+* [Python](https://www.python.org) >= 3.8
 
 ## Version compatibility
 
@@ -143,6 +146,20 @@ module "sql-vcore" {
     data.terraform_remote_state.run.outputs.log_analytics_workspace_id,
     data.terraform_remote_state.run.outputs.logs_storage_account_id
   ]
+
+  custom_users = [
+    {
+      name     = "User1"
+      database = "MyDB1"
+      roles    = ["db_datareader", "db_datawriter"]
+    },
+    {
+      name     = "UserAdmin"
+      database = "MyDB1"
+      roles    = ["db_owner"]
+    }
+  ]
+
 }
 ```
 
@@ -157,6 +174,7 @@ module "sql-vcore" {
 | allowed\_subnets\_ids | List of Subnet ID to allow to connect to the SQL Instance | `list(string)` | `[]` | no |
 | client\_name | n/a | `string` | n/a | yes |
 | create\_databases\_users | True to create a user named <db>\_user per database with generated password and role db\_owner. | `bool` | `true` | no |
+| custom\_users | Create custom users with associated roles | <pre>list(object({<br>    name     = string,<br>    database = string,<br>    roles    = list(string)<br>  }))</pre> | `[]` | no |
 | daily\_backup\_retention | Retention in days for the databases backup. Value can be 7, 14, 21, 28 or 35. | `number` | `35` | no |
 | database\_max\_capacity | The maximum capacity (DTU or vCore) any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity. | `string` | `""` | no |
 | database\_min\_capacity | The minimum capacity (DTU or vCore) all databases are guaranteed in the Elastic Pool. Defaults to 0. | `string` | `"0"` | no |
@@ -190,6 +208,7 @@ module "sql-vcore" {
 
 | Name | Description |
 |------|-------------|
+| custom\_users\_passwords | Map of the custom users passwords |
 | databases\_users | Map of the SQL Databases dedicated usernames |
 | databases\_users\_passwords | Map of the SQL Databases dedicated passwords |
 | default\_administrator\_databases\_connection\_strings | Map of the SQL Databases with administrator credentials connection strings |
