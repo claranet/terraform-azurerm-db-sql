@@ -69,3 +69,11 @@ resource "azurerm_sql_database" "db" {
 
   tags = merge(local.default_tags, var.extra_tags, var.databases_extra_tags)
 }
+
+resource "azurerm_sql_virtual_network_rule" "vnet-rule" {
+  for_each            = { for subnet in local.allowed_subnets : subnet.name => subnet }
+  name                = each.key
+  resource_group_name = var.resource_group_name
+  server_name         = azurerm_sql_server.server.name
+  subnet_id           = each.value.subnet_id
+}

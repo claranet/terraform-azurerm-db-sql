@@ -109,6 +109,40 @@ module "sql-vcore" {
     data.terraform_remote_state.run.outputs.log_analytics_workspace_id,
     data.terraform_remote_state.run.outputs.logs_storage_account_id
   ]
+
+  allowed_subnets_ids = [
+    "/subscriptions/xxxxxx/resourceGroups/xxxxxx/providers/Microsoft.Network/virtualNetworks/vnetxxxxxx/subnets/subnetxxxxx",
+  ]
+}
+
+module "sql-vcore" {
+  source  = "claranet/db-sql/azurerm"
+  version = "x.x.x"
+
+  client_name         = var.client_name
+  environment         = var.environment
+  location            = module.azure-region.location
+  location_short      = module.azure-region.location_short
+  resource_group_name = module.rg.resource_group_name
+  stack               = var.stack
+
+  databases_names = ["users", "documents"]
+
+  administrator_login    = "claranet"
+  administrator_password = var.sql_admin_password
+
+  sku = {
+    // GeneralPurpose or BusinessCritical will actiate the vCore based model on Gen5 hardware
+    tier     = "GeneralPurpose"
+    capacity = 2
+  }
+
+  elastic_pool_max_size = "50"
+
+  logs_destinations_ids = [
+    data.terraform_remote_state.run.outputs.log_analytics_workspace_id,
+    data.terraform_remote_state.run.outputs.logs_storage_account_id
+  ]
 }
 ```
 
@@ -120,6 +154,7 @@ module "sql-vcore" {
 | administrator\_password | Administrator password for SQL Server | `string` | n/a | yes |
 | advanced\_data\_security\_additional\_emails | List of addiional email addresses for Advanced Data Security alerts. | `list(string)` | <pre>[<br>  "john.doe@azure.com"<br>]</pre> | no |
 | allowed\_cidr\_list | Allowed IP addresses to access the server in CIDR format. Default to all Azure services | `list(string)` | <pre>[<br>  "0.0.0.0/32"<br>]</pre> | no |
+| allowed\_subnets\_ids | List of Subnet ID to allow to connect to the SQL Instance | `list(string)` | `[]` | no |
 | client\_name | n/a | `string` | n/a | yes |
 | create\_databases\_users | True to create a user named <db>\_user per database with generated password and role db\_owner. | `bool` | `true` | no |
 | daily\_backup\_retention | Retention in days for the databases backup. Value can be 7, 14, 21, 28 or 35. | `number` | `35` | no |

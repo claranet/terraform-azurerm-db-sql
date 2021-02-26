@@ -9,6 +9,9 @@ Breaking
   * AZ-273: Use for_each to iterate over databases
   * AZ-160: Revamp diagnostic settings
   * AZ-351: Allow usage of vCore model
+  
+Added
+  * AZ-354: Allow do add vnet rules
 
 Changed
   * AZ-273: Terraform 0.13+ compatible
