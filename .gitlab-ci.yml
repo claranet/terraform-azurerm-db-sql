@@ -2,7 +2,7 @@
 variables:
   TF_MIN_VERSION: "0.14"
   TF_MAX_VERSION: "1.2"
-  AZURERM_PROVIDER_MIN_VERSION: "2.31"
+  AZURERM_PROVIDER_MIN_VERSION: "2.51"
 
 include:
   - template: 'Workflows/Branch-Pipelines.gitlab-ci.yml'

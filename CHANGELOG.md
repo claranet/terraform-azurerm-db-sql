@@ -7,6 +7,13 @@ Added
 Fixed
   * AZ-772: Fix deprecated terraform code with `v1.2.3`
 
+Breaking
+  * AZ-387: Rework user creation, remove Python and pymssql dependency
+  * AZ-387: Split custom users creation in a submodule
+  * AZ-387: Remove Powershell dependency for db backup configuration
+  * AZ-387: Implement most of the `azurerm_mssql_database` resource parameters
+  * AZ-387: Allow to configure specific tags per database
+
 # v4.2.1 - 2022-01-18
 
 Fixed

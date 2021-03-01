@@ -1,29 +1,31 @@
+# Wrapper env herited vars
+
 variable "azure_region" {
-  description = "Azure region to use."
   type        = string
+  description = "Azure region to use"
+}
+
+variable "azure_subscription_id" {
+  type        = string
+  description = "Azure subscription id"
+}
+
+variable "azure_tenant_id" {
+  type        = string
+  description = "Azure tenant id"
 }
 
 variable "client_name" {
-  description = "Client name/account used in naming"
   type        = string
+  description = "Client name/account used in naming"
 }
 
 variable "environment" {
-  description = "Project environment"
   type        = string
+  description = "Project environment"
 }
 
 variable "stack" {
+  type        = string
   description = "Project stack name"
-  type        = string
-}
-
-variable "administrator_login" {
-  description = "Administrator login for SQL server"
-  type        = string
-}
-
-variable "administrator_password" {
-  description = "Administrator password for SQL server"
-  type        = string
 }
