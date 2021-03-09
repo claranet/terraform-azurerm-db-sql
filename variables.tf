@@ -49,13 +49,7 @@ variable "extra_tags" {
 }
 
 variable "server_extra_tags" {
-  description = "Extra tags to add on SQL Server"
-  type        = map(string)
-  default     = {}
-}
-
-variable "elastic_pool_extra_tags" {
-  description = "Extra tags to add on the SQL Elastic Pool"
+  description = "Extra tags to add on SQL Server or ElasticPool"
   type        = map(string)
   default     = {}
 }
@@ -91,6 +85,7 @@ variable "administrator_password" {
 variable "elastic_pool_max_size" {
   description = "Maximum size of the Elastic Pool in gigabytes"
   type        = string
+  default     = null
 }
 
 variable "sku" {
@@ -104,6 +99,7 @@ DESC
     tier     = string,
     capacity = number,
   })
+  default = null
 }
 
 variable "zone_redundant" {
@@ -124,9 +120,10 @@ variable "database_max_capacity" {
   default     = ""
 }
 
-variable "databases_names" {
-  description = "Names of the databases to create for this server"
+variable "elasticpool_databases" {
+  description = "Names of the databases to create in elastic pool for this server. Use only if enable_elasticpool is true."
   type        = list(string)
+  default     = []
 }
 
 variable "databases_collation" {
@@ -167,7 +164,7 @@ variable "create_databases_users" {
 }
 
 variable "daily_backup_retention" {
-  description = "Retention in days for the databases backup. Value can be 7, 14, 21, 28 or 35."
+  description = "Retention in days for the elastic pool databases backup. Value can be 7, 14, 21, 28 or 35."
   type        = number
   default     = 35
 }
@@ -208,6 +205,35 @@ variable "custom_users" {
     name     = string,
     database = string,
     roles    = list(string)
+  }))
+  default = []
+}
+
+variable "enable_elasticpool" {
+  description = "Deploy the databases in an ElasticPool if enabled. Otherwise, deploy single databases."
+  type        = bool
+  default     = true
+}
+
+variable "single_databases_configuration" {
+  description = "List of databases configurations (see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database) without elasticpool. Use only if enable_elasticpool is false. "
+  type = list(object({
+    name                        = string
+    sku_name                    = optional(string)
+    collation                   = optional(string)
+    max_size_gb                 = optional(number)
+    zone_redundant              = optional(bool)
+    min_capacity                = optional(number)
+    auto_pause_delay_in_minutes = optional(number)
+    threat_detection_policy = optional(object({
+      state = bool
+    }))
+    retention_days      = optional(number)
+    weekly_retention    = optional(number)
+    monthly_retention   = optional(number)
+    yearly_retention    = optional(number)
+    week_of_year        = optional(number)
+    database_extra_tags = optional(map(any))
   }))
   default = []
 }

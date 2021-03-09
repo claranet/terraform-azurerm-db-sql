@@ -4,10 +4,12 @@ Breaking
   * AZ-273: Use for\_each to iterate over databases
   * AZ-160: Revamp diagnostic settings
   * AZ-351: Allow usage of vCore model
+  * AZ-372: Deploy single database instead of elasticpool
 
 Added
   * AZ-354: Allow do add vnet rules
   * AZ-362: Allow to create custom login/users with builtin roles assigned on databases.
+
 
 Changed
   * AZ-273: Terraform 0.13+ compatible
