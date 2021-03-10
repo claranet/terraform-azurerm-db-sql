@@ -1,4 +1,4 @@
-# v4.0.0 - Unreleased
+# v4.0.0 - 2021-03-10
 
 Breaking
   * AZ-273: Use for\_each to iterate over databases
@@ -8,8 +8,7 @@ Breaking
 
 Added
   * AZ-354: Allow do add vnet rules
-  * AZ-362: Allow to create custom login/users with builtin roles assigned on databases.
-
+  * AZ-362: Allow to create custom login/users with builtin roles assigned on database
 
 Changed
   * AZ-273: Terraform 0.13+ compatible
