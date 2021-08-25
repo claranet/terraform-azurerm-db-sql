@@ -214,8 +214,8 @@ module "sql-single" {
 | Name | Version |
 |------|---------|
 | azurerm | >= 2.0 |
-| null | n/a |
-| random | n/a |
+| null | >= 2.0 |
+| random | >= 2.0 |
 
 ## Modules
 
@@ -223,23 +223,23 @@ module "sql-single" {
 |------|--------|---------|
 | db\_logging | claranet/diagnostic-settings/azurerm | 4.0.1 |
 | pool\_logging | claranet/diagnostic-settings/azurerm | 4.0.1 |
-| single-db-logging | claranet/diagnostic-settings/azurerm | 4.0.1 |
+| single\_db\_logging | claranet/diagnostic-settings/azurerm | 4.0.1 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [azurerm_mssql_database.single-database](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database) | resource |
+| [azurerm_mssql_database.single_database](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database) | resource |
 | [azurerm_mssql_elasticpool.elastic_pool](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_elasticpool) | resource |
 | [azurerm_sql_database.db](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_database) | resource |
 | [azurerm_sql_firewall_rule.firewall_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_firewall_rule) | resource |
 | [azurerm_sql_server.server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_server) | resource |
-| [azurerm_sql_virtual_network_rule.vnet-rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_virtual_network_rule) | resource |
+| [azurerm_sql_virtual_network_rule.vnet_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_virtual_network_rule) | resource |
 | [null_resource.backup](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [null_resource.custom-users](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.custom_users](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.db_users](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.ltr_backup](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [random_password.custom-users](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
+| [random_password.custom_users](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [random_password.db_passwords](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 
@@ -252,7 +252,7 @@ module "sql-single" {
 | advanced\_data\_security\_additional\_emails | List of addiional email addresses for Advanced Data Security alerts. | `list(string)` | <pre>[<br>  "john.doe@azure.com"<br>]</pre> | no |
 | allowed\_cidr\_list | Allowed IP addresses to access the server in CIDR format. Default to all Azure services | `list(string)` | <pre>[<br>  "0.0.0.0/32"<br>]</pre> | no |
 | allowed\_subnets\_ids | List of Subnet ID to allow to connect to the SQL Instance | `list(string)` | `[]` | no |
-| client\_name | n/a | `string` | n/a | yes |
+| client\_name | Client name/account used in naming | `string` | n/a | yes |
 | create\_databases\_users | True to create a user named <db>\_user per database with generated password and role db\_owner. | `bool` | `true` | no |
 | custom\_users | Create custom users with associated roles | <pre>list(object({<br>    name     = string,<br>    database = string,<br>    roles    = list(string)<br>  }))</pre> | `[]` | no |
 | daily\_backup\_retention | Retention in days for the elastic pool databases backup. Value can be 7, 14, 21, 28 or 35. | `number` | `35` | no |
@@ -266,20 +266,20 @@ module "sql-single" {
 | enable\_advanced\_data\_security | Boolean flag to enable Advanced Data Security. The cost of ADS is aligned with Azure Security Center standard tier pricing. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security | `bool` | `false` | no |
 | enable\_advanced\_data\_security\_admin\_emails | Boolean flag to define if account administrators should be emailed with Advanced Data Security alerts. | `bool` | `false` | no |
 | enable\_elasticpool | Deploy the databases in an ElasticPool if enabled. Otherwise, deploy single databases. | `bool` | `true` | no |
-| environment | n/a | `string` | n/a | yes |
+| environment | Project environment | `string` | n/a | yes |
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
 | location | Azure location for SQL Server. | `string` | n/a | yes |
 | location\_short | Short string for Azure location. | `string` | n/a | yes |
 | logs\_destinations\_ids | List of destination resources Ids for logs diagnostics destination. Can be Storage Account, Log Analytics Workspace and Event Hub. No more than one of each can be set. Empty list to disable logging. | `list(string)` | n/a | yes |
 | monthly\_backup\_retention | Retention in months for the monthly databases backup. | `number` | `3` | no |
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
-| resource\_group\_name | n/a | `string` | n/a | yes |
+| resource\_group\_name | Resource group name | `string` | n/a | yes |
 | server\_custom\_name | Name of the SQL Server, generated if not set. | `string` | `""` | no |
 | server\_extra\_tags | Extra tags to add on SQL Server or ElasticPool | `map(string)` | `{}` | no |
 | server\_version | Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version | `string` | `"12.0"` | no |
 | single\_databases\_configuration | List of databases configurations (see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database) without elasticpool. Use only if enable\_elasticpool is false. | <pre>list(object({<br>    name                        = string<br>    sku_name                    = optional(string)<br>    collation                   = optional(string)<br>    max_size_gb                 = optional(number)<br>    zone_redundant              = optional(bool)<br>    min_capacity                = optional(number)<br>    auto_pause_delay_in_minutes = optional(number)<br>    threat_detection_policy = optional(object({<br>      state = bool<br>    }))<br>    retention_days      = optional(number)<br>    weekly_retention    = optional(number)<br>    monthly_retention   = optional(number)<br>    yearly_retention    = optional(number)<br>    week_of_year        = optional(number)<br>    database_extra_tags = optional(map(any))<br>  }))</pre> | `[]` | no |
 | sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are "GP\_Ben5", "BC\_Gen5" for vCore models and "Basic", "Standard", or "Premium" for DTU based models. Example {tier="Standard", capacity="50"}.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | <pre>object({<br>    tier     = string,<br>    capacity = number,<br>  })</pre> | `null` | no |
-| stack | n/a | `string` | n/a | yes |
+| stack | Project stack name | `string` | n/a | yes |
 | weekly\_backup\_retention | Retention in weeks for the weekly databases backup. | `number` | `0` | no |
 | yearly\_backup\_retention | Retention in years for the yearly backup. | `number` | `0` | no |
 | yearly\_backup\_time | Week number taken in account for the yearly backup retention. | `number` | `52` | no |
@@ -290,7 +290,7 @@ module "sql-single" {
 | Name | Description |
 |------|-------------|
 | custom\_users\_passwords | Map of the custom users passwords |
-| databases\_single\_ids | MSSQL Database single IDs |
+| databases\_single\_ids | MSSQL Database single IDs map |
 | databases\_users | Map of the SQL Databases dedicated usernames |
 | databases\_users\_passwords | Map of the SQL Databases dedicated passwords |
 | default\_administrator\_databases\_connection\_strings | Map of the SQL Databases with administrator credentials connection strings |

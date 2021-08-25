@@ -1,7 +1,15 @@
+# v4.10 - unreleased
+
+Breaking
+  * AZ-530: Cleanup module, fix linter errors
+
+Changed
+  * AZ-532: Revamp README with latest `terraform-docs` tool
+
 # v4.0.0 - 2021-03-10
 
 Breaking
-  * AZ-273: Use for\_each to iterate over databases
+  * AZ-273: Use `for_each` to iterate over databases
   * AZ-160: Revamp diagnostic settings
   * AZ-351: Allow usage of vCore model
   * AZ-372: Deploy single database instead of elasticpool
