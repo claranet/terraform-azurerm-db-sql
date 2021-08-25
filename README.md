@@ -19,8 +19,8 @@ enabled.
 ## Version compatibility
 
 | Module version    | Terraform version | AzureRM version |
-|-------------------|-------------------|-----------------|
-| >= 5.x.x          | 0.14.x            | >= 2.0          |
+| ----------------- | ----------------- | --------------- |
+| >= 5.x.x          | 0.15.x & 1.0.x    | >= 2.0          |
 | >= 4.x.x          | 0.13.x            | >= 2.0          |
 | >= 3.x.x          | 0.12.x            | >= 2.0          |
 | >= 2.x.x, < 3.x.x | 0.12.x            | <  2.0          |
@@ -208,6 +208,41 @@ module "sql-single" {
 }
 ```
 
+<!-- BEGIN_TF_DOCS -->
+## Providers
+
+| Name | Version |
+|------|---------|
+| azurerm | >= 2.0 |
+| null | n/a |
+| random | n/a |
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| db\_logging | claranet/diagnostic-settings/azurerm | 4.0.1 |
+| pool\_logging | claranet/diagnostic-settings/azurerm | 4.0.1 |
+| single-db-logging | claranet/diagnostic-settings/azurerm | 4.0.1 |
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [azurerm_mssql_database.single-database](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database) | resource |
+| [azurerm_mssql_elasticpool.elastic_pool](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_elasticpool) | resource |
+| [azurerm_sql_database.db](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_database) | resource |
+| [azurerm_sql_firewall_rule.firewall_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_firewall_rule) | resource |
+| [azurerm_sql_server.server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_server) | resource |
+| [azurerm_sql_virtual_network_rule.vnet-rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_virtual_network_rule) | resource |
+| [null_resource.backup](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.custom-users](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.db_users](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.ltr_backup](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [random_password.custom-users](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
+| [random_password.db_passwords](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
+| [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -266,13 +301,7 @@ module "sql-single" {
 | sql\_elastic\_pool | SQL Elastic Pool |
 | sql\_elastic\_pool\_id | Id of the SQL Elastic Pool |
 | sql\_server | SQL Server |
-
+<!-- END_TF_DOCS -->
 ## Related documentation
-
-Terraform SQL Server documentation: [terraform.io/docs/providers/azurerm/r/sql_server.html](https://www.terraform.io/docs/providers/azurerm/r/sql_server.html)
-
-Terraform SQL Database documentation: [terraform.io/docs/providers/azurerm/r/sql_database.html](https://www.terraform.io/docs/providers/azurerm/r/sql_database.html)
-
-Terraform SQL Elastic Pool documentation: [terraform.io/docs/providers/azurerm/r/mssql_elasticpool.html](https://www.terraform.io/docs/providers/azurerm/r/mssql_elasticpool.html)
 
 Microsoft Azure root documentation: [docs.microsoft.com/en-us/azure/sql-database/](https://docs.microsoft.com/en-us/azure/sql-database/)
