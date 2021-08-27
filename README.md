@@ -222,7 +222,7 @@ module "sql-single" {
 | Name | Source | Version |
 |------|--------|---------|
 | db\_logging | claranet/diagnostic-settings/azurerm | 4.0.1 |
-| pool\_logging | claranet/diagnostic-settings/azurerm | 4.0.1 |
+| pool\_logging | claranet/diagnostic-settings/azurerm | 4.0.2 |
 | single\_db\_logging | claranet/diagnostic-settings/azurerm | 4.0.1 |
 
 ## Resources

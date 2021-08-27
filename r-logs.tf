@@ -11,7 +11,7 @@ module "db_logging" {
 module "pool_logging" {
   count   = var.logs_destinations_ids != [] && var.enable_elasticpool ? 1 : 0
   source  = "claranet/diagnostic-settings/azurerm"
-  version = "4.0.1"
+  version = "4.0.2"
 
   resource_id           = azurerm_mssql_elasticpool.elastic_pool[0].id
   logs_destinations_ids = var.logs_destinations_ids
