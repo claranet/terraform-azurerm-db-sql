@@ -1,4 +1,4 @@
-# v4.10 - unreleased
+# v4.1.0 - 2021-08-30
 
 Breaking
   * AZ-530: Cleanup module, fix linter errors
