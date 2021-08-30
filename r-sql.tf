@@ -60,7 +60,7 @@ resource "azurerm_sql_database" "db" {
   collation   = var.databases_collation
 
   requested_service_objective_name = "ElasticPool"
-  elastic_pool_name                = azurerm_mssql_elasticpool.elastic_pool.0.name
+  elastic_pool_name                = azurerm_mssql_elasticpool.elastic_pool[0].name
 
   threat_detection_policy {
     email_account_admins = var.enable_advanced_data_security_admin_emails ? "Enabled" : "Disabled"
@@ -71,7 +71,7 @@ resource "azurerm_sql_database" "db" {
   tags = merge(local.default_tags, var.extra_tags, var.databases_extra_tags)
 }
 
-resource "azurerm_sql_virtual_network_rule" "vnet-rule" {
+resource "azurerm_sql_virtual_network_rule" "vnet_rule" {
   for_each            = { for subnet in local.allowed_subnets : subnet.name => subnet }
   name                = each.key
   resource_group_name = var.resource_group_name
@@ -79,7 +79,7 @@ resource "azurerm_sql_virtual_network_rule" "vnet-rule" {
   subnet_id           = each.value.subnet_id
 }
 
-resource "azurerm_mssql_database" "single-database" {
+resource "azurerm_mssql_database" "single_database" {
   for_each  = { for db in local.single_databases_configuration : db.name => db }
   name      = each.key
   server_id = azurerm_sql_server.server.id

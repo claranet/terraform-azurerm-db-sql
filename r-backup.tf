@@ -1,7 +1,7 @@
 data "azurerm_subscription" "current" {}
 
 resource "null_resource" "backup" {
-  for_each = var.enable_elasticpool ? toset(var.elasticpool_databases) : []
+  for_each = toset(var.enable_elasticpool ? var.elasticpool_databases : [])
 
   provisioner "local-exec" {
     command = <<EOC

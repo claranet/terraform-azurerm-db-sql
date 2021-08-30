@@ -1,17 +1,21 @@
 variable "client_name" {
-  type = string
+  description = "Client name/account used in naming"
+  type        = string
 }
 
 variable "environment" {
-  type = string
+  description = "Project environment"
+  type        = string
 }
 
 variable "stack" {
-  type = string
+  description = "Project stack name"
+  type        = string
 }
 
 variable "resource_group_name" {
-  type = string
+  description = "Resource group name"
+  type        = string
 }
 
 variable "location" {

@@ -36,19 +36,19 @@ EOC
   }
 }
 
-resource "random_password" "custom-users" {
+resource "random_password" "custom_users" {
   for_each = { for user_def in var.custom_users : format("%s-%s", user_def.name, user_def.database) => user_def }
   length   = 32
   special  = false
 }
 
-resource "null_resource" "custom-users" {
+resource "null_resource" "custom_users" {
   depends_on = [azurerm_sql_database.db]
   for_each   = { for user_def in var.custom_users : format("%s-%s", user_def.name, user_def.database) => user_def }
 
   triggers = {
     user           = each.value.name
-    password       = random_password.custom-users[each.key].result
+    password       = random_password.custom_users[each.key].result
     roles          = join(",", each.value.roles)
     database       = each.value.database
     server         = azurerm_sql_server.server.fully_qualified_domain_name
@@ -65,7 +65,7 @@ ${path.module}/scripts/mssql_users.py --debug \
                                               --admin-user ${var.administrator_login} \
                                               --admin-password '${var.administrator_password}' \
                                               --user ${each.value.name} \
-                                              --password '${random_password.custom-users[each.key].result}' \
+                                              --password '${random_password.custom_users[each.key].result}' \
                                               --roles ${join(",", each.value.roles)}
 EOC
   }
