@@ -58,7 +58,7 @@ resource "null_resource" "custom_users" {
 
   provisioner "local-exec" {
     command = <<EOC
-python3 -m pip install --upgrade pymssql==2.1.5;
+python3 -m pip install --upgrade pymssql==2.2.2;
 ${path.module}/scripts/mssql_users.py --debug \
                                               -s ${azurerm_sql_server.server.fully_qualified_domain_name} \
                                               -d ${each.value.database} \
