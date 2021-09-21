@@ -23,7 +23,7 @@ enabled.
   Command result is never fetch, only a check on Azure allows to know if configuration went fine.
 
 <!-- BEGIN_TF_DOCS -->
-## Global versionning rule for Claranet Azure modules
+## Global versioning rule for Claranet Azure modules
 
 | Module version | Terraform version | AzureRM version |
 | -------------- | ----------------- | --------------- |
