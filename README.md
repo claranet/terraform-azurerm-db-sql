@@ -16,26 +16,31 @@ enabled.
 * [FreeTDS](https://www.freetds.org/) >= 0.9.1 (Only on OSX. Static copy of FreeTDS is embeeded on Linux and Windows pymssql bundle)
 * [Python](https://www.python.org) >= 3.8
 
-## Version compatibility
-
-| Module version    | Terraform version | AzureRM version |
-| ----------------- | ----------------- | --------------- |
-| >= 5.x.x          | 0.15.x & 1.0.x    | >= 2.31         |
-| >= 4.x.x          | 0.13.x            | >= 2.31         |
-| >= 3.x.x          | 0.12.x            | >= 2.0          |
-| >= 2.x.x, < 3.x.x | 0.12.x            | <  2.0          |
-| <  2.x.x          | 0.11.x            | <  2.0          |
 
 ## Limitations
 
 * The long term backup retention configuration is done asynchronously since the command lasts a long time.
   Command result is never fetch, only a check on Azure allows to know if configuration went fine.
 
+<!-- BEGIN_TF_DOCS -->
+## Global versioning rule for Claranet Azure modules
+
+| Module version | Terraform version | AzureRM version |
+| -------------- | ----------------- | --------------- |
+| >= 5.x.x       | 0.15.x & 1.0.x    | >= 2.0          |
+| >= 4.x.x       | 0.13.x            | >= 2.0          |
+| >= 3.x.x       | 0.12.x            | >= 2.0          |
+| >= 2.x.x       | 0.12.x            | < 2.0           |
+| <  2.x.x       | 0.11.x            | < 2.0           |
+
 ## Usage
 
-You can use this module by including it this way:
+This module is optimized to work with the [Claranet terraform-wrapper](https://github.com/claranet/terraform-wrapper) tool
+which set some terraform variables in the environment needed by this module.
+More details about variables set by the `terraform-wrapper` available in the [documentation](https://github.com/claranet/terraform-wrapper#environment).
+
 ```hcl
-module "azure-region" {
+module "azure_region" {
   source  = "claranet/regions/azurerm"
   version = "x.x.x"
 
@@ -46,30 +51,43 @@ module "rg" {
   source  = "claranet/rg/azurerm"
   version = "x.x.x"
 
-  location    = module.azure-region.location
+  location    = module.azure_region.location
   client_name = var.client_name
   environment = var.environment
   stack       = var.stack
 }
 
-module "sql-dtu" {
-  source  = "claranet/db-sql/azurerm"
+module "logs" {
+  source  = "claranet/run-common/azurerm//modules/logs"
   version = "x.x.x"
 
   client_name         = var.client_name
   environment         = var.environment
-  location            = module.azure-region.location
-  location_short      = module.azure-region.location_short
-  resource_group_name = module.rg.resource_group_name
   stack               = var.stack
+  location            = module.azure_region.location
+  location_short      = module.azure_region.location_short
+  resource_group_name = module.rg.resource_group_name
+}
+
+module "sql_dtu" {
+  source  = "claranet/db-sql/azurerm"
+  version = "x.x.x"
+
+  client_name    = var.client_name
+  environment    = var.environment
+  location       = module.azure_region.location
+  location_short = module.azure_region.location_short
+  stack          = var.stack
+
+  resource_group_name = module.rg.resource_group_name
 
   elasticpool_databases = ["users", "documents"]
 
-  administrator_login    = "claranet"
-  administrator_password = var.sql_admin_password
+  administrator_login    = var.administrator_login
+  administrator_password = var.administrator_password
 
   sku = {
-    // Tier Basic/Standard/Premium are based on DTU
+    # Tier Basic/Standard/Premium are based on DTU
     tier     = "Standard"
     capacity = "100"
   }
@@ -80,29 +98,28 @@ module "sql-dtu" {
   enable_advanced_data_security = true
 
   logs_destinations_ids = [
-    data.terraform_remote_state.run.outputs.log_analytics_workspace_id,
-    data.terraform_remote_state.run.outputs.logs_storage_account_id,
+    module.logs.log_analytics_workspace_id,
+    module.logs.logs_storage_account_id,
   ]
 }
 
-module "sql-vcore" {
+module "sql_vcore" {
   source  = "claranet/db-sql/azurerm"
   version = "x.x.x"
 
-  client_name         = var.client_name
-  environment         = var.environment
-  location            = module.azure-region.location
-  location_short      = module.azure-region.location_short
+  client_name    = var.client_name
+  environment    = var.environment
+  location       = module.azure_region.location
+  location_short = module.azure_region.location_short
+  stack          = var.stack
+
   resource_group_name = module.rg.resource_group_name
-  stack               = var.stack
 
-  databases_names = ["users", "documents"]
-
-  administrator_login    = "claranet"
-  administrator_password = var.sql_admin_password
+  administrator_login    = var.administrator_login
+  administrator_password = var.administrator_password
 
   sku = {
-    // GeneralPurpose or BusinessCritical will actiate the vCore based model on Gen5 hardware
+    # GeneralPurpose or BusinessCritical will actiate the vCore based model on Gen5 hardware
     tier     = "GeneralPurpose"
     capacity = 2
   }
@@ -110,8 +127,8 @@ module "sql-vcore" {
   elastic_pool_max_size = "50"
 
   logs_destinations_ids = [
-    data.terraform_remote_state.run.outputs.log_analytics_workspace_id,
-    data.terraform_remote_state.run.outputs.logs_storage_account_id
+    module.logs.log_analytics_workspace_id,
+    module.logs.logs_storage_account_id
   ]
 
   allowed_subnets_ids = [
@@ -119,24 +136,23 @@ module "sql-vcore" {
   ]
 }
 
-module "sql-custom-users" {
+module "sql_custom_users" {
   source  = "claranet/db-sql/azurerm"
   version = "x.x.x"
 
-  client_name         = var.client_name
-  environment         = var.environment
-  location            = module.azure-region.location
-  location_short      = module.azure-region.location_short
+  client_name    = var.client_name
+  environment    = var.environment
+  location       = module.azure_region.location
+  location_short = module.azure_region.location_short
+  stack          = var.stack
+
   resource_group_name = module.rg.resource_group_name
-  stack               = var.stack
 
-  databases_names = ["users", "documents"]
-
-  administrator_login    = "claranet"
-  administrator_password = var.sql_admin_password
+  administrator_login    = var.administrator_login
+  administrator_password = var.administrator_password
 
   sku = {
-    // GeneralPurpose or BusinessCritical will actiate the vCore based model on Gen5 hardware
+    # GeneralPurpose or BusinessCritical will actiate the vCore based model on Gen5 hardware
     tier     = "GeneralPurpose"
     capacity = 2
   }
@@ -144,8 +160,8 @@ module "sql-custom-users" {
   elastic_pool_max_size = "50"
 
   logs_destinations_ids = [
-    data.terraform_remote_state.run.outputs.log_analytics_workspace_id,
-    data.terraform_remote_state.run.outputs.logs_storage_account_id
+    module.logs.log_analytics_workspace_id,
+    module.logs.logs_storage_account_id
   ]
 
   custom_users = [
@@ -160,18 +176,19 @@ module "sql-custom-users" {
       roles    = ["db_owner"]
     }
   ]
-
 }
-module "sql-single" {
+
+module "sql_single" {
   source  = "claranet/db-sql/azurerm"
   version = "x.x.x"
 
-  client_name         = var.client_name
-  environment         = var.environment
-  location            = module.azure-region.location
-  location_short      = module.azure-region.location_short
+  client_name    = var.client_name
+  environment    = var.environment
+  location       = module.azure_region.location
+  location_short = module.azure_region.location_short
+  stack          = var.stack
+
   resource_group_name = module.rg.resource_group_name
-  stack               = var.stack
 
   single_databases_configuration = [
     {
@@ -194,21 +211,20 @@ module "sql-single" {
     }
   ]
 
-  administrator_login    = "claranet"
-  administrator_password = var.sql_admin_password
+  administrator_login    = var.administrator_login
+  administrator_password = var.administrator_password
 
   enable_elasticpool = false
 
 
   logs_destinations_ids = [
-    module.run.log_analytics_workspace_id,
-    module.run.logs_storage_account_id,
+    module.logs.log_analytics_workspace_id,
+    module.logs.logs_storage_account_id,
   ]
-
 }
+
 ```
 
-<!-- BEGIN_TF_DOCS -->
 ## Providers
 
 | Name | Version |
