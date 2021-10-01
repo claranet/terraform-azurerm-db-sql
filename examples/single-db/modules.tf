@@ -39,21 +39,32 @@ module "sql" {
 
   resource_group_name = module.rg.resource_group_name
 
-  elasticpool_databases = ["users", "documents"]
+  single_databases_configuration = [
+    {
+      name                        = "document"
+      max_size_gb                 = 100
+      sku_name                    = "GP_S_Gen5_4"
+      min_capacity                = 0.5
+      auto_pause_delay_in_minutes = 60
+      storage_account_type        = "GRS"
+      retention_days              = 14
+    },
+    {
+      name                        = "users"
+      max_size_gb                 = 100
+      sku_name                    = "GP_S_Gen5_4"
+      min_capacity                = 0.5
+      auto_pause_delay_in_minutes = 60
+      storage_account_type        = "GRS"
+      retention_days              = 14
+    }
+  ]
 
   administrator_login    = var.administrator_login
   administrator_password = var.administrator_password
 
-  sku = {
-    # Tier Basic/Standard/Premium are based on DTU
-    tier     = "Standard"
-    capacity = "100"
-  }
+  enable_elasticpool = false
 
-  elastic_pool_max_size = "50"
-
-  # This can costs you money https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security
-  enable_advanced_data_security = true
 
   logs_destinations_ids = [
     module.logs.log_analytics_workspace_id,
