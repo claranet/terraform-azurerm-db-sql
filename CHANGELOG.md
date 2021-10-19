@@ -1,4 +1,4 @@
-# Unreleased
+# v4.1.1 - 2021-10-19
 
 Changed
   * AZ-570: Bump pymssql module used for users management to v2.2.2
