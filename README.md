@@ -12,7 +12,7 @@ enabled.
 
 * [PowerShell with Az.Sql module](https://docs.microsoft.com/en-us/powershell/module/az.sql/) >= 1.3 is mandatory and is used for backup retention configuration
 * [`SqlServer` Powershell module](https://docs.microsoft.com/en-us/sql/powershell/sql-server-powershell) is needed for databases users creation
-* [pymssql](https://www.pymssql.org/) >= 2.1.5
+* [pymssql](https://www.pymssql.org/) >= 2.2.0
 * [FreeTDS](https://www.freetds.org/) >= 0.9.1 (Only on OSX. Static copy of FreeTDS is embeeded on Linux and Windows pymssql bundle)
 * [Python](https://www.python.org) >= 3.8
 

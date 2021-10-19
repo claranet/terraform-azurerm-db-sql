@@ -55,7 +55,7 @@ output "databases_users" {
 
 output "databases_users_passwords" {
   description = "Map of the SQL Databases dedicated passwords"
-  value       = { for db in azurerm_sql_database.db : db.name => random_password.db_passwords[db.name].result }
+  value       = var.create_databases_users ? { for db in azurerm_sql_database.db : db.name => random_password.db_passwords[db.name].result } : {}
   sensitive   = true
 }
 
