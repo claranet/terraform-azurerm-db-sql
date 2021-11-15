@@ -48,6 +48,10 @@ module "sql" {
       auto_pause_delay_in_minutes = 60
       storage_account_type        = "GRS"
       retention_days              = 14
+      weekly_retention            = "P6W"
+      monthly_retention           = "P12M"
+      yearly_retention            = "P10Y"
+      week_of_year                = 1
     },
     {
       name                        = "users"
@@ -57,6 +61,10 @@ module "sql" {
       auto_pause_delay_in_minutes = 60
       storage_account_type        = "GRS"
       retention_days              = 14
+      weekly_retention            = "P6W"
+      monthly_retention           = "P12M"
+      yearly_retention            = "P10Y"
+      week_of_year                = 1
     }
   ]
 
