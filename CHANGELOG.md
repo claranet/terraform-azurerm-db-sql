@@ -2,6 +2,7 @@
 
 Fixed
   * AZ-589: Avoid plan drift when specifying Diagnostic Settings categories
+  * AZ-600: Fix variable type for retention parameters in single database
 
 # v4.1.1 - 2021-10-19
 

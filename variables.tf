@@ -233,9 +233,9 @@ variable "single_databases_configuration" {
       state = bool
     }))
     retention_days      = optional(number)
-    weekly_retention    = optional(number)
-    monthly_retention   = optional(number)
-    yearly_retention    = optional(number)
+    weekly_retention    = optional(string)
+    monthly_retention   = optional(string)
+    yearly_retention    = optional(string)
     week_of_year        = optional(number)
     database_extra_tags = optional(map(any))
   }))
