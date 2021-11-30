@@ -43,7 +43,8 @@ module "sql" {
     {
       name                        = "document"
       max_size_gb                 = 100
-      sku_name                    = "GP_S_Gen5_4"
+      license_type                = "BasePrice"
+      sku_name                    = "GP_Gen5_4"
       min_capacity                = 0.5
       auto_pause_delay_in_minutes = 60
       storage_account_type        = "GRS"
