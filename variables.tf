@@ -220,7 +220,7 @@ variable "enable_elasticpool" {
 }
 
 variable "elasticpool_license_type" {
-  description = "Specifies the license type applied to the databases in elastic pool."
+  description = "Specify the license type for databases in an ElasticPool."
   type        = string
   default     = null
 }

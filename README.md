@@ -159,7 +159,7 @@ module "sql" {
 | elastic\_pool\_custom\_name | Name of the SQL Elastic Pool, generated if not set. | `string` | `""` | no |
 | elastic\_pool\_max\_size | Maximum size of the Elastic Pool in gigabytes | `string` | `null` | no |
 | elasticpool\_databases | Names of the databases to create in elastic pool for this server. Use only if enable\_elasticpool is true. | `list(string)` | `[]` | no |
-| elasticpool\_license\_type | Specifies the license type applied to the databases in elastic pool. | `string` | `null` | no |
+| elasticpool\_license\_type | Specify the license type for databases in an ElasticPool. | `string` | `null` | no |
 | enable\_advanced\_data\_security | Boolean flag to enable Advanced Data Security. The cost of ADS is aligned with Azure Security Center standard tier pricing. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security | `bool` | `false` | no |
 | enable\_advanced\_data\_security\_admin\_emails | Boolean flag to define if account administrators should be emailed with Advanced Data Security alerts. | `bool` | `false` | no |
 | enable\_elasticpool | Deploy the databases in an ElasticPool if enabled. Otherwise, deploy single databases. | `bool` | `true` | no |
