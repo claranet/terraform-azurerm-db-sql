@@ -29,6 +29,8 @@ resource "azurerm_mssql_elasticpool" "elastic_pool" {
   location            = var.location
   resource_group_name = var.resource_group_name
 
+  license_type = var.elasticpool_license_type
+
   server_name = azurerm_sql_server.server.name
 
   per_database_settings {
@@ -87,6 +89,8 @@ resource "azurerm_mssql_database" "single_database" {
   sku_name = each.value.sku_name
 
   collation = each.value.collation
+
+  license_type = lookup(each.value, "license_type", null)
 
   max_size_gb                 = each.value.max_size_gb
   zone_redundant              = lookup(each.value, "zone_redundant", false)

@@ -219,11 +219,18 @@ variable "enable_elasticpool" {
   default     = true
 }
 
+variable "elasticpool_license_type" {
+  description = "Specify the license type for databases in an ElasticPool."
+  type        = string
+  default     = null
+}
+
 variable "single_databases_configuration" {
   description = "List of databases configurations (see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database) without elasticpool. Use only if enable_elasticpool is false. "
   type = list(object({
     name                        = string
     sku_name                    = optional(string)
+    license_type                = optional(string)
     collation                   = optional(string)
     max_size_gb                 = optional(number)
     zone_redundant              = optional(bool)

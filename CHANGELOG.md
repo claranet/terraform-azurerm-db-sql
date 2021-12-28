@@ -3,6 +3,9 @@
 Fixed
   * AZ-636: Fix LTR retention settings for single databases
 
+Added
+  * AZ-622: Allow specifying databases license type
+
 # v4.1.2 - 2021-11-23
 
 Fixed
