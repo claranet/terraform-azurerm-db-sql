@@ -1,3 +1,8 @@
+# Unreleased
+
+Fixed
+  * AZ-636: Fix LTR retention settings for single databases
+
 # v4.1.2 - 2021-11-23
 
 Fixed

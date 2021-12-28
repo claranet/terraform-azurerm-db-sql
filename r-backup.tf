@@ -50,5 +50,5 @@ EOC
     yearly_backup_time = var.yearly_backup_time
   }
 
-  depends_on = [azurerm_sql_database.db]
+  depends_on = [azurerm_sql_database.db, azurerm_mssql_database.single_database]
 }
