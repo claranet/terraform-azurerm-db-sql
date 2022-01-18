@@ -120,7 +120,7 @@ resource "azurerm_mssql_database" "single_database" {
     ) == "empty" ? [] : ["fake"]
     content {
       weekly_retention  = lookup(each.value, "weekly_retention", null)
-      monthly_retention = lookup(each.value, "montly_retention", null)
+      monthly_retention = lookup(each.value, "monthly_retention", null)
       yearly_retention  = lookup(each.value, "yearly_retention", null)
       week_of_year      = lookup(each.value, "week_of_year", null)
     }
