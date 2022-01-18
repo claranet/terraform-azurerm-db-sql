@@ -1,3 +1,8 @@
+# Unreleased
+
+Fixed
+  * AZ-669 : Fix long_term_retention_policy monthly_retention
+
 # v4.2.0 - 2021-12-28
 
 Fixed
