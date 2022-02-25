@@ -14,19 +14,16 @@ variable "user_roles" {
 }
 
 variable "administrator_login" {
-  description = "Login for the sql server administrator"
+  description = "Login for the SQL Server administrator"
   type        = string
 }
 
 variable "administrator_password" {
-  description = "Password for the sql server administrator"
+  description = "Password for the SQL Server administrator"
   type        = string
 }
 
 variable "sql_server_hostname" {
-  description = "FQDN of the sql server"
+  description = "FQDN of the SQL Server"
   type        = string
 }
-
-
-

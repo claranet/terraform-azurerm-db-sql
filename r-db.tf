@@ -1,67 +1,126 @@
-resource "azurerm_mssql_database" "db" {
-  for_each  = { for db in var.databases_configuration : db.name => db }
-  name      = each.key
-  server_id = azurerm_sql_server.server.id
+resource "azurerm_mssql_database" "single_database" {
+  for_each = { for db in var.databases : db.name => db if !var.elastic_pool_enabled }
 
-  sku_name     = each.value.elastic_pool_enabled != false ? "ElasticPool" : coalesce(each.value.sku_name, local.default_sku)
+  name      = each.key
+  server_id = azurerm_mssql_server.sql.id
+
+  sku_name     = var.single_databases_sku_name
   license_type = each.value.license_type
 
-  collation = each.value.collation == null ? local.default_collation : each.value.collation
-
+  collation      = var.databases_collation
   max_size_gb    = can(regex("Secondary|OnlineSecondary", each.value.create_mode)) ? null : each.value.max_size_gb
-  zone_redundant = can(regex("^DW", each.value.sku_name)) && each.value.zone_redundant != null ? each.value.zone_redundant : false
+  zone_redundant = can(regex("^DW", var.single_databases_sku_name)) && var.databases_zone_redundant != null ? var.databases_zone_redundant : false
 
-  min_capacity                = can(regex("^GP_S", each.value.sku_name)) ? each.value.min_capacity : null
-  auto_pause_delay_in_minutes = can(regex("^GP_S", each.value.sku_name)) ? each.value.auto_pause_delay_in_minutes : null
+  min_capacity                = can(regex("^GP_S", var.single_databases_sku_name)) ? each.value.min_capacity : null
+  auto_pause_delay_in_minutes = can(regex("^GP_S", var.single_databases_sku_name)) ? each.value.auto_pause_delay_in_minutes : null
 
-  elastic_pool_id = try(each.value.elastic_pool_enabled, false) ? azurerm_mssql_elasticpool.elastic_pool[0].id : null
-
-  read_scale         = can(regex("^P|BC", each.value.sku_name)) && each.value.read_scale != null ? each.value.read_scale : false
-  read_replica_count = can(regex("^HS", each.value.sku_name)) ? each.value.read_replica_count : null
+  read_scale         = can(regex("^P|BC", var.single_databases_sku_name)) && lookup(each.value, "read_scale", null) != null ? each.value.read_scale : false
+  read_replica_count = can(regex("^HS", var.single_databases_sku_name)) ? lookup(each.value, "read_replica_count", null) : null
 
   #https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.sql.models.database.createmode?view=azure-dotnet
-  create_mode = can(regex("^DW", each.value.sku_name)) ? lookup(local.datawarehouse_allowed_create_mode, each.value.create_mode, "Default") : lookup(local.standard_allowed_create_mode, each.value.create_mode, "Default")
+  create_mode = can(regex("^DW", var.single_databases_sku_name)) ? lookup(local.datawarehouse_allowed_create_mode, each.value.create_mode, "Default") : try(lookup(local.standard_allowed_create_mode, each.value.create_mode), "Default")
 
   creation_source_database_id = can(regex("Copy|Secondary|PointInTimeRestore|Recovery|RestoreExternalBackup|Restore|RestoreExternalBackupSecondary", each.value.create_mode)) ? each.value.creation_source_database_id : null
 
-  restore_point_in_time       = each.value.create_mode == "PointInTimeRestore" ? each.value.restore_point_in_time : null
-  recover_database_id         = each.value.create_mode == "Recovery" ? each.value.recover_database_id : null
-  restore_dropped_database_id = each.value.create_mode == "Restore" ? each.value.restore_dropped_database_id : null
+  restore_point_in_time       = lookup(each.value, "create_mode", null) == "PointInTimeRestore" ? each.value.restore_point_in_time : null
+  recover_database_id         = lookup(each.value, "create_mode", null) == "Recovery" ? each.value.recover_database_id : null
+  restore_dropped_database_id = lookup(each.value, "create_mode", null) == "Restore" ? each.value.restore_dropped_database_id : null
+
+  storage_account_type = lookup(each.value, "storage_account_type", local.storage_account_type)
 
   dynamic "threat_detection_policy" {
-    for_each = each.value.threat_detection_policy.state == "Enabled" ? ["enabled"] : []
+    for_each = var.threat_detection_policy_enabled ? ["enabled"] : []
     content {
-      disabled_alerts            = each.value.threat_detection_policy.disabled_alerts
-      email_account_admins       = each.value.threat_detection_policy.email_account_admins
-      email_addresses            = each.value.threat_detection_policy.email_addresses
-      retention_days             = each.value.threat_detection_policy.retention_days
-      state                      = each.value.threat_detection_policy.state
-      storage_account_access_key = each.value.threat_detection_policy.storage_account_access_key
-      storage_endpoint           = each.value.threat_detection_policy.storage_endpoint
-      use_server_default         = each.value.threat_detection_policy.use_server_default
+      state                      = "Enabled"
+      email_account_admins       = "Enabled"
+      email_addresses            = var.alerting_email_addresses
+      retention_days             = var.threat_detection_policy_retention_days
+      disabled_alerts            = var.threat_detection_policy_disabled_alerts
+      storage_endpoint           = var.security_storage_account_blob_endpoint
+      storage_account_access_key = var.security_storage_account_access_key
     }
   }
 
-  storage_account_type = each.value.storage_account_type == null ? local.storage_account_type : each.value.storage_account_type
-
-  dynamic "short_term_retention_policy" {
-    for_each = each.value.short_term_retention_policy != null ? ["enabled"] : []
-    content {
-      retention_days = each.value.short_term_retention_policy.retention_days
-    }
+  short_term_retention_policy {
+    retention_days = var.point_in_time_restore_retention_days
   }
 
   dynamic "long_term_retention_policy" {
-    for_each = each.value.long_term_retention_policy != null ? ["enabled"] : []
-
+    for_each = coalesce(
+      lookup(var.backup_retention, "weekly_retention", ""),
+      lookup(var.backup_retention, "monthly_retention", ""),
+      lookup(var.backup_retention, "yearly_retention", ""),
+      lookup(var.backup_retention, "week_of_year", ""),
+      "empty"
+    ) == "empty" ? [] : ["fake"]
     content {
-      weekly_retention  = lookup(each.value.long_term_retention_policy, "weekly_retention", null)
-      monthly_retention = lookup(each.value.long_term_retention_policy, "montly_retention", null)
-      yearly_retention  = lookup(each.value.long_term_retention_policy, "yearly_retention", null)
-      week_of_year      = lookup(each.value.long_term_retention_policy, "week_of_year", null)
+      weekly_retention  = lookup(var.backup_retention, "weekly_retention", null)
+      monthly_retention = lookup(var.backup_retention, "monthly_retention", null)
+      yearly_retention  = lookup(var.backup_retention, "yearly_retention", null)
+      week_of_year      = lookup(var.backup_retention, "week_of_year", null)
     }
   }
 
   tags = merge(local.default_tags, var.extra_tags, lookup(each.value, "database_extra_tags", {}))
+}
 
+resource "azurerm_mssql_database" "elastic_pool_database" {
+  for_each = { for db in var.databases : db.name => db if var.elastic_pool_enabled }
+
+  name      = each.key
+  server_id = azurerm_mssql_server.sql.id
+
+  sku_name        = "ElasticPool"
+  license_type    = each.value.license_type
+  elastic_pool_id = azurerm_mssql_elasticpool.elastic_pool[0].id
+
+  collation      = var.databases_collation
+  max_size_gb    = can(regex("Secondary|OnlineSecondary", each.value.create_mode)) ? null : each.value.max_size_gb
+  zone_redundant = can(regex("^DW", var.single_databases_sku_name)) && var.databases_zone_redundant != null ? var.databases_zone_redundant : false
+
+  #https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.sql.models.database.createmode?view=azure-dotnet
+  create_mode = try(lookup(local.standard_allowed_create_mode, each.value.create_mode), "Default")
+
+  creation_source_database_id = can(regex("Copy|Secondary|PointInTimeRestore|Recovery|RestoreExternalBackup|Restore|RestoreExternalBackupSecondary", each.value.create_mode)) ? each.value.creation_source_database_id : null
+
+  restore_point_in_time       = lookup(each.value, "create_mode", null) == "PointInTimeRestore" ? each.value.restore_point_in_time : null
+  recover_database_id         = lookup(each.value, "create_mode", null) == "Recovery" ? each.value.recover_database_id : null
+  restore_dropped_database_id = lookup(each.value, "create_mode", null) == "Restore" ? each.value.restore_dropped_database_id : null
+
+  storage_account_type = lookup(each.value, "storage_account_type", local.storage_account_type)
+
+  dynamic "threat_detection_policy" {
+    for_each = var.threat_detection_policy_enabled ? ["enabled"] : []
+    content {
+      state                      = "Enabled"
+      email_account_admins       = "Enabled"
+      email_addresses            = var.alerting_email_addresses
+      retention_days             = var.threat_detection_policy_retention_days
+      disabled_alerts            = var.threat_detection_policy_disabled_alerts
+      storage_endpoint           = var.security_storage_account_blob_endpoint
+      storage_account_access_key = var.security_storage_account_access_key
+    }
+  }
+
+  short_term_retention_policy {
+    retention_days = var.point_in_time_restore_retention_days
+  }
+
+  dynamic "long_term_retention_policy" {
+    for_each = coalesce(
+      lookup(var.backup_retention, "weekly_retention", ""),
+      lookup(var.backup_retention, "monthly_retention", ""),
+      lookup(var.backup_retention, "yearly_retention", ""),
+      lookup(var.backup_retention, "week_of_year", ""),
+      "empty"
+    ) == "empty" ? [] : ["fake"]
+    content {
+      weekly_retention  = lookup(var.backup_retention, "weekly_retention", null)
+      monthly_retention = lookup(var.backup_retention, "monthly_retention", null)
+      yearly_retention  = lookup(var.backup_retention, "yearly_retention", null)
+      week_of_year      = lookup(var.backup_retention, "week_of_year", null)
+    }
+  }
+
+  tags = merge(local.default_tags, var.extra_tags, lookup(each.value, "database_extra_tags", {}))
 }

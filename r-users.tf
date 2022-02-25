@@ -1,43 +1,37 @@
-resource "random_password" "db_passwords" {
-  for_each = { for user in local.databases_users : "${user.username}-${user.database}" => user }
+module "databases_users" {
+  for_each = { for user in local.databases_users : format("%s-%s", user.username, user.database) => user }
 
-  special          = true
-  override_special = "#$%&-_+{}<>:"
-  upper            = true
-  lower            = true
-  number           = true
-  length           = 32
+  source = "./modules/databases_users"
+
+  depends_on = [
+    azurerm_mssql_database.single_database,
+    azurerm_mssql_database.elastic_pool_database
+  ]
+
+  administrator_login    = var.administrator_login
+  administrator_password = var.administrator_password
+
+  sql_server_hostname = azurerm_mssql_server.sql.fully_qualified_domain_name
+  user_name           = each.key
+  database_name       = each.value.database
+  user_roles          = each.value.roles
 }
 
-resource "mssql_login" "sql_login" {
-  for_each   = { for user in local.databases_users : "${user.username}-${user.database}" => user }
-  depends_on = [azurerm_mssql_database.db]
+module "custom_users" {
+  for_each = { for custom_user in var.custom_users : join("-", [custom_user.name, custom_user.database]) => custom_user }
 
-  server {
-    host = azurerm_sql_server.server.fully_qualified_domain_name
-    login {
-      username = var.administrator_login
-      password = var.administrator_password
-    }
-  }
-  login_name = each.key
-  password   = random_password.db_passwords[each.key].result
-}
+  source = "./modules/databases_users"
 
-resource "mssql_user" "sql_user" {
-  for_each   = { for user in local.databases_users : "${user.username}-${user.database}" => user }
-  depends_on = [mssql_login.sql_login]
+  depends_on = [
+    azurerm_mssql_database.single_database,
+    azurerm_mssql_database.elastic_pool_database
+  ]
 
-  server {
-    host = azurerm_sql_server.server.fully_qualified_domain_name
+  database_name = var.elastic_pool_enabled ? azurerm_mssql_database.elastic_pool_database[lookup(each.value, "database")].name : azurerm_mssql_database.single_database[lookup(each.value, "database")].name
+  user_name     = lookup(each.value, "name")
+  user_roles    = lookup(each.value, "roles")
 
-    login {
-      username = var.administrator_login
-      password = var.administrator_password
-    }
-  }
-  username   = each.key
-  login_name = each.key
-  database   = each.value.database
-  roles      = each.value.roles
+  administrator_login    = var.administrator_login
+  administrator_password = var.administrator_password
+  sql_server_hostname    = azurerm_mssql_server.sql.fully_qualified_domain_name
 }
