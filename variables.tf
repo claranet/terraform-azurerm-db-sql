@@ -46,24 +46,6 @@ variable "allowed_cidr_list" {
   default     = ["0.0.0.0/32"]
 }
 
-variable "extra_tags" {
-  description = "Extra tags to add"
-  type        = map(string)
-  default     = {}
-}
-
-variable "server_extra_tags" {
-  description = "Extra tags to add on SQL Server or ElasticPool"
-  type        = map(string)
-  default     = {}
-}
-
-variable "databases_extra_tags" {
-  description = "Extra tags to add on the SQL databases"
-  type        = map(string)
-  default     = {}
-}
-
 variable "server_custom_name" {
   description = "Name of the SQL Server, generated if not set."
   type        = string
@@ -134,11 +116,6 @@ variable "databases_collation" {
   description = "SQL Collation for the databases"
   type        = string
   default     = "SQL_LATIN1_GENERAL_CP1_CI_AS"
-}
-
-variable "logs_destinations_ids" {
-  type        = list(string)
-  description = "List of destination resources Ids for logs diagnostics destination. Can be Storage Account, Log Analytics Workspace and Event Hub. No more than one of each can be set. Empty list to disable logging."
 }
 
 variable "enable_advanced_data_security" {

@@ -127,5 +127,4 @@ resource "azurerm_mssql_database" "single_database" {
   }
 
   tags = merge(local.default_tags, var.extra_tags, lookup(each.value, "database_extra_tags", {}))
-
 }

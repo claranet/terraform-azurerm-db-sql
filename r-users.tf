@@ -82,5 +82,4 @@ ${path.module}/scripts/mssql_users.py --debug \
                                               --delete
 EOC
   }
-
 }
