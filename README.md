@@ -156,6 +156,7 @@ module "sql" {
 | database\_min\_capacity | The minimum capacity (DTU or vCore) all databases are guaranteed in the Elastic Pool. Defaults to 0. | `string` | `"0"` | no |
 | databases\_collation | SQL Collation for the databases | `string` | `"SQL_LATIN1_GENERAL_CP1_CI_AS"` | no |
 | databases\_extra\_tags | Extra tags to add on the SQL databases | `map(string)` | `{}` | no |
+| default\_tags\_enabled | Option to enable or disable default tags | `bool` | `true` | no |
 | elastic\_pool\_custom\_name | Name of the SQL Elastic Pool, generated if not set. | `string` | `""` | no |
 | elastic\_pool\_max\_size | Maximum size of the Elastic Pool in gigabytes | `string` | `null` | no |
 | elasticpool\_databases | Names of the databases to create in elastic pool for this server. Use only if enable\_elasticpool is true. | `list(string)` | `[]` | no |
