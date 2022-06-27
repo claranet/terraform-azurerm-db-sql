@@ -61,7 +61,7 @@ output "databases_users_passwords" {
 
 output "custom_users_passwords" {
   description = "Map of the custom users passwords"
-  value       = var.custom_users == [] ? {} : { for user in var.custom_users : format("%s-%s", user.name, user.database) => random_password.custom_users[format("%s-%s", user.name, user.database)].result }
+  value       = length(var.custom_users) == 0 ? {} : { for user in var.custom_users : format("%s-%s", user.name, user.database) => random_password.custom_users[format("%s-%s", user.name, user.database)].result }
   sensitive   = true
 }
 
