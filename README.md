@@ -199,6 +199,7 @@ module "sql" {
 | sql\_elastic\_pool | SQL Elastic Pool |
 | sql\_elastic\_pool\_id | Id of the SQL Elastic Pool |
 | sql\_server | SQL Server |
+| terraform\_module | Information about this Terraform module |
 <!-- END_TF_DOCS -->
 ## Related documentation
 
