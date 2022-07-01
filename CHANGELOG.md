@@ -2,6 +2,7 @@
 
 Added
   * AZ-615: Add an option to enable or disable default tags
+  * AZ-770: Add Terraform module info in output
 
 Fixed
   * AZ-772: Fix deprecated terraform code with `v1.2.3`

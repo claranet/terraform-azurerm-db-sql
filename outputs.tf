@@ -1,3 +1,15 @@
+output "sql_administrator_login" {
+  description = "SQL Administrator login"
+  value       = var.administrator_login
+  sensitive   = true
+}
+
+output "sql_administrator_password" {
+  description = "SQL Administrator password"
+  value       = var.administrator_password
+  sensitive   = true
+}
+
 output "sql_server" {
   description = "SQL Server"
   value       = azurerm_sql_server.server
@@ -14,8 +26,8 @@ output "sql_databases" {
 }
 
 output "sql_elastic_pool_id" {
-  description = "Id of the SQL Elastic Pool"
-  value       = var.enable_elasticpool ? azurerm_mssql_elasticpool.elastic_pool[0].id : ""
+  description = "ID of the SQL Elastic Pool"
+  value       = var.enable_elasticpool ? azurerm_mssql_elasticpool.elastic_pool[0].id : null
 }
 
 output "sql_databases_id" {

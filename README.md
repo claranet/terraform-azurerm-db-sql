@@ -192,13 +192,16 @@ module "sql" {
 | databases\_users | Map of the SQL Databases dedicated usernames |
 | databases\_users\_passwords | Map of the SQL Databases dedicated passwords |
 | default\_administrator\_databases\_connection\_strings | Map of the SQL Databases with administrator credentials connection strings |
+| sql\_administrator\_login | SQL Administrator login |
+| sql\_administrator\_password | SQL Administrator password |
 | sql\_databases | SQL Databases |
 | sql\_databases\_creation\_date | Map of the SQL Databases creation dates |
 | sql\_databases\_default\_secondary\_location | Map of the SQL Databases default secondary location |
 | sql\_databases\_id | Map of the SQL Databases IDs |
 | sql\_elastic\_pool | SQL Elastic Pool |
-| sql\_elastic\_pool\_id | Id of the SQL Elastic Pool |
+| sql\_elastic\_pool\_id | ID of the SQL Elastic Pool |
 | sql\_server | SQL Server |
+| terraform\_module | Information about this Terraform module |
 <!-- END_TF_DOCS -->
 ## Related documentation
 
