@@ -3,6 +3,9 @@
 Added
   * AZ-615: Add an option to enable or disable default tags
 
+Fixed
+  * AZ-772: Fix deprecated terraform code with `v1.2.3`
+
 # v4.2.1 - 2022-01-18
 
 Fixed
