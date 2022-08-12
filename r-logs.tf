@@ -1,5 +1,5 @@
 module "pool_logging" {
-  count = var.logs_destinations_ids != [] && var.elastic_pool_enabled ? 1 : 0
+  count = var.logs_destinations_ids != toset([]) && var.elastic_pool_enabled ? 1 : 0
 
   source  = "claranet/diagnostic-settings/azurerm"
   version = "5.0.0"
@@ -11,7 +11,7 @@ module "pool_logging" {
 }
 
 module "single_db_logging" {
-  for_each = { for db in var.databases : db.name => db if var.logs_destinations_ids != [] && var.elastic_pool_enabled == false }
+  for_each = { for db in var.databases : db.name => db if var.logs_destinations_ids != toset([]) && var.elastic_pool_enabled == false }
 
   source  = "claranet/diagnostic-settings/azurerm"
   version = "5.0.0"
@@ -23,7 +23,7 @@ module "single_db_logging" {
 }
 
 module "elastic_pool_db_logging" {
-  for_each = { for db in var.databases : db.name => db if var.logs_destinations_ids != [] && var.elastic_pool_enabled == true }
+  for_each = { for db in var.databases : db.name => db if var.logs_destinations_ids != toset([]) && var.elastic_pool_enabled == true }
 
   source  = "claranet/diagnostic-settings/azurerm"
   version = "5.0.0"

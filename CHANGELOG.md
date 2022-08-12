@@ -1,3 +1,8 @@
+# Unreleased
+
+Fixed
+  * AZ-400: Fix CI
+
 # v4.4.0 - 2022-08-12
 
 Fixed
