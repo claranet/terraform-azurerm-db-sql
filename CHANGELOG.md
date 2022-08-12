@@ -1,4 +1,4 @@
-# Unreleased
+# v4.4.0 - 2022-08-12
 
 Fixed
   * AZ-387: Implement most of the `azurerm_mssql_database` resource parameters
