@@ -28,12 +28,6 @@ variable "location_short" {
   type        = string
 }
 
-variable "name_prefix" {
-  description = "Optional prefix for the generated name"
-  type        = string
-  default     = ""
-}
-
 variable "server_version" {
   description = "Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version"
   type        = string
@@ -46,16 +40,54 @@ variable "allowed_cidr_list" {
   default     = ["0.0.0.0/32"]
 }
 
-variable "server_custom_name" {
-  description = "Name of the SQL Server, generated if not set."
-  type        = string
-  default     = ""
+variable "elastic_pool_enabled" {
+  description = "True to deploy the databases in an ElasticPool, single databases are deployed otherwise."
+  type        = bool
+  default     = false
 }
 
-variable "elastic_pool_custom_name" {
-  description = "Name of the SQL Elastic Pool, generated if not set."
+variable "elastic_pool_sku" {
+  description = <<DESC
+    SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.
+    Possible values for tier are `GP_Ben5`, `BC_Gen5` for vCore models and `Basic`, `Standard`, or `Premium` for DTU based models.
+    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools"
+DESC
+
+  type = object({
+    tier     = string,
+    capacity = number,
+  })
+  default = null
+}
+
+variable "elastic_pool_license_type" {
+  description = "Specifies the license type applied to this database. Possible values are `LicenseIncluded` and `BasePrice`"
   type        = string
-  default     = ""
+  default     = null
+}
+
+variable "elastic_pool_max_size" {
+  description = "Maximum size of the Elastic Pool in gigabytes"
+  type        = string
+  default     = null
+}
+
+variable "elastic_pool_zone_redundant" {
+  description = "True to have the Elastic Pool zone redundant, SKU tier must be Premium to use it. This is mandatory for high availability."
+  type        = bool
+  default     = false
+}
+
+variable "elastic_pool_databases_min_capacity" {
+  description = "The minimum capacity (DTU or vCore) all databases are guaranteed in the Elastic Pool. Defaults to 0."
+  type        = number
+  default     = 0
+}
+
+variable "elastic_pool_databases_max_capacity" {
+  description = "The maximum capacity (DTU or vCore) any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity."
+  type        = number
+  default     = null
 }
 
 variable "administrator_login" {
@@ -68,110 +100,16 @@ variable "administrator_password" {
   type        = string
 }
 
-variable "elastic_pool_max_size" {
-  description = "Maximum size of the Elastic Pool in gigabytes"
+variable "single_databases_sku_name" {
+  description = "Specifies the name of the SKU used by the database. For example, `GP_S_Gen5_2`, `HS_Gen4_1`, `BC_Gen5_2`. Use only if `elastic_pool_enabled` variable is set to `false`. More documentation [here](https://docs.microsoft.com/en-us/azure/azure-sql/database/service-tiers-general-purpose-business-critical)"
   type        = string
-  default     = null
-}
-
-variable "sku" {
-  description = <<DESC
-    SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.
-    Possible values for tier are "GP_Gen5", "BC_Gen5" for vCore models and "Basic", "Standard", or "Premium" for DTU based models. Example {tier="Standard", capacity="50"}.
-    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools"
-DESC
-
-  type = object({
-    tier     = string,
-    capacity = number,
-  })
-  default = null
-}
-
-variable "zone_redundant" {
-  description = "Whether or not the Elastic Pool is zone redundant, SKU tier must be Premium to use it. This is mandatory for high availability."
-  type        = bool
-  default     = false
-}
-
-variable "database_min_capacity" {
-  description = "The minimum capacity (DTU or vCore) all databases are guaranteed in the Elastic Pool. Defaults to 0."
-  type        = string
-  default     = "0"
-}
-
-variable "database_max_capacity" {
-  description = "The maximum capacity (DTU or vCore) any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity."
-  type        = string
-  default     = ""
-}
-
-variable "elasticpool_databases" {
-  description = "Names of the databases to create in elastic pool for this server. Use only if enable_elasticpool is true."
-  type        = list(string)
-  default     = []
-}
-
-variable "databases_collation" {
-  description = "SQL Collation for the databases"
-  type        = string
-  default     = "SQL_LATIN1_GENERAL_CP1_CI_AS"
-}
-
-variable "enable_advanced_data_security" {
-  description = "Boolean flag to enable Advanced Data Security. The cost of ADS is aligned with Azure Security Center standard tier pricing. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security"
-  type        = bool
-  default     = false
-}
-
-variable "enable_advanced_data_security_admin_emails" {
-  description = "Boolean flag to define if account administrators should be emailed with Advanced Data Security alerts."
-  type        = bool
-  default     = false
-}
-
-variable "advanced_data_security_additional_emails" {
-  description = "List of addiional email addresses for Advanced Data Security alerts."
-  type        = list(string)
-
-  # https://github.com/terraform-providers/terraform-provider-azurerm/issues/1974
-  default = ["john.doe@azure.com"]
+  default     = "GP_Gen5_2"
 }
 
 variable "create_databases_users" {
-  description = "True to create a user named <db>_user per database with generated password and role db_owner."
+  description = "True to create a user named <db>_user on each database with generated password and role db_owner."
   type        = bool
   default     = true
-}
-
-variable "daily_backup_retention" {
-  description = "Retention in days for the elastic pool databases backup. Value can be 7, 14, 21, 28 or 35."
-  type        = number
-  default     = 35
-}
-
-variable "weekly_backup_retention" {
-  description = "Retention in weeks for the weekly databases backup."
-  type        = number
-  default     = 0
-}
-
-variable "monthly_backup_retention" {
-  description = "Retention in months for the monthly databases backup."
-  type        = number
-  default     = 3
-}
-
-variable "yearly_backup_retention" {
-  description = "Retention in years for the yearly backup."
-  type        = number
-  default     = 0
-}
-
-variable "yearly_backup_time" {
-  description = "Week number taken in account for the yearly backup retention."
-  type        = number
-  default     = 52
 }
 
 variable "allowed_subnets_ids" {
@@ -181,47 +119,182 @@ variable "allowed_subnets_ids" {
 }
 
 variable "custom_users" {
-  description = "Create custom users with associated roles"
+  description = <<DESC
+    List of objects for custom users creation. 
+    Password are generated.
+    These users are created within the "custom_users" submodule.
+DESC
   type = list(object({
-    name     = string,
-    database = string,
-    roles    = list(string)
+    name     = string
+    database = string
+    roles    = optional(list(string))
   }))
   default = []
 }
 
-variable "enable_elasticpool" {
-  description = "Deploy the databases in an ElasticPool if enabled. Otherwise, deploy single databases."
+variable "databases" {
+  description = "List of the databases configurations for this server."
+  type = list(object({
+    name                        = string
+    license_type                = optional(string)
+    max_size_gb                 = number
+    create_mode                 = optional(string)
+    min_capacity                = optional(number)
+    auto_pause_delay_in_minutes = optional(number)
+    read_scale                  = optional(string)
+    read_replica_count          = optional(number)
+    creation_source_database_id = optional(string)
+    restore_point_in_time       = optional(string)
+    recover_database_id         = optional(string)
+    restore_dropped_database_id = optional(string)
+    storage_account_type        = optional(string)
+    database_extra_tags         = optional(map(string))
+  }))
+  default = []
+}
+
+variable "backup_retention" {
+  description = "Definition of long term backup retention for all the databases in this SQL Server."
+  type = object({
+    weekly_retention  = optional(number)
+    monthly_retention = optional(number)
+    yearly_retention  = optional(number)
+    week_of_year      = optional(number)
+  })
+  default = {}
+}
+
+variable "tls_minimum_version" {
+  description = "The TLS minimum version for all SQL Database associated with the server. Valid values are: `1.0`, `1.1` and `1.2`."
+  type        = string
+  default     = "1.2"
+}
+
+variable "public_network_access_enabled" {
+  description = "True to allow public network access for this server"
   type        = bool
   default     = true
 }
 
-variable "elasticpool_license_type" {
-  description = "Specify the license type for databases in an ElasticPool."
+variable "outbound_network_restriction_enabled" {
+  description = "Whether outbound network traffic is restricted for this server"
+  type        = bool
+  default     = false
+}
+
+variable "azuread_administrator" {
+  description = "Azure AD Administrator configuration block of this SQL Server."
+  type = object({
+    login_username              = optional(string)
+    object_id                   = optional(string)
+    tenant_id                   = optional(string)
+    azuread_authentication_only = optional(bool)
+  })
+  default = null
+}
+
+variable "connection_policy" {
+  description = "The connection policy the server will use. Possible values are `Default`, `Proxy`, and `Redirect`"
+  type        = string
+  default     = "Default"
+}
+
+variable "databases_collation" {
+  description = "SQL Collation for the databases"
+  type        = string
+  default     = "SQL_LATIN1_GENERAL_CP1_CI_AS"
+}
+
+variable "databases_zone_redundant" {
+  description = "True to have databases zone redundant, which means the replicas of the databases will be spread across multiple availability zones. This property is only settable for `Premium` and `Business Critical` databases."
+  type        = bool
+  default     = null
+}
+
+variable "point_in_time_restore_retention_days" {
+  description = "Point In Time Restore configuration. Value has to be between `7` and `35`"
+  type        = number
+  default     = 7
+  validation {
+    condition     = var.point_in_time_restore_retention_days >= 7 && var.point_in_time_restore_retention_days <= 35
+    error_message = "The PITR retention should be between 7 and 35 days."
+  }
+}
+
+variable "alerting_email_addresses" {
+  description = "List of email addresses to send reports for threat detection and vulnerability assesment"
+  type        = list(string)
+  default     = []
+}
+
+variable "threat_detection_policy_enabled" {
+  description = "True to enable thread detection policy on the databases"
+  type        = bool
+  default     = false
+}
+
+variable "threat_detection_policy_retention_days" {
+  description = "Specifies the number of days to keep in the Threat Detection audit logs"
+  type        = number
+  default     = 7
+}
+
+variable "threat_detection_policy_disabled_alerts" {
+  description = "Specifies a list of alerts which should be disabled. Possible values include `Access_Anomaly`, `Sql_Injection` and `Sql_Injection_Vulnerability`"
+  type        = list(string)
+  default     = []
+}
+
+variable "databases_extended_auditing_enabled" {
+  description = "True to enable extended auditing for SQL databases"
+  type        = bool
+  default     = false
+}
+
+variable "sql_server_extended_auditing_enabled" {
+  description = "True to enable extended auditing for SQL Server"
+  type        = bool
+  default     = false
+}
+
+variable "sql_server_vulnerability_assessment_enabled" {
+  description = "True to enable vulnerability assessment for this SQL Server"
+  type        = bool
+  default     = false
+}
+
+variable "sql_server_security_alerting_enabled" {
+  description = "True to enable security alerting for this SQL Server"
+  type        = bool
+  default     = false
+}
+
+variable "sql_server_extended_auditing_retention_days" {
+  description = "Server extended auditing logs retention"
+  type        = number
+  default     = 30
+}
+
+variable "databases_extended_auditing_retention_days" {
+  description = "Databases extended auditing logs retention"
+  type        = number
+  default     = 30
+}
+
+variable "security_storage_account_blob_endpoint" {
+  description = "Storage Account blob endpoint used to store security logs and reports"
   type        = string
   default     = null
 }
 
-variable "single_databases_configuration" {
-  description = "List of databases configurations (see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database) without elasticpool. Use only if enable_elasticpool is false. "
-  type = list(object({
-    name                        = string
-    sku_name                    = optional(string)
-    license_type                = optional(string)
-    collation                   = optional(string)
-    max_size_gb                 = optional(number)
-    zone_redundant              = optional(bool)
-    min_capacity                = optional(number)
-    auto_pause_delay_in_minutes = optional(number)
-    threat_detection_policy = optional(object({
-      state = bool
-    }))
-    retention_days      = optional(number)
-    weekly_retention    = optional(string)
-    monthly_retention   = optional(string)
-    yearly_retention    = optional(string)
-    week_of_year        = optional(number)
-    database_extra_tags = optional(map(any))
-  }))
-  default = []
+variable "security_storage_account_access_key" {
+  description = "Storage Account access key used to store security logs and reports"
+  type        = string
+  default     = null
+}
+
+variable "security_storage_account_container_name" {
+  description = "Storage Account container name where to store SQL Server vulneralibility assessment"
+  type        = string
+  default     = null
 }

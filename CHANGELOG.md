@@ -1,3 +1,15 @@
+# Unreleased
+
+Fixed
+  * AZ-387: Implement most of the `azurerm_mssql_database` resource parameters
+  * AZ-387: Allow to configure specific tags per database
+
+Breaking
+  * AZ-400: Rebuild module with new resources and simplify interface
+  * AZ-387: Rework user creation, replace Python and pymssql dependency by Terraform provider
+  * AZ-387: Split custom users creation in a submodule
+  * AZ-387: Remove Powershell dependency for db backup configuration
+
 # v4.3.0 - 2022-07-01
 
 Added

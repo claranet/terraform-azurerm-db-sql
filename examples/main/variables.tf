@@ -17,13 +17,3 @@ variable "stack" {
   description = "Project stack name"
   type        = string
 }
-
-variable "administrator_login" {
-  description = "Administrator login for SQL server"
-  type        = string
-}
-
-variable "administrator_password" {
-  description = "Administrator password for SQL server"
-  type        = string
-}

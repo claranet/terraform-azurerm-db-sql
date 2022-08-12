@@ -16,8 +16,8 @@ variable "server_extra_tags" {
   default     = {}
 }
 
-variable "databases_extra_tags" {
-  description = "Extra tags to add on the SQL databases"
+variable "elastic_pool_extra_tags" {
+  description = "Extra tags to add on ElasticPool"
   type        = map(string)
   default     = {}
 }

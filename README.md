@@ -2,19 +2,12 @@
 [![Changelog](https://img.shields.io/badge/changelog-release-green.svg)](CHANGELOG.md) [![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![Apache V2 License](https://img.shields.io/badge/license-Apache%20V2-orange.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/claranet/db-sql/azurerm/)
 
 This Terraform module creates an [Azure SQL Server](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-servers)
-and associated databases in an [SQL Elastic Pool](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-elastic-pool)
+and associated databases in an optional [SQL Elastic Pool](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-elastic-pool)
 with [DTU purchasing model](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-service-tiers-dtu) or [vCore purchasing model](https://docs.microsoft.com/en-us/azure/azure-sql/database/resource-limits-vcore-elastic-pools)
 only along with [Firewall rules](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-firewall-configure)
 and [Diagnostic settings](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-metrics-diag-logging)
 enabled.
 
-## Requirements
-
-* [PowerShell with Az.Sql module](https://docs.microsoft.com/en-us/powershell/module/az.sql/) >= 1.3 is mandatory and is used for backup retention configuration
-* [`SqlServer` Powershell module](https://docs.microsoft.com/en-us/sql/powershell/sql-server-powershell) is needed for databases users creation
-* [pymssql](https://www.pymssql.org/) >= 2.2.0
-* [FreeTDS](https://www.freetds.org/) >= 0.9.1 (Only on OSX. Static copy of FreeTDS is embeeded on Linux and Windows pymssql bundle)
-* [Python](https://www.python.org) >= 3.8
 
 
 ## Limitations
@@ -70,37 +63,134 @@ module "logs" {
   resource_group_name = module.rg.resource_group_name
 }
 
-module "sql" {
+resource "random_password" "admin_password" {
+  special          = true
+  override_special = "#$%&-_+{}<>:"
+  upper            = true
+  lower            = true
+  number           = true
+  length           = 32
+}
+
+# Elastic Pool 
+module "sql_elastic" {
   source  = "claranet/db-sql/azurerm"
   version = "x.x.x"
 
-  client_name    = var.client_name
-  environment    = var.environment
-  location       = module.azure_region.location
-  location_short = module.azure_region.location_short
-  stack          = var.stack
-
+  client_name         = var.client_name
+  environment         = var.environment
+  location            = module.azure_region.location
+  location_short      = module.azure_region.location_short
+  stack               = var.stack
   resource_group_name = module.rg.resource_group_name
 
-  elasticpool_databases = ["users", "documents"]
+  administrator_login    = "adminsqltest"
+  administrator_password = random_password.admin_password.result
+  create_databases_users = true
 
-  administrator_login    = var.administrator_login
-  administrator_password = var.administrator_password
-
-  sku = {
-    # Tier Basic/Standard/Premium are based on DTU
-    tier     = "Standard"
-    capacity = "100"
-  }
-
+  elastic_pool_enabled  = true
   elastic_pool_max_size = "50"
-
-  # This can costs you money https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security
-  enable_advanced_data_security = true
+  elastic_pool_sku = {
+    tier     = "GeneralPurpose"
+    capacity = 2
+  }
 
   logs_destinations_ids = [
     module.logs.log_analytics_workspace_id,
     module.logs.logs_storage_account_id,
+  ]
+
+  databases = [
+    {
+      name        = "db1"
+      max_size_gb = 50
+    },
+    {
+      name        = "db2"
+      max_size_gb = 180
+    }
+  ]
+
+  custom_users = [
+    {
+      database = "db1"
+      name     = "db1_custom1"
+      roles    = ["db_accessadmin", "db_securityadmin"]
+    },
+    {
+      database = "db1"
+      name     = "db1_custom2"
+      roles    = ["db_accessadmin", "db_securityadmin"]
+    },
+    {
+      database = "db2"
+      name     = "db2_custom1"
+      roles    = []
+    },
+    {
+      database = "db2"
+      name     = "db2_custom2"
+      roles    = ["db_accessadmin", "db_securityadmin"]
+    }
+  ]
+}
+
+# Single Database
+
+module "sql_single" {
+  source  = "claranet/db-sql/azurerm"
+  version = "x.x.x"
+
+  client_name         = var.client_name
+  environment         = var.environment
+  location            = module.azure_region.location
+  location_short      = module.azure_region.location_short
+  stack               = var.stack
+  resource_group_name = module.rg.resource_group_name
+
+  administrator_login    = "adminsqltest"
+  administrator_password = random_password.admin_password.result
+  create_databases_users = true
+
+  elastic_pool_enabled = false
+
+  logs_destinations_ids = [
+    module.logs.log_analytics_workspace_id,
+    module.logs.logs_storage_account_id,
+  ]
+
+  databases = [
+    {
+      name        = "db1"
+      max_size_gb = 50
+    },
+    {
+      name        = "db2"
+      max_size_gb = 180
+    }
+  ]
+
+  custom_users = [
+    {
+      database = "db1"
+      name     = "db1_custom1"
+      roles    = ["db_accessadmin", "db_securityadmin"]
+    },
+    {
+      database = "db1"
+      name     = "db1_custom2"
+      roles    = ["db_accessadmin", "db_securityadmin"]
+    },
+    {
+      database = "db2"
+      name     = "db2_custom1"
+      roles    = []
+    },
+    {
+      database = "db2"
+      name     = "db2_custom2"
+      roles    = ["db_accessadmin", "db_securityadmin"]
+    }
   ]
 }
 ```
@@ -109,35 +199,33 @@ module "sql" {
 
 | Name | Version |
 |------|---------|
-| azurerm | >= 2.31 |
-| null | >= 2.0 |
-| random | >= 2.0 |
+| azurerm | ~> 2.97 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| db\_logging | claranet/diagnostic-settings/azurerm | 4.0.3 |
-| pool\_logging | claranet/diagnostic-settings/azurerm | 4.0.3 |
-| single\_db\_logging | claranet/diagnostic-settings/azurerm | 4.0.3 |
+| custom\_users | ./modules/databases_users | n/a |
+| databases\_users | ./modules/databases_users | n/a |
+| elastic\_pool\_db\_logging | claranet/diagnostic-settings/azurerm | 5.0.0 |
+| pool\_logging | claranet/diagnostic-settings/azurerm | 5.0.0 |
+| single\_db\_logging | claranet/diagnostic-settings/azurerm | 5.0.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
+| [azurerm_mssql_database.elastic_pool_database](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database) | resource |
 | [azurerm_mssql_database.single_database](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database) | resource |
+| [azurerm_mssql_database_extended_auditing_policy.elastic_pool_db](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database_extended_auditing_policy) | resource |
+| [azurerm_mssql_database_extended_auditing_policy.single_db](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database_extended_auditing_policy) | resource |
 | [azurerm_mssql_elasticpool.elastic_pool](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_elasticpool) | resource |
-| [azurerm_sql_database.db](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_database) | resource |
+| [azurerm_mssql_server.sql](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server) | resource |
+| [azurerm_mssql_server_extended_auditing_policy.sql_server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server_extended_auditing_policy) | resource |
+| [azurerm_mssql_server_security_alert_policy.sql_server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server_security_alert_policy) | resource |
+| [azurerm_mssql_server_vulnerability_assessment.sql_server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server_vulnerability_assessment) | resource |
 | [azurerm_sql_firewall_rule.firewall_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_firewall_rule) | resource |
-| [azurerm_sql_server.server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_server) | resource |
 | [azurerm_sql_virtual_network_rule.vnet_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_virtual_network_rule) | resource |
-| [null_resource.backup](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [null_resource.custom_users](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [null_resource.db_users](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [null_resource.ltr_backup](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [random_password.custom_users](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
-| [random_password.db_passwords](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
-| [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 
 ## Inputs
 
@@ -145,63 +233,77 @@ module "sql" {
 |------|-------------|------|---------|:--------:|
 | administrator\_login | Administrator login for SQL Server | `string` | n/a | yes |
 | administrator\_password | Administrator password for SQL Server | `string` | n/a | yes |
-| advanced\_data\_security\_additional\_emails | List of addiional email addresses for Advanced Data Security alerts. | `list(string)` | <pre>[<br>  "john.doe@azure.com"<br>]</pre> | no |
+| alerting\_email\_addresses | List of email addresses to send reports for threat detection and vulnerability assesment | `list(string)` | `[]` | no |
 | allowed\_cidr\_list | Allowed IP addresses to access the server in CIDR format. Default to all Azure services | `list(string)` | <pre>[<br>  "0.0.0.0/32"<br>]</pre> | no |
 | allowed\_subnets\_ids | List of Subnet ID to allow to connect to the SQL Instance | `list(string)` | `[]` | no |
+| azuread\_administrator | Azure AD Administrator configuration block of this SQL Server. | <pre>object({<br>    login_username              = optional(string)<br>    object_id                   = optional(string)<br>    tenant_id                   = optional(string)<br>    azuread_authentication_only = optional(bool)<br>  })</pre> | `null` | no |
+| backup\_retention | Definition of long term backup retention for all the databases in this SQL Server. | <pre>object({<br>    weekly_retention  = optional(number)<br>    monthly_retention = optional(number)<br>    yearly_retention  = optional(number)<br>    week_of_year      = optional(number)<br>  })</pre> | `{}` | no |
 | client\_name | Client name/account used in naming | `string` | n/a | yes |
-| create\_databases\_users | True to create a user named <db>\_user per database with generated password and role db\_owner. | `bool` | `true` | no |
-| custom\_users | Create custom users with associated roles | <pre>list(object({<br>    name     = string,<br>    database = string,<br>    roles    = list(string)<br>  }))</pre> | `[]` | no |
-| daily\_backup\_retention | Retention in days for the elastic pool databases backup. Value can be 7, 14, 21, 28 or 35. | `number` | `35` | no |
-| database\_max\_capacity | The maximum capacity (DTU or vCore) any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity. | `string` | `""` | no |
-| database\_min\_capacity | The minimum capacity (DTU or vCore) all databases are guaranteed in the Elastic Pool. Defaults to 0. | `string` | `"0"` | no |
+| connection\_policy | The connection policy the server will use. Possible values are `Default`, `Proxy`, and `Redirect` | `string` | `"Default"` | no |
+| create\_databases\_users | True to create a user named <db>\_user on each database with generated password and role db\_owner. | `bool` | `true` | no |
+| custom\_users | List of objects for custom users creation. <br>    Password are generated.<br>    These users are created within the "custom\_users" submodule. | <pre>list(object({<br>    name     = string<br>    database = string<br>    roles    = optional(list(string))<br>  }))</pre> | `[]` | no |
+| databases | List of the databases configurations for this server. | <pre>list(object({<br>    name                        = string<br>    license_type                = optional(string)<br>    max_size_gb                 = number<br>    create_mode                 = optional(string)<br>    min_capacity                = optional(number)<br>    auto_pause_delay_in_minutes = optional(number)<br>    read_scale                  = optional(string)<br>    read_replica_count          = optional(number)<br>    creation_source_database_id = optional(string)<br>    restore_point_in_time       = optional(string)<br>    recover_database_id         = optional(string)<br>    restore_dropped_database_id = optional(string)<br>    storage_account_type        = optional(string)<br>    database_extra_tags         = optional(map(string))<br>  }))</pre> | `[]` | no |
 | databases\_collation | SQL Collation for the databases | `string` | `"SQL_LATIN1_GENERAL_CP1_CI_AS"` | no |
-| databases\_extra\_tags | Extra tags to add on the SQL databases | `map(string)` | `{}` | no |
+| databases\_extended\_auditing\_enabled | True to enable extended auditing for SQL databases | `bool` | `false` | no |
+| databases\_extended\_auditing\_retention\_days | Databases extended auditing logs retention | `number` | `30` | no |
+| databases\_zone\_redundant | True to have databases zone redundant, which means the replicas of the databases will be spread across multiple availability zones. This property is only settable for `Premium` and `Business Critical` databases. | `bool` | `null` | no |
 | default\_tags\_enabled | Option to enable or disable default tags | `bool` | `true` | no |
 | elastic\_pool\_custom\_name | Name of the SQL Elastic Pool, generated if not set. | `string` | `""` | no |
+| elastic\_pool\_databases\_max\_capacity | The maximum capacity (DTU or vCore) any one database can consume in the Elastic Pool. Default to the max Elastic Pool capacity. | `number` | `null` | no |
+| elastic\_pool\_databases\_min\_capacity | The minimum capacity (DTU or vCore) all databases are guaranteed in the Elastic Pool. Defaults to 0. | `number` | `0` | no |
+| elastic\_pool\_enabled | True to deploy the databases in an ElasticPool, single databases are deployed otherwise. | `bool` | `false` | no |
+| elastic\_pool\_extra\_tags | Extra tags to add on ElasticPool | `map(string)` | `{}` | no |
+| elastic\_pool\_license\_type | Specifies the license type applied to this database. Possible values are `LicenseIncluded` and `BasePrice` | `string` | `null` | no |
 | elastic\_pool\_max\_size | Maximum size of the Elastic Pool in gigabytes | `string` | `null` | no |
-| elasticpool\_databases | Names of the databases to create in elastic pool for this server. Use only if enable\_elasticpool is true. | `list(string)` | `[]` | no |
-| elasticpool\_license\_type | Specify the license type for databases in an ElasticPool. | `string` | `null` | no |
-| enable\_advanced\_data\_security | Boolean flag to enable Advanced Data Security. The cost of ADS is aligned with Azure Security Center standard tier pricing. See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security | `bool` | `false` | no |
-| enable\_advanced\_data\_security\_admin\_emails | Boolean flag to define if account administrators should be emailed with Advanced Data Security alerts. | `bool` | `false` | no |
-| enable\_elasticpool | Deploy the databases in an ElasticPool if enabled. Otherwise, deploy single databases. | `bool` | `true` | no |
+| elastic\_pool\_sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are `GP_Ben5`, `BC_Gen5` for vCore models and `Basic`, `Standard`, or `Premium` for DTU based models.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | <pre>object({<br>    tier     = string,<br>    capacity = number,<br>  })</pre> | `null` | no |
+| elastic\_pool\_zone\_redundant | True to have the Elastic Pool zone redundant, SKU tier must be Premium to use it. This is mandatory for high availability. | `bool` | `false` | no |
 | environment | Project environment | `string` | n/a | yes |
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
 | location | Azure location for SQL Server. | `string` | n/a | yes |
 | location\_short | Short string for Azure location. | `string` | n/a | yes |
 | logs\_destinations\_ids | List of destination resources Ids for logs diagnostics destination. Can be Storage Account, Log Analytics Workspace and Event Hub. No more than one of each can be set. Empty list to disable logging. | `list(string)` | n/a | yes |
-| monthly\_backup\_retention | Retention in months for the monthly databases backup. | `number` | `3` | no |
+| logs\_retention\_days | Retention duration for logs | `number` | `30` | no |
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
+| outbound\_network\_restriction\_enabled | Whether outbound network traffic is restricted for this server | `bool` | `false` | no |
+| point\_in\_time\_restore\_retention\_days | Point In Time Restore configuration. Value has to be between `7` and `35` | `number` | `7` | no |
+| public\_network\_access\_enabled | True to allow public network access for this server | `bool` | `true` | no |
 | resource\_group\_name | Resource group name | `string` | n/a | yes |
+| security\_storage\_account\_access\_key | Storage Account access key used to store security logs and reports | `string` | `null` | no |
+| security\_storage\_account\_blob\_endpoint | Storage Account blob endpoint used to store security logs and reports | `string` | `null` | no |
+| security\_storage\_account\_container\_name | Storage Account container name where to store SQL Server vulneralibility assessment | `string` | `null` | no |
 | server\_custom\_name | Name of the SQL Server, generated if not set. | `string` | `""` | no |
 | server\_extra\_tags | Extra tags to add on SQL Server or ElasticPool | `map(string)` | `{}` | no |
 | server\_version | Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version | `string` | `"12.0"` | no |
-| single\_databases\_configuration | List of databases configurations (see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database) without elasticpool. Use only if enable\_elasticpool is false. | <pre>list(object({<br>    name                        = string<br>    sku_name                    = optional(string)<br>    license_type                = optional(string)<br>    collation                   = optional(string)<br>    max_size_gb                 = optional(number)<br>    zone_redundant              = optional(bool)<br>    min_capacity                = optional(number)<br>    auto_pause_delay_in_minutes = optional(number)<br>    threat_detection_policy = optional(object({<br>      state = bool<br>    }))<br>    retention_days      = optional(number)<br>    weekly_retention    = optional(string)<br>    monthly_retention   = optional(string)<br>    yearly_retention    = optional(string)<br>    week_of_year        = optional(number)<br>    database_extra_tags = optional(map(any))<br>  }))</pre> | `[]` | no |
-| sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are "GP\_Gen5", "BC\_Gen5" for vCore models and "Basic", "Standard", or "Premium" for DTU based models. Example {tier="Standard", capacity="50"}.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | <pre>object({<br>    tier     = string,<br>    capacity = number,<br>  })</pre> | `null` | no |
+| single\_databases\_sku\_name | Specifies the name of the SKU used by the database. For example, `GP_S_Gen5_2`, `HS_Gen4_1`, `BC_Gen5_2`. Use only if `elastic_pool_enabled` variable is set to `false`. More documentation [here](https://docs.microsoft.com/en-us/azure/azure-sql/database/service-tiers-general-purpose-business-critical) | `string` | `"GP_Gen5_2"` | no |
+| sql\_server\_extended\_auditing\_enabled | True to enable extended auditing for SQL Server | `bool` | `false` | no |
+| sql\_server\_extended\_auditing\_retention\_days | Server extended auditing logs retention | `number` | `30` | no |
+| sql\_server\_security\_alerting\_enabled | True to enable security alerting for this SQL Server | `bool` | `false` | no |
+| sql\_server\_vulnerability\_assessment\_enabled | True to enable vulnerability assessment for this SQL Server | `bool` | `false` | no |
 | stack | Project stack name | `string` | n/a | yes |
-| weekly\_backup\_retention | Retention in weeks for the weekly databases backup. | `number` | `0` | no |
-| yearly\_backup\_retention | Retention in years for the yearly backup. | `number` | `0` | no |
-| yearly\_backup\_time | Week number taken in account for the yearly backup retention. | `number` | `52` | no |
-| zone\_redundant | Whether or not the Elastic Pool is zone redundant, SKU tier must be Premium to use it. This is mandatory for high availability. | `bool` | `false` | no |
+| threat\_detection\_policy\_disabled\_alerts | Specifies a list of alerts which should be disabled. Possible values include `Access_Anomaly`, `Sql_Injection` and `Sql_Injection_Vulnerability` | `list(string)` | `[]` | no |
+| threat\_detection\_policy\_enabled | True to enable thread detection policy on the databases | `bool` | `false` | no |
+| threat\_detection\_policy\_retention\_days | Specifies the number of days to keep in the Threat Detection audit logs | `number` | `7` | no |
+| tls\_minimum\_version | The TLS minimum version for all SQL Database associated with the server. Valid values are: `1.0`, `1.1` and `1.2`. | `string` | `"1.2"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| custom\_users\_passwords | Map of the custom users passwords |
-| databases\_single\_ids | MSSQL Database single IDs map |
-| databases\_users | Map of the SQL Databases dedicated usernames |
-| databases\_users\_passwords | Map of the SQL Databases dedicated passwords |
+| custom\_databases\_users | Map of the custom SQL Databases users |
+| custom\_databases\_users\_roles | Map of the custom SQL Databases users roles |
 | default\_administrator\_databases\_connection\_strings | Map of the SQL Databases with administrator credentials connection strings |
+| default\_databases\_users | Map of the SQL Databases dedicated users |
+| identity | Identity block with principal ID and tenant ID used for this SQL Server |
+| security\_alert\_policy\_id | ID of the MS SQL Server Security Alert Policy |
 | sql\_administrator\_login | SQL Administrator login |
 | sql\_administrator\_password | SQL Administrator password |
 | sql\_databases | SQL Databases |
-| sql\_databases\_creation\_date | Map of the SQL Databases creation dates |
-| sql\_databases\_default\_secondary\_location | Map of the SQL Databases default secondary location |
 | sql\_databases\_id | Map of the SQL Databases IDs |
 | sql\_elastic\_pool | SQL Elastic Pool |
 | sql\_elastic\_pool\_id | ID of the SQL Elastic Pool |
 | sql\_server | SQL Server |
 | terraform\_module | Information about this Terraform module |
+| vulnerability\_assessment\_id | ID of the MS SQL Server Vulnerability Assessment |
 <!-- END_TF_DOCS -->
 ## Related documentation
 

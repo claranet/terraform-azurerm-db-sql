@@ -27,36 +27,133 @@ module "logs" {
   resource_group_name = module.rg.resource_group_name
 }
 
-module "sql" {
+resource "random_password" "admin_password" {
+  special          = true
+  override_special = "#$%&-_+{}<>:"
+  upper            = true
+  lower            = true
+  number           = true
+  length           = 32
+}
+
+# Elastic Pool 
+module "sql_elastic" {
   source  = "claranet/db-sql/azurerm"
   version = "x.x.x"
 
-  client_name    = var.client_name
-  environment    = var.environment
-  location       = module.azure_region.location
-  location_short = module.azure_region.location_short
-  stack          = var.stack
-
+  client_name         = var.client_name
+  environment         = var.environment
+  location            = module.azure_region.location
+  location_short      = module.azure_region.location_short
+  stack               = var.stack
   resource_group_name = module.rg.resource_group_name
 
-  elasticpool_databases = ["users", "documents"]
+  administrator_login    = "adminsqltest"
+  administrator_password = random_password.admin_password.result
+  create_databases_users = true
 
-  administrator_login    = var.administrator_login
-  administrator_password = var.administrator_password
-
-  sku = {
-    # Tier Basic/Standard/Premium are based on DTU
-    tier     = "Standard"
-    capacity = "100"
-  }
-
+  elastic_pool_enabled  = true
   elastic_pool_max_size = "50"
-
-  # This can costs you money https://docs.microsoft.com/en-us/azure/sql-database/sql-database-advanced-data-security
-  enable_advanced_data_security = true
+  elastic_pool_sku = {
+    tier     = "GeneralPurpose"
+    capacity = 2
+  }
 
   logs_destinations_ids = [
     module.logs.log_analytics_workspace_id,
     module.logs.logs_storage_account_id,
+  ]
+
+  databases = [
+    {
+      name        = "db1"
+      max_size_gb = 50
+    },
+    {
+      name        = "db2"
+      max_size_gb = 180
+    }
+  ]
+
+  custom_users = [
+    {
+      database = "db1"
+      name     = "db1_custom1"
+      roles    = ["db_accessadmin", "db_securityadmin"]
+    },
+    {
+      database = "db1"
+      name     = "db1_custom2"
+      roles    = ["db_accessadmin", "db_securityadmin"]
+    },
+    {
+      database = "db2"
+      name     = "db2_custom1"
+      roles    = []
+    },
+    {
+      database = "db2"
+      name     = "db2_custom2"
+      roles    = ["db_accessadmin", "db_securityadmin"]
+    }
+  ]
+}
+
+# Single Database
+
+module "sql_single" {
+  source  = "claranet/db-sql/azurerm"
+  version = "x.x.x"
+
+  client_name         = var.client_name
+  environment         = var.environment
+  location            = module.azure_region.location
+  location_short      = module.azure_region.location_short
+  stack               = var.stack
+  resource_group_name = module.rg.resource_group_name
+
+  administrator_login    = "adminsqltest"
+  administrator_password = random_password.admin_password.result
+  create_databases_users = true
+
+  elastic_pool_enabled = false
+
+  logs_destinations_ids = [
+    module.logs.log_analytics_workspace_id,
+    module.logs.logs_storage_account_id,
+  ]
+
+  databases = [
+    {
+      name        = "db1"
+      max_size_gb = 50
+    },
+    {
+      name        = "db2"
+      max_size_gb = 180
+    }
+  ]
+
+  custom_users = [
+    {
+      database = "db1"
+      name     = "db1_custom1"
+      roles    = ["db_accessadmin", "db_securityadmin"]
+    },
+    {
+      database = "db1"
+      name     = "db1_custom2"
+      roles    = ["db_accessadmin", "db_securityadmin"]
+    },
+    {
+      database = "db2"
+      name     = "db2_custom1"
+      roles    = []
+    },
+    {
+      database = "db2"
+      name     = "db2_custom2"
+      roles    = ["db_accessadmin", "db_securityadmin"]
+    }
   ]
 }
