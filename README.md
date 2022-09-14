@@ -200,7 +200,7 @@ module "sql_single" {
 
 | Name | Version |
 |------|---------|
-| azurerm | ~> 2.97 |
+| azurerm | >= 3.0 |
 
 ## Modules
 
