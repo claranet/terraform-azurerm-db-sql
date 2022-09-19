@@ -1,3 +1,7 @@
+# v4.4.2 : 2022-09-19
+Changed 
+  * AZ-843: Update to ARM 3.0
+
 # v4.4.1 - 2022-08-12
 
 Fixed
