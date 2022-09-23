@@ -7,6 +7,6 @@ variables:
 include:
   - template: 'Workflows/Branch-Pipelines.gitlab-ci.yml'
   - project: 'claranet/projects/cloud/azure/terraform/ci'
-    ref: examples_allow_failure
+    ref: lint_with_maxtfversion 
     file: '/pipeline.yml'
 ...
