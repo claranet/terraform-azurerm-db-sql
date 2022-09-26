@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.0, <1.3"
+  required_version = ">= 1.1"
 
   required_providers {
     random = {
@@ -8,7 +8,7 @@ terraform {
     }
     mssql = {
       source  = "betr-io/mssql"
-      version = ">= 0.2.3"
+      version = ">= 0.2.5"
     }
   }
 }

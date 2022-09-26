@@ -3,7 +3,7 @@
 
 | Name | Version |
 |------|---------|
-| mssql | >= 0.2.3 |
+| mssql | >= 0.2.5 |
 | random | >= 2.0 |
 
 ## Modules
