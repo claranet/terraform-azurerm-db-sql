@@ -1,3 +1,11 @@
+# Unreleased
+
+Breaking
+  * AZ-840: Update to Terraform `v1.3`
+
+Changed
+  * AZ-843: Update to AzureRM `v3.0+`
+
 # v4.4.1 - 2022-08-12
 
 Fixed
