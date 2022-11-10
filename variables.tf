@@ -173,7 +173,7 @@ variable "tls_minimum_version" {
 variable "public_network_access_enabled" {
   description = "True to allow public network access for this server"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "outbound_network_restriction_enabled" {
