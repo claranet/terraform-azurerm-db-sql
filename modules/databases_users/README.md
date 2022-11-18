@@ -4,7 +4,7 @@
 | Name | Version |
 |------|---------|
 | mssql | >= 0.2.5 |
-| random | >= 2.0 |
+| random | >= 3.4.3 |
 
 ## Modules
 
@@ -25,7 +25,7 @@ No modules.
 | administrator\_login | Login for the SQL Server administrator | `string` | n/a | yes |
 | administrator\_password | Password for the SQL Server administrator | `string` | n/a | yes |
 | database\_name | Name of the database where the custom user should be created | `string` | n/a | yes |
-| sql\_server\_hostname | FQDN of the SQL Server | `string` | n/a | yes |
+| sql\_server\_hostname | FQDN of the SQL Server. | `string` | n/a | yes |
 | user\_name | Name of the custom user | `string` | n/a | yes |
 | user\_roles | List of databases roles for the custom user | `list(string)` | n/a | yes |
 
