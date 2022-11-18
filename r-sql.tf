@@ -1,3 +1,4 @@
+#tfsec:ignore:azure-database-enable-audit
 resource "azurerm_mssql_server" "sql" {
   name                = local.server_name
   resource_group_name = var.resource_group_name

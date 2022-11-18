@@ -267,7 +267,7 @@ module "sql_single" {
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
 | outbound\_network\_restriction\_enabled | Whether outbound network traffic is restricted for this server | `bool` | `false` | no |
 | point\_in\_time\_restore\_retention\_days | Point In Time Restore configuration. Value has to be between `7` and `35` | `number` | `7` | no |
-| public\_network\_access\_enabled | True to allow public network access for this server | `bool` | `true` | no |
+| public\_network\_access\_enabled | True to allow public network access for this server | `bool` | `false` | no |
 | resource\_group\_name | Resource group name | `string` | n/a | yes |
 | security\_storage\_account\_access\_key | Storage Account access key used to store security logs and reports | `string` | `null` | no |
 | security\_storage\_account\_blob\_endpoint | Storage Account blob endpoint used to store security logs and reports | `string` | `null` | no |
