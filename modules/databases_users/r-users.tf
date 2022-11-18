@@ -4,7 +4,7 @@ resource "random_password" "custom_user_password" {
   override_special = "#$%&-_+{}<>:"
   upper            = true
   lower            = true
-  number           = true
+  numeric          = true
   length           = 32
 }
 

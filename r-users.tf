@@ -27,10 +27,9 @@ module "custom_users" {
     azurerm_mssql_database.elastic_pool_database
   ]
 
-  database_name = var.elastic_pool_enabled ? azurerm_mssql_database.elastic_pool_database[lookup(each.value, "database")].name : azurerm_mssql_database.single_database[lookup(each.value, "database")].name
-  user_name     = lookup(each.value, "name")
-  user_roles    = lookup(each.value, "roles")
-
+  database_name          = var.elastic_pool_enabled ? azurerm_mssql_database.elastic_pool_database[lookup(each.value, "database")].name : azurerm_mssql_database.single_database[lookup(each.value, "database")].name
+  user_name              = lookup(each.value, "name")
+  user_roles             = lookup(each.value, "roles")
   administrator_login    = var.administrator_login
   administrator_password = var.administrator_password
   sql_server_hostname    = azurerm_mssql_server.sql.fully_qualified_domain_name

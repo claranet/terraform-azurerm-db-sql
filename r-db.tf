@@ -54,11 +54,12 @@ resource "azurerm_mssql_database" "single_database" {
       "empty"
     ) == "empty" ? [] : ["fake"]
     content {
-      weekly_retention  = lookup(var.backup_retention, "weekly_retention", null)
-      monthly_retention = lookup(var.backup_retention, "monthly_retention", null)
-      yearly_retention  = lookup(var.backup_retention, "yearly_retention", null)
+      weekly_retention  = try(format("P%sW", var.backup_retention.weekly_retention), null)
+      monthly_retention = try(format("P%sM", var.backup_retention.monthly_retention), null)
+      yearly_retention  = try(format("P%sY", var.backup_retention.yearly_retention), null)
       week_of_year      = lookup(var.backup_retention, "week_of_year", null)
     }
+
   }
 
   tags = merge(local.default_tags, var.extra_tags, lookup(each.value, "database_extra_tags", {}))
@@ -115,11 +116,12 @@ resource "azurerm_mssql_database" "elastic_pool_database" {
       "empty"
     ) == "empty" ? [] : ["fake"]
     content {
-      weekly_retention  = lookup(var.backup_retention, "weekly_retention", null)
-      monthly_retention = lookup(var.backup_retention, "monthly_retention", null)
-      yearly_retention  = lookup(var.backup_retention, "yearly_retention", null)
+      weekly_retention  = try(format("P%sW", var.backup_retention.weekly_retention), null)
+      monthly_retention = try(format("P%sM", var.backup_retention.monthly_retention), null)
+      yearly_retention  = try(format("P%sY", var.backup_retention.yearly_retention), null)
       week_of_year      = lookup(var.backup_retention, "week_of_year", null)
     }
+
   }
 
   tags = merge(local.default_tags, var.extra_tags, lookup(each.value, "database_extra_tags", {}))

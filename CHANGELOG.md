@@ -3,6 +3,15 @@
 Changed
   * AZ-901: Change default value for `public_network_access_enabled` variable to `false`
 
+Added
+  * AZ-896: Adding setting for users passwords
+
+Fixed
+  * AZ-896: Fix `backup_retention` variables format
+
+Breaking
+  * AZ-896: Replace `azurerm_sql_firewall_rule` by `azurerm_mssql_firewall_rule`
+  
 # v7.0.0 - 2022-09-30
 
 Breaking

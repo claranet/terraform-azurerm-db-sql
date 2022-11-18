@@ -24,6 +24,6 @@ variable "administrator_password" {
 }
 
 variable "sql_server_hostname" {
-  description = "FQDN of the SQL Server"
+  description = "FQDN of the SQL Server."
   type        = string
 }

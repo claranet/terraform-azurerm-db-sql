@@ -29,12 +29,11 @@ resource "azurerm_mssql_server" "sql" {
   tags = merge(local.default_tags, var.extra_tags, var.server_extra_tags)
 }
 
-resource "azurerm_sql_firewall_rule" "firewall_rule" {
+resource "azurerm_mssql_firewall_rule" "firewall_rule" {
   count = length(var.allowed_cidr_list)
 
-  name                = "rule-${count.index}"
-  resource_group_name = var.resource_group_name
-  server_name         = azurerm_mssql_server.sql.name
+  name      = "rule-${count.index}"
+  server_id = azurerm_mssql_server.sql.id
 
   start_ip_address = cidrhost(var.allowed_cidr_list[count.index], 0)
   end_ip_address   = cidrhost(var.allowed_cidr_list[count.index], -1)
