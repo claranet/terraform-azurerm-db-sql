@@ -290,8 +290,8 @@ module "sql_single" {
 | threat\_detection\_policy\_enabled | True to enable thread detection policy on the databases | `bool` | `false` | no |
 | threat\_detection\_policy\_retention\_days | Specifies the number of days to keep in the Threat Detection audit logs | `number` | `7` | no |
 | tls\_minimum\_version | The TLS minimum version for all SQL Database associated with the server. Valid values are: `1.0`, `1.1` and `1.2`. | `string` | `"1.2"` | no |
-| use\_caf\_naming | Use the Azure CAF naming provider to generate default resource name. `custom_server_name` override this if set. Legacy default name is used if this is set to `false`. | `bool` | `true` | no |
-| use\_caf\_naming\_for\_databases | Use the Azure CAF naming provider to generate databases name. | `bool` | `false` | no |
+| use\_caf\_naming | Use the Azure CAF naming provider to generate default resource name. `server_custom_name` and `elastic_pool_custom_name` override this if set. Legacy default name is used if this is set to `false`. | `bool` | `true` | no |
+| use\_caf\_naming\_for\_databases | Use the Azure CAF naming provider to generate databases names. | `bool` | `false` | no |
 
 ## Outputs
 

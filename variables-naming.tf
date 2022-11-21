@@ -12,7 +12,7 @@ variable "name_suffix" {
 }
 
 variable "use_caf_naming" {
-  description = "Use the Azure CAF naming provider to generate default resource name. `custom_server_name` override this if set. Legacy default name is used if this is set to `false`."
+  description = "Use the Azure CAF naming provider to generate default resource name. `server_custom_name` and `elastic_pool_custom_name` override this if set. Legacy default name is used if this is set to `false`."
   type        = bool
   default     = true
 }
@@ -31,7 +31,7 @@ variable "elastic_pool_custom_name" {
 }
 
 variable "use_caf_naming_for_databases" {
-  description = "Use the Azure CAF naming provider to generate databases name."
+  description = "Use the Azure CAF naming provider to generate databases names."
   type        = bool
   default     = false
 }
