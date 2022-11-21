@@ -200,6 +200,7 @@ module "sql_single" {
 
 | Name | Version |
 |------|---------|
+| azurecaf | ~> 1.2, >= 1.2.22 |
 | azurerm | ~> 3.22 |
 
 ## Modules
@@ -208,9 +209,9 @@ module "sql_single" {
 |------|--------|---------|
 | custom\_users | ./modules/databases_users | n/a |
 | databases\_users | ./modules/databases_users | n/a |
-| elastic\_pool\_db\_logging | claranet/diagnostic-settings/azurerm | 6.0.0 |
-| pool\_logging | claranet/diagnostic-settings/azurerm | 6.0.0 |
-| single\_db\_logging | claranet/diagnostic-settings/azurerm | 6.0.0 |
+| elastic\_pool\_db\_logging | claranet/diagnostic-settings/azurerm | 6.1.0 |
+| pool\_logging | claranet/diagnostic-settings/azurerm | 6.1.0 |
+| single\_db\_logging | claranet/diagnostic-settings/azurerm | 6.1.0 |
 
 ## Resources
 
@@ -227,6 +228,9 @@ module "sql_single" {
 | [azurerm_mssql_server_security_alert_policy.sql_server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server_security_alert_policy) | resource |
 | [azurerm_mssql_server_vulnerability_assessment.sql_server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server_vulnerability_assessment) | resource |
 | [azurerm_sql_virtual_network_rule.vnet_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_virtual_network_rule) | resource |
+| [azurecaf_name.sql](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
+| [azurecaf_name.sql_dbs](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
+| [azurecaf_name.sql_pool](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
 
 ## Inputs
 
@@ -265,6 +269,7 @@ module "sql_single" {
 | logs\_destinations\_ids | List of destination resources Ids for logs diagnostics destination. Can be Storage Account, Log Analytics Workspace and Event Hub. No more than one of each can be set. Empty list to disable logging. | `list(string)` | n/a | yes |
 | logs\_retention\_days | Retention duration for logs | `number` | `30` | no |
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
+| name\_suffix | Optional suffix for the generated name | `string` | `""` | no |
 | outbound\_network\_restriction\_enabled | Whether outbound network traffic is restricted for this server | `bool` | `false` | no |
 | point\_in\_time\_restore\_retention\_days | Point In Time Restore configuration. Value has to be between `7` and `35` | `number` | `7` | no |
 | public\_network\_access\_enabled | True to allow public network access for this server | `bool` | `false` | no |
@@ -285,6 +290,8 @@ module "sql_single" {
 | threat\_detection\_policy\_enabled | True to enable thread detection policy on the databases | `bool` | `false` | no |
 | threat\_detection\_policy\_retention\_days | Specifies the number of days to keep in the Threat Detection audit logs | `number` | `7` | no |
 | tls\_minimum\_version | The TLS minimum version for all SQL Database associated with the server. Valid values are: `1.0`, `1.1` and `1.2`. | `string` | `"1.2"` | no |
+| use\_caf\_naming | Use the Azure CAF naming provider to generate default resource name. `custom_server_name` override this if set. Legacy default name is used if this is set to `false`. | `bool` | `true` | no |
+| use\_caf\_naming\_for\_databases | Use the Azure CAF naming provider to generate databases name. | `bool` | `false` | no |
 
 ## Outputs
 

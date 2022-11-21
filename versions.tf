@@ -11,5 +11,9 @@ terraform {
       source  = "betr-io/mssql"
       version = ">= 0.2.5"
     }
+    azurecaf = {
+      source  = "aztfmod/azurecaf"
+      version = "~> 1.2, >= 1.2.22"
+    }
   }
 }

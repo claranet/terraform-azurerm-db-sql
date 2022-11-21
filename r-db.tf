@@ -1,7 +1,7 @@
 resource "azurerm_mssql_database" "single_database" {
-  for_each = { for db in var.databases : db.name => db if !var.elastic_pool_enabled }
+  for_each = try({ for db in var.databases : db.name => db if !var.elastic_pool_enabled }, {})
 
-  name      = each.key
+  name      = var.use_caf_naming_for_databases ? data.azurecaf_name.sql_dbs[each.key].result : each.key
   server_id = azurerm_mssql_server.sql.id
 
   sku_name     = var.single_databases_sku_name
@@ -66,9 +66,9 @@ resource "azurerm_mssql_database" "single_database" {
 }
 
 resource "azurerm_mssql_database" "elastic_pool_database" {
-  for_each = { for db in var.databases : db.name => db if var.elastic_pool_enabled }
+  for_each = try({ for db in var.databases : db.name => db if var.elastic_pool_enabled }, {})
 
-  name      = each.key
+  name      = var.use_caf_naming_for_databases ? data.azurecaf_name.sql_dbs[each.key].result : each.key
   server_id = azurerm_mssql_server.sql.id
 
   sku_name        = "ElasticPool"
