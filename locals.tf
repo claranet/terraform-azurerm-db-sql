@@ -1,6 +1,4 @@
 locals {
-  storage_account_type = "Geo"
-
   vcore_tiers                 = ["GeneralPurpose", "BusinessCritical"]
   elastic_pool_vcore_family   = "Gen5"
   elastic_pool_vcore_sku_name = var.elastic_pool_sku != null ? format("%s_%s", var.elastic_pool_sku.tier == "GeneralPurpose" ? "GP" : "BC", local.elastic_pool_vcore_family) : null

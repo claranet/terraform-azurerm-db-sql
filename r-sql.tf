@@ -13,12 +13,12 @@ resource "azurerm_mssql_server" "sql" {
   administrator_login          = var.administrator_login
   administrator_login_password = var.administrator_password
   dynamic "azuread_administrator" {
-    for_each = var.azuread_administrator != null ? ["azuread_administrator"] : []
+    for_each = var.azuread_administrator != null ? ["enabled"] : []
     content {
-      login_username              = lookup(var.azuread_administrator, "login_username")
-      object_id                   = lookup(var.azuread_administrator, "object_id")
-      tenant_id                   = lookup(var.azuread_administrator, "tenant_id")
-      azuread_authentication_only = lookup(var.azuread_administrator, "azuread_authentication_only")
+      login_username              = var.azuread_administrator.login_username
+      object_id                   = var.azuread_administrator.object_id
+      tenant_id                   = var.azuread_administrator.tenant_id
+      azuread_authentication_only = var.azuread_administrator.azuread_authentication_only
     }
   }
 
