@@ -200,6 +200,7 @@ module "sql_single" {
 
 | Name | Version |
 |------|---------|
+| azurecaf | ~> 1.2, >= 1.2.22 |
 | azurerm | ~> 3.22 |
 
 ## Modules
@@ -208,9 +209,9 @@ module "sql_single" {
 |------|--------|---------|
 | custom\_users | ./modules/databases_users | n/a |
 | databases\_users | ./modules/databases_users | n/a |
-| elastic\_pool\_db\_logging | claranet/diagnostic-settings/azurerm | 6.0.0 |
-| pool\_logging | claranet/diagnostic-settings/azurerm | 6.0.0 |
-| single\_db\_logging | claranet/diagnostic-settings/azurerm | 6.0.0 |
+| elastic\_pool\_db\_logging | claranet/diagnostic-settings/azurerm | 6.2.0 |
+| pool\_logging | claranet/diagnostic-settings/azurerm | 6.2.0 |
+| single\_db\_logging | claranet/diagnostic-settings/azurerm | 6.2.0 |
 
 ## Resources
 
@@ -227,6 +228,9 @@ module "sql_single" {
 | [azurerm_mssql_server_security_alert_policy.sql_server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server_security_alert_policy) | resource |
 | [azurerm_mssql_server_vulnerability_assessment.sql_server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server_vulnerability_assessment) | resource |
 | [azurerm_sql_virtual_network_rule.vnet_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_virtual_network_rule) | resource |
+| [azurecaf_name.sql](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
+| [azurecaf_name.sql_dbs](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
+| [azurecaf_name.sql_pool](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
 
 ## Inputs
 
@@ -242,8 +246,9 @@ module "sql_single" {
 | client\_name | Client name/account used in naming | `string` | n/a | yes |
 | connection\_policy | The connection policy the server will use. Possible values are `Default`, `Proxy`, and `Redirect` | `string` | `"Default"` | no |
 | create\_databases\_users | True to create a user named <db>\_user on each database with generated password and role db\_owner. | `bool` | `true` | no |
+| custom\_diagnostic\_settings\_name | Custom name of the diagnostics settings, name will be 'default' if not set. | `string` | `"default"` | no |
 | custom\_users | List of objects for custom users creation. <br>    Password are generated.<br>    These users are created within the "custom\_users" submodule. | <pre>list(object({<br>    name     = string<br>    database = string<br>    roles    = optional(list(string))<br>  }))</pre> | `[]` | no |
-| databases | List of the databases configurations for this server. | <pre>list(object({<br>    name                        = string<br>    license_type                = optional(string)<br>    max_size_gb                 = number<br>    create_mode                 = optional(string)<br>    min_capacity                = optional(number)<br>    auto_pause_delay_in_minutes = optional(number)<br>    read_scale                  = optional(string)<br>    read_replica_count          = optional(number)<br>    creation_source_database_id = optional(string)<br>    restore_point_in_time       = optional(string)<br>    recover_database_id         = optional(string)<br>    restore_dropped_database_id = optional(string)<br>    storage_account_type        = optional(string)<br>    database_extra_tags         = optional(map(string))<br>  }))</pre> | `[]` | no |
+| databases | List of the databases configurations for this server. | <pre>list(object({<br>    name                        = string<br>    license_type                = optional(string)<br>    max_size_gb                 = number<br>    create_mode                 = optional(string)<br>    min_capacity                = optional(number)<br>    auto_pause_delay_in_minutes = optional(number)<br>    read_scale                  = optional(string)<br>    read_replica_count          = optional(number)<br>    creation_source_database_id = optional(string)<br>    restore_point_in_time       = optional(string)<br>    recover_database_id         = optional(string)<br>    restore_dropped_database_id = optional(string)<br>    storage_account_type        = optional(string, "Geo")<br>    database_extra_tags         = optional(map(string), {})<br>  }))</pre> | `[]` | no |
 | databases\_collation | SQL Collation for the databases | `string` | `"SQL_LATIN1_GENERAL_CP1_CI_AS"` | no |
 | databases\_extended\_auditing\_enabled | True to enable extended auditing for SQL databases | `bool` | `false` | no |
 | databases\_extended\_auditing\_retention\_days | Databases extended auditing logs retention | `number` | `30` | no |
@@ -262,9 +267,12 @@ module "sql_single" {
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
 | location | Azure location for SQL Server. | `string` | n/a | yes |
 | location\_short | Short string for Azure location. | `string` | n/a | yes |
-| logs\_destinations\_ids | List of destination resources Ids for logs diagnostics destination. Can be Storage Account, Log Analytics Workspace and Event Hub. No more than one of each can be set. Empty list to disable logging. | `list(string)` | n/a | yes |
-| logs\_retention\_days | Retention duration for logs | `number` | `30` | no |
+| logs\_categories | Log categories to send to destinations. | `list(string)` | `null` | no |
+| logs\_destinations\_ids | List of destination resources IDs for logs diagnostic destination.<br>Can be `Storage Account`, `Log Analytics Workspace` and `Event Hub`. No more than one of each can be set.<br>If you want to specify an Azure EventHub to send logs and metrics to, you need to provide a formated string with both the EventHub Namespace authorization send ID and the EventHub name (name of the queue to use in the Namespace) separated by the `|` character. | `list(string)` | n/a | yes |
+| logs\_metrics\_categories | Metrics categories to send to destinations. | `list(string)` | `null` | no |
+| logs\_retention\_days | Number of days to keep logs on storage account. | `number` | `30` | no |
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
+| name\_suffix | Optional suffix for the generated name | `string` | `""` | no |
 | outbound\_network\_restriction\_enabled | Whether outbound network traffic is restricted for this server | `bool` | `false` | no |
 | point\_in\_time\_restore\_retention\_days | Point In Time Restore configuration. Value has to be between `7` and `35` | `number` | `7` | no |
 | public\_network\_access\_enabled | True to allow public network access for this server | `bool` | `false` | no |
@@ -285,6 +293,8 @@ module "sql_single" {
 | threat\_detection\_policy\_enabled | True to enable thread detection policy on the databases | `bool` | `false` | no |
 | threat\_detection\_policy\_retention\_days | Specifies the number of days to keep in the Threat Detection audit logs | `number` | `7` | no |
 | tls\_minimum\_version | The TLS minimum version for all SQL Database associated with the server. Valid values are: `1.0`, `1.1` and `1.2`. | `string` | `"1.2"` | no |
+| use\_caf\_naming | Use the Azure CAF naming provider to generate default resource name. `server_custom_name` and `elastic_pool_custom_name` override this if set. Legacy default name is used if this is set to `false`. | `bool` | `true` | no |
+| use\_caf\_naming\_for\_databases | Use the Azure CAF naming provider to generate databases names. | `bool` | `false` | no |
 
 ## Outputs
 

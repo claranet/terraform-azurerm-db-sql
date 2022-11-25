@@ -147,8 +147,8 @@ variable "databases" {
     restore_point_in_time       = optional(string)
     recover_database_id         = optional(string)
     restore_dropped_database_id = optional(string)
-    storage_account_type        = optional(string)
-    database_extra_tags         = optional(map(string))
+    storage_account_type        = optional(string, "Geo")
+    database_extra_tags         = optional(map(string), {})
   }))
   default = []
 }

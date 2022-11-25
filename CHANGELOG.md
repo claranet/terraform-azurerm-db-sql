@@ -1,3 +1,12 @@
+# Unreleased
+
+Breaking
+  * AZ-908: Implement Azure CAF naming (using Microsoft provider)
+
+Changed
+  * AZ-908: Bump `diagnostics-settings`
+  * AZ-908: Rework and optimize module HCL code
+
 # v7.1.0 - 2022-11-18
 
 Changed

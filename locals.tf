@@ -1,13 +1,4 @@
 locals {
-  name_prefix  = var.name_prefix != "" ? replace(var.name_prefix, "/[a-z0-9]$/", "$0-") : ""
-  default_name = lower("${local.name_prefix}${var.stack}-${var.client_name}-${var.location_short}-${var.environment}")
-
-  storage_account_type = "Geo"
-
-  server_name = coalesce(var.server_custom_name, "${local.default_name}-sql")
-
-  elastic_pool_name = coalesce(var.elastic_pool_custom_name, "${local.default_name}-pool")
-
   vcore_tiers                 = ["GeneralPurpose", "BusinessCritical"]
   elastic_pool_vcore_family   = "Gen5"
   elastic_pool_vcore_sku_name = var.elastic_pool_sku != null ? format("%s_%s", var.elastic_pool_sku.tier == "GeneralPurpose" ? "GP" : "BC", local.elastic_pool_vcore_family) : null
