@@ -1,4 +1,4 @@
-# Unreleased
+# v7.2.0 - 2022-11-25
 
 Breaking
   * AZ-908: Implement Azure CAF naming (using Microsoft provider)
