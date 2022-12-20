@@ -1,3 +1,8 @@
+# Unreleased
+
+Fixed
+  * AZ-945: Fix bug in with loop in `r-naming.tf`
+
 # v7.2.0 - 2022-11-25
 
 Breaking
