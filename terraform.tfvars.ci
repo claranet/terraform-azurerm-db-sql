@@ -1,21 +1,21 @@
-location="fr-central"
-location_short="frc"
-client_name="test"
-environment="test"
-stack="ci"
-resource_group_name="rg-test"
-databases_names=["users", "documents"]
-sku= {
-  tier = "Standard"
+location            = "fr-central"
+location_short      = "frc"
+client_name         = "test"
+environment         = "test"
+stack               = "ci"
+resource_group_name = "rg-test"
+databases_names     = ["users", "documents"]
+sku = {
+  tier     = "Standard"
   capacity = "100"
 }
-elastic_pool_max_size="50"
-administrator_login="claranet"
-administrator_password="claranet"
-logs_destinations_ids=[
-    "/subscriptions/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/resourceGroups/rg-test/providers/Microsoft.Storage/storageAccounts/storageaccountname",
-    "/subscriptions/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/resourceGroups/rg-test/providers/Microsoft.OperationalInsights/workspaces/my-log-analytics-workspace",
+elastic_pool_max_size  = "50"
+administrator_login    = "claranet"
+administrator_password = "claranet"
+logs_destinations_ids = [
+  "/subscriptions/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/resourceGroups/rg-test/providers/Microsoft.Storage/storageAccounts/storageaccountname",
+  "/subscriptions/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/resourceGroups/rg-test/providers/Microsoft.OperationalInsights/workspaces/my-log-analytics-workspace",
 ]
-enable_advanced_data_security="true"
-enable_advanced_data_security_admin_emails="true"
-advanced_data_security_additional_emails=["admin@fr.clara.net", "devops@fr.clara.net"]
+enable_advanced_data_security              = "true"
+enable_advanced_data_security_admin_emails = "true"
+advanced_data_security_additional_emails   = ["admin@fr.clara.net", "devops@fr.clara.net"]

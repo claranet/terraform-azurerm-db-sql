@@ -19,7 +19,7 @@ data "azurecaf_name" "sql_pool" {
 }
 
 data "azurecaf_name" "sql_dbs" {
-  for_each = try(var.databases, {})
+  for_each = try({ for database in var.databases : database.name => database }, {})
 
   name          = var.stack
   resource_type = "azurerm_mssql_database"
