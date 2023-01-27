@@ -1,4 +1,4 @@
-# Unreleased
+# v7.2.2 - 2023-01-27
 
 Fixed
   * AZ-988: Fix wrong `elastic_pool_sku` variable description
