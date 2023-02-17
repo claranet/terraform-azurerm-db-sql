@@ -28,6 +28,13 @@ enabled.
 | >= 2.x.x       | 0.12.x            | < 2.0           |
 | <  2.x.x       | 0.11.x            | < 2.0           |
 
+## Contributing
+
+If you want to contribute to this repository, feel free to use our [pre-commit](https://pre-commit.com/) git hook configuration
+which will help you automatically update and format some files for you by enforcing our Terraform code module best-practices.
+
+More details are available in the [CONTRIBUTING.md](./CONTRIBUTING.md#pull-request-process) file.
+
 ## Usage
 
 This module is optimized to work with the [Claranet terraform-wrapper](https://github.com/claranet/terraform-wrapper) tool
@@ -73,7 +80,7 @@ resource "random_password" "admin_password" {
   length           = 32
 }
 
-# Elastic Pool 
+# Elastic Pool
 module "sql_elastic" {
   source  = "claranet/db-sql/azurerm"
   version = "x.x.x"
