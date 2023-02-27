@@ -30,7 +30,7 @@ Fixed
 
 Breaking
   * AZ-896: Replace `azurerm_sql_firewall_rule` by `azurerm_mssql_firewall_rule`
-  
+
 # v7.0.0 - 2022-09-30
 
 Breaking

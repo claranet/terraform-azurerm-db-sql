@@ -36,7 +36,7 @@ resource "random_password" "admin_password" {
   length           = 32
 }
 
-# Elastic Pool 
+# Elastic Pool
 module "sql_elastic" {
   source  = "claranet/db-sql/azurerm"
   version = "x.x.x"

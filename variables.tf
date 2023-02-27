@@ -120,7 +120,7 @@ variable "allowed_subnets_ids" {
 
 variable "custom_users" {
   description = <<DESC
-    List of objects for custom users creation. 
+    List of objects for custom users creation.
     Password are generated.
     These users are created within the "custom_users" submodule.
 DESC
