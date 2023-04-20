@@ -1,3 +1,8 @@
+# Unreleased
+
+Fixed
+  * [GH-1](https://github.com/claranet/terraform-azurerm-db-sql/pull/1): Fix default collation
+
 # v7.2.2 - 2023-01-27
 
 Fixed

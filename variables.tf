@@ -202,7 +202,7 @@ variable "connection_policy" {
 variable "databases_collation" {
   description = "SQL Collation for the databases"
   type        = string
-  default     = "SQL_LATIN1_GENERAL_CP1_CI_AS"
+  default     = "SQL_Latin1_General_CP1_CI_AS"
 }
 
 variable "databases_zone_redundant" {
