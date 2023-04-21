@@ -8,13 +8,6 @@ only along with [Firewall rules](https://docs.microsoft.com/en-us/azure/sql-data
 and [Diagnostic settings](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-metrics-diag-logging)
 enabled.
 
-
-
-## Limitations
-
-* The long term backup retention configuration is done asynchronously since the command lasts a long time.
-  Command result is never fetch, only a check on Azure allows to know if configuration went fine.
-
 <!-- BEGIN_TF_DOCS -->
 ## Global versioning rule for Claranet Azure modules
 
