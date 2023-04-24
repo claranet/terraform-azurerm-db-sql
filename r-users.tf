@@ -14,7 +14,7 @@ module "databases_users" {
   sql_server_hostname = azurerm_mssql_server.sql.fully_qualified_domain_name
 
   database_name = each.value.database
-  user_name     = each.key
+  user_name     = each.value.username
   user_roles    = each.value.roles
 }
 
