@@ -2,6 +2,7 @@
 
 Fixed
   * AZ-387: Fix README
+  * [GH-2](https://github.com/claranet/terraform-azurerm-db-sql/pull/2): Fix databases usernames
 
 # v7.2.3 - 2023-04-20
 
