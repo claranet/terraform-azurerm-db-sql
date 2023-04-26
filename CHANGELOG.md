@@ -1,4 +1,4 @@
-# Unreleased
+# v7.2.4 - 2023-04-26
 
 Fixed
   * AZ-387: Fix README
