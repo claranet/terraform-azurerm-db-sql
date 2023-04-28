@@ -201,7 +201,7 @@ module "sql_single" {
 | Name | Version |
 |------|---------|
 | azurecaf | ~> 1.2, >= 1.2.22 |
-| azurerm | ~> 3.22 |
+| azurerm | ~> 3.39 |
 
 ## Modules
 
