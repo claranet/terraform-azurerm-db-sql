@@ -274,6 +274,7 @@ module "sql_single" {
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
 | name\_suffix | Optional suffix for the generated name | `string` | `""` | no |
 | outbound\_network\_restriction\_enabled | Whether outbound network traffic is restricted for this server | `bool` | `false` | no |
+| point\_in\_time\_backup\_interval\_in\_hours | The hours between each differential backup. This is only applicable to live databases but not dropped databases. Value has to be 12 or 24. Defaults to 12 hours. | `number` | `12` | no |
 | point\_in\_time\_restore\_retention\_days | Point In Time Restore configuration. Value has to be between `7` and `35` | `number` | `7` | no |
 | public\_network\_access\_enabled | True to allow public network access for this server | `bool` | `false` | no |
 | resource\_group\_name | Resource group name | `string` | n/a | yes |

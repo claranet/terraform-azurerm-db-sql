@@ -221,6 +221,16 @@ variable "point_in_time_restore_retention_days" {
   }
 }
 
+variable "point_in_time_backup_interval_in_hours" {
+  description = "The hours between each differential backup. This is only applicable to live databases but not dropped databases. Value has to be 12 or 24. Defaults to 12 hours."
+  type        = number
+  default     = 12
+  validation {
+    condition     = var.point_in_time_backup_interval_in_hours == 12 || var.point_in_time_backup_interval_in_hours == 24
+    error_message = "The PITR retention should be 12 or 24 hours."
+  }
+}
+
 variable "alerting_email_addresses" {
   description = "List of email addresses to send reports for threat detection and vulnerability assesment"
   type        = list(string)

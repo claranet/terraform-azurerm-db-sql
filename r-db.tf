@@ -103,7 +103,8 @@ resource "azurerm_mssql_database" "elastic_pool_database" {
   }
 
   short_term_retention_policy {
-    retention_days = var.point_in_time_restore_retention_days
+    retention_days           = var.point_in_time_restore_retention_days
+    backup_interval_in_hours = var.point_in_time_backup_interval_in_hours
   }
 
   dynamic "long_term_retention_policy" {
