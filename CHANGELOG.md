@@ -1,3 +1,8 @@
+# Unreleased
+
+Added
+  * AZ-1204: Add `backup_interval_in_hours` on `short_term_retention parameter`
+
 # v7.2.5 - 2023-07-13
 
 Fixed
