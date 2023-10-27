@@ -1,4 +1,4 @@
-# Unreleased
+# v7.5.0 - 2023-10-27
 
 Breaking
   * AZ-1226: Changed virtual network rule resource name (deprecation) in anticipation of AzureRM provider v4.0
