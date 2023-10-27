@@ -69,10 +69,9 @@ resource "azurerm_mssql_elasticpool" "elastic_pool" {
   tags = merge(local.default_tags, var.extra_tags, var.elastic_pool_extra_tags)
 }
 
-resource "azurerm_sql_virtual_network_rule" "vnet_rule" {
-  for_each            = try({ for subnet in local.allowed_subnets : subnet.name => subnet }, {})
-  name                = each.key
-  resource_group_name = var.resource_group_name
-  server_name         = azurerm_mssql_server.sql.name
-  subnet_id           = each.value.subnet_id
+resource "azurerm_mssql_virtual_network_rule" "vnet_rule" {
+  for_each  = try({ for subnet in local.allowed_subnets : subnet.name => subnet }, {})
+  name      = each.key
+  server_id = azurerm_mssql_server.sql.id
+  subnet_id = each.value.subnet_id
 }
