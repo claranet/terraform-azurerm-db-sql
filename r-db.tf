@@ -4,7 +4,7 @@ resource "azurerm_mssql_database" "single_database" {
   name      = var.use_caf_naming_for_databases ? data.azurecaf_name.sql_dbs[each.key].result : each.key
   server_id = azurerm_mssql_server.sql.id
 
-  sku_name     = var.single_databases_sku_name
+  sku_name     = coalesce(each.value.sku_name, var.single_databases_sku_name)
   license_type = each.value.license_type
 
   collation      = var.databases_collation

@@ -1,3 +1,8 @@
+# Unreleased
+
+Added
+  * AZ-1260: Add `sku_name` on `databases`
+
 # v7.5.0 - 2023-10-27
 
 Breaking
