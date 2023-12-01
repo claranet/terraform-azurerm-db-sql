@@ -137,6 +137,7 @@ variable "databases" {
   type = list(object({
     name                        = string
     license_type                = optional(string)
+    sku_name                    = optional(string)
     max_size_gb                 = number
     create_mode                 = optional(string)
     min_capacity                = optional(number)
