@@ -261,7 +261,7 @@ module "sql_single" {
 | elastic\_pool\_extra\_tags | Extra tags to add on ElasticPool | `map(string)` | `{}` | no |
 | elastic\_pool\_license\_type | Specifies the license type applied to this database. Possible values are `LicenseIncluded` and `BasePrice` | `string` | `null` | no |
 | elastic\_pool\_max\_size | Maximum size of the Elastic Pool in gigabytes | `string` | `null` | no |
-| elastic\_pool\_sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are `GeneralPurpose`, `BusinessCritical` for vCore models and `Basic`, `Standard`, or `Premium` for DTU based models.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | <pre>object({<br>    tier     = string,<br>    capacity = number,<br>  })</pre> | `null` | no |
+| elastic\_pool\_sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br>    Possible values for tier are `GeneralPurpose`, `BusinessCritical` for vCore models and `Basic`, `Standard`, or `Premium` for DTU based models.<br>    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools" | <pre>object({<br>    tier     = string,<br>    capacity = number,<br>    family   = optional(string, "Gen5")<br>  })</pre> | `null` | no |
 | elastic\_pool\_zone\_redundant | True to have the Elastic Pool zone redundant, SKU tier must be Premium to use it. This is mandatory for high availability. | `bool` | `false` | no |
 | environment | Project environment | `string` | n/a | yes |
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |

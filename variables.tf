@@ -56,8 +56,18 @@ DESC
   type = object({
     tier     = string,
     capacity = number,
+    family   = optional(string, "Gen5")
   })
   default = null
+
+  validation {
+    condition     = try(contains(["GeneralPurpose", "BusinessCritical"], var.elastic_pool_sku.tier) || contains(["Basic", "Standard", "Premium"], var.elastic_pool_sku.tier), true)
+    error_message = "`var.elastic_pool_sku.tier` possible values are `GeneralPurpose`, `BusinessCritical` for vCore models and `Basic`, `Standard`, or `Premium` for DTU based models."
+  }
+  validation {
+    condition     = try(contains(["Gen5", "Fsv2", "DC"], var.elastic_pool_sku.family), true)
+    error_message = "`var.elastic_pool_sku.family` possible values are `Gen5`, `Fsv2` or `DC`."
+  }
 }
 
 variable "elastic_pool_license_type" {
