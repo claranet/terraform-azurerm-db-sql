@@ -1,6 +1,6 @@
 locals {
   vcore_tiers                 = ["GeneralPurpose", "BusinessCritical"]
-  elastic_pool_vcore_family   = "Gen5"
+  elastic_pool_vcore_family   = try(var.elastic_pool_sku.family, "Gen5")
   elastic_pool_vcore_sku_name = var.elastic_pool_sku != null ? format("%s_%s", var.elastic_pool_sku.tier == "GeneralPurpose" ? "GP" : "BC", local.elastic_pool_vcore_family) : null
   elastic_pool_dtu_sku_name   = var.elastic_pool_sku != null ? format("%sPool", var.elastic_pool_sku.tier) : null
   elastic_pool_sku = var.elastic_pool_sku != null ? {
