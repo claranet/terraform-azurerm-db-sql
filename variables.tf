@@ -61,7 +61,7 @@ DESC
   default = null
 
   validation {
-    condition     = try(contains(["GeneralPurpose", "BusinessCritical"], var.elastic_pool_sku.tier) || contains(["Basic", "Standard", "Premium"], var.elastic_pool_sku.tier), true)
+    condition     = try(contains(["GeneralPurpose", "BusinessCritical", "Basic", "Standard", "Premium"], var.elastic_pool_sku.tier), true)
     error_message = "`var.elastic_pool_sku.tier` possible values are `GeneralPurpose`, `BusinessCritical` for vCore models and `Basic`, `Standard`, or `Premium` for DTU based models."
   }
   validation {
