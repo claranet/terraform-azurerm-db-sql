@@ -1,4 +1,4 @@
-# Unreleased
+# v7.7.0 - 2024-01-05
 
 Added
  * AZ-1304: Add `family` possible parameter to `elastic_pool_sku` variable. Fixes [GITHUB-4](https://github.com/claranet/terraform-azurerm-db-sql/issues/4)
