@@ -1,3 +1,8 @@
+# Unreleased
+
+Fixed
+  * AZ-1304: Terraform lint fixes
+
 # v7.7.0 - 2024-01-05
 
 Added
