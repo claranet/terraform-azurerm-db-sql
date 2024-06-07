@@ -1,3 +1,26 @@
+## 7.8.0 (2024-06-07)
+
+
+### Features
+
+* optional max_size_gb for databases configuration e11be1b
+
+
+### Miscellaneous Chores
+
+* **deps:** update dependency opentofu to v1.7.0 4a3997e
+* **deps:** update dependency opentofu to v1.7.1 638f40e
+* **deps:** update dependency opentofu to v1.7.2 736d4a7
+* **deps:** update dependency pre-commit to v3.7.1 836d380
+* **deps:** update dependency terraform-docs to v0.18.0 15278e3
+* **deps:** update dependency tflint to v0.51.0 3a82ce1
+* **deps:** update dependency tflint to v0.51.1 9f0ee2f
+* **deps:** update dependency trivy to v0.51.0 f7fee1a
+* **deps:** update dependency trivy to v0.51.1 38f6178
+* **deps:** update dependency trivy to v0.51.2 819cdbb
+* **deps:** update dependency trivy to v0.51.4 1ec4e37
+* **deps:** update dependency trivy to v0.52.0 ef812ab
+
 ## 7.7.2 (2024-04-26)
 
 
