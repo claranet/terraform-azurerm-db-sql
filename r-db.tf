@@ -14,11 +14,11 @@ resource "azurerm_mssql_database" "single_database" {
   min_capacity                = can(regex("^GP_S", var.single_databases_sku_name)) ? each.value.min_capacity : null
   auto_pause_delay_in_minutes = can(regex("^GP_S", var.single_databases_sku_name)) ? each.value.auto_pause_delay_in_minutes : null
 
-  read_scale         = can(regex("^P|BC", var.single_databases_sku_name)) && each.value.read_scale != null ? each.value.read_scale : false
+  read_scale         = can(regex("^P|BC|HS", var.single_databases_sku_name)) && each.value.read_scale != null ? each.value.read_scale : false
   read_replica_count = can(regex("^HS", var.single_databases_sku_name)) ? each.value.read_replica_count : null
 
   #https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.sql.models.database.createmode?view=azure-dotnet
-  create_mode = can(regex("^DW", var.single_databases_sku_name)) ? lookup(local.datawarehouse_allowed_create_mode, each.value.create_mode, "Default") : lookup(local.standard_allowed_create_mode, each.value.create_mode, "Default")
+  create_mode = can(regex("^DW", var.single_databases_sku_name)) ? try(local.datawarehouse_allowed_create_mode[each.value.create_mode], "Default") : try(local.standard_allowed_create_mode[each.value.create_mode], "Default")
 
   creation_source_database_id = can(regex("Copy|Secondary|PointInTimeRestore|Recovery|RestoreExternalBackup|Restore|RestoreExternalBackupSecondary", each.value.create_mode)) ? each.value.creation_source_database_id : null
 
@@ -79,7 +79,7 @@ resource "azurerm_mssql_database" "elastic_pool_database" {
   zone_redundant = can(regex("^DW", var.single_databases_sku_name)) && var.databases_zone_redundant != null ? var.databases_zone_redundant : false
 
   #https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.sql.models.database.createmode?view=azure-dotnet
-  create_mode = lookup(local.standard_allowed_create_mode, each.value.create_mode, "Default")
+  create_mode = try(local.standard_allowed_create_mode[each.value.create_mode], "Default")
 
   creation_source_database_id = can(regex("Copy|Secondary|PointInTimeRestore|Recovery|RestoreExternalBackup|Restore|RestoreExternalBackupSecondary", each.value.create_mode)) ? each.value.creation_source_database_id : null
 
