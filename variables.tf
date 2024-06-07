@@ -148,7 +148,7 @@ variable "databases" {
     name                        = string
     license_type                = optional(string)
     sku_name                    = optional(string)
-    max_size_gb                 = number
+    max_size_gb                 = optional(number)
     create_mode                 = optional(string)
     min_capacity                = optional(number)
     auto_pause_delay_in_minutes = optional(number)
