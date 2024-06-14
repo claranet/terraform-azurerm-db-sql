@@ -1,3 +1,15 @@
+## 7.9.0 (2024-06-14)
+
+
+### Features
+
+* add hyperscale tier support for elastic pool b2ca9f8
+
+
+### Miscellaneous Chores
+
+* **deps:** update dependency trivy to v0.52.1 875e687
+
 ## 7.8.0 (2024-06-07)
 
 
