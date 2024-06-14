@@ -102,9 +102,12 @@ resource "azurerm_mssql_database" "elastic_pool_database" {
     }
   }
 
-  short_term_retention_policy {
-    retention_days           = var.point_in_time_restore_retention_days
-    backup_interval_in_hours = var.point_in_time_backup_interval_in_hours
+  dynamic "short_term_retention_policy" {
+    for_each = startswith(local.elastic_pool_sku.name, "HS") ? [] : ["enabled"]
+    content {
+      retention_days           = var.point_in_time_restore_retention_days
+      backup_interval_in_hours = var.point_in_time_backup_interval_in_hours
+    }
   }
 
   dynamic "long_term_retention_policy" {
