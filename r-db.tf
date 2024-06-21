@@ -7,11 +7,11 @@ resource "azurerm_mssql_database" "single_database" {
   sku_name     = coalesce(each.value.sku_name, var.single_databases_sku_name)
   license_type = each.value.license_type
 
-  collation      = var.databases_collation
+  collation      = coalesce(each.value.collation, var.databases_collation)
   max_size_gb    = can(regex("Secondary|OnlineSecondary", each.value.create_mode)) ? null : each.value.max_size_gb
   zone_redundant = can(regex("^DW", var.single_databases_sku_name)) && var.databases_zone_redundant != null ? var.databases_zone_redundant : false
 
-  min_capacity                = can(regex("^GP_S", var.single_databases_sku_name)) ? each.value.min_capacity : null
+  min_capacity                = can(regex("^GP_S|HS", var.single_databases_sku_name)) ? each.value.min_capacity : null
   auto_pause_delay_in_minutes = can(regex("^GP_S", var.single_databases_sku_name)) ? each.value.auto_pause_delay_in_minutes : null
 
   read_scale         = can(regex("^P|BC|HS", var.single_databases_sku_name)) && each.value.read_scale != null ? each.value.read_scale : false
@@ -86,6 +86,8 @@ resource "azurerm_mssql_database" "elastic_pool_database" {
   restore_point_in_time       = each.value.create_mode == "PointInTimeRestore" ? each.value.restore_point_in_time : null
   recover_database_id         = each.value.create_mode == "Recovery" ? each.value.recover_database_id : null
   restore_dropped_database_id = each.value.create_mode == "Restore" ? each.value.restore_dropped_database_id : null
+
+  read_replica_count = startswith(local.elastic_pool_sku.name, "HS") ? each.value.read_replica_count : null
 
   storage_account_type = each.value.storage_account_type
 
