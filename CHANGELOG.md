@@ -1,3 +1,16 @@
+## 7.10.0 (2024-06-21)
+
+
+### Features
+
+* **AZ-1426:** add parameters for elastic and single databases 4d3376a
+
+
+### Miscellaneous Chores
+
+* **deps:** update dependency trivy to v0.52.2 b691eb7
+* **deps:** update pre-commit hook antonbabenko/pre-commit-terraform to v1.92.0 3ce3620
+
 ## 7.9.0 (2024-06-14)
 
 
