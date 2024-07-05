@@ -1,3 +1,16 @@
+## 7.11.0 (2024-07-05)
+
+
+### Features
+
+* **AZ-1434:** add collation elastic pool db c73aa63
+
+
+### Miscellaneous Chores
+
+* **deps:** update dependency tflint to v0.51.2 df311d5
+* **deps:** update dependency trivy to v0.53.0 d8f5af0
+
 ## 7.10.0 (2024-06-21)
 
 
