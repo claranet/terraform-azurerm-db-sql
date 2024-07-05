@@ -74,7 +74,7 @@ resource "azurerm_mssql_database" "elastic_pool_database" {
   license_type    = each.value.license_type
   elastic_pool_id = one(azurerm_mssql_elasticpool.elastic_pool[*].id)
 
-  collation      = var.databases_collation
+  collation      = coalesce(each.value.collation, var.databases_collation)
   max_size_gb    = can(regex("Secondary|OnlineSecondary", each.value.create_mode)) ? null : each.value.max_size_gb
   zone_redundant = can(regex("^DW", var.single_databases_sku_name)) && var.databases_zone_redundant != null ? var.databases_zone_redundant : false
 
