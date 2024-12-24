@@ -1,18 +1,17 @@
 terraform {
-  required_version = ">= 1.3"
-
+  required_version = ">= 1.8"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.0"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = ">= 2.0"
+      version = "~> 4.0"
     }
     mssql = {
       source  = "betr-io/mssql"
-      version = "0.2.5"
+      version = ">= 0.2.5"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.4.3"
     }
   }
 }

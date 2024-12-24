@@ -1,15 +1,15 @@
-resource "azurerm_mssql_server_security_alert_policy" "sql_server" {
-  for_each = toset(var.sql_server_security_alerting_enabled ? ["enabled"] : [])
+resource "azurerm_mssql_server_security_alert_policy" "main" {
+  count = var.sql_server_security_alerting_enabled ? 1 : 0
 
   resource_group_name = var.resource_group_name
-  server_name         = azurerm_mssql_server.sql.name
+  server_name         = azurerm_mssql_server.main.name
   state               = "Enabled"
 }
 
-resource "azurerm_mssql_server_vulnerability_assessment" "sql_server" {
-  for_each = toset(var.sql_server_vulnerability_assessment_enabled ? ["enabled"] : [])
+resource "azurerm_mssql_server_vulnerability_assessment" "main" {
+  count = var.sql_server_vulnerability_assessment_enabled ? 1 : 0
 
-  server_security_alert_policy_id = azurerm_mssql_server_security_alert_policy.sql_server["enabled"].id
+  server_security_alert_policy_id = azurerm_mssql_server_security_alert_policy.main[0].id
   storage_container_path          = format("%s%s/", var.security_storage_account_blob_endpoint, var.security_storage_account_container_name)
   storage_account_access_key      = var.security_storage_account_access_key
 
@@ -20,10 +20,10 @@ resource "azurerm_mssql_server_vulnerability_assessment" "sql_server" {
   }
 }
 
-resource "azurerm_mssql_server_extended_auditing_policy" "sql_server" {
-  for_each = toset(var.sql_server_extended_auditing_enabled ? ["enabled"] : [])
+resource "azurerm_mssql_server_extended_auditing_policy" "main" {
+  count = var.sql_server_extended_auditing_enabled ? 1 : 0
 
-  server_id                               = azurerm_mssql_server.sql.id
+  server_id                               = azurerm_mssql_server.main.id
   storage_endpoint                        = var.security_storage_account_blob_endpoint
   storage_account_access_key              = var.security_storage_account_access_key
   storage_account_access_key_is_secondary = false
@@ -38,6 +38,19 @@ resource "azurerm_mssql_database_extended_auditing_policy" "elastic_pool_db" {
   storage_account_access_key              = var.security_storage_account_access_key
   storage_account_access_key_is_secondary = false
   retention_in_days                       = var.databases_extended_auditing_retention_days
+}
+
+moved {
+  from = azurerm_mssql_server_security_alert_policy.sql_server["enabled"]
+  to   = azurerm_mssql_server_security_alert_policy.main[0]
+}
+moved {
+  from = azurerm_mssql_server_vulnerability_assessment.sql_server["enabled"]
+  to   = azurerm_mssql_server_vulnerability_assessment.main[0]
+}
+moved {
+  from = azurerm_mssql_server_extended_auditing_policy.sql_server["enabled"]
+  to   = azurerm_mssql_server_extended_auditing_policy.main[0]
 }
 
 resource "azurerm_mssql_database_extended_auditing_policy" "single_db" {

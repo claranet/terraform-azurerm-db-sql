@@ -1,37 +1,38 @@
-output "sql_administrator_login" {
-  description = "SQL Administrator login"
+output "resource" {
+  description = "SQL Server resource object."
+  value       = azurerm_mssql_server.main
+  sensitive   = true
+}
+
+output "administrator_login" {
+  description = "SQL Administrator login."
   value       = var.administrator_login
   sensitive   = true
 }
 
-output "sql_administrator_password" {
-  description = "SQL Administrator password"
+output "administrator_password" {
+  description = "SQL Administrator password."
   value       = var.administrator_password
   sensitive   = true
 }
 
-output "sql_server" {
-  description = "SQL Server"
-  value       = azurerm_mssql_server.sql
+output "elastic_pool_resource" {
+  description = "SQL Elastic Pool resource."
+  value       = one(azurerm_mssql_elasticpool.main[*])
 }
 
-output "sql_elastic_pool" {
-  description = "SQL Elastic Pool"
-  value       = try(azurerm_mssql_elasticpool.elastic_pool[0], null)
-}
-
-output "sql_databases" {
-  description = "SQL Databases"
+output "databases_resource" {
+  description = "SQL Databases resource list."
   value       = var.elastic_pool_enabled ? azurerm_mssql_database.elastic_pool_database : azurerm_mssql_database.single_database
 }
 
-output "sql_elastic_pool_id" {
-  description = "ID of the SQL Elastic Pool"
-  value       = var.elastic_pool_enabled ? azurerm_mssql_elasticpool.elastic_pool[0].id : null
+output "elastic_pool_id" {
+  description = "ID of the SQL Elastic Pool."
+  value       = one(azurerm_mssql_elasticpool.main[*].id)
 }
 
-output "sql_databases_id" {
-  description = "Map of the SQL Databases IDs"
+output "databases_id" {
+  description = "Map of the SQL Databases names => IDs."
   value       = var.elastic_pool_enabled ? { for db in azurerm_mssql_database.elastic_pool_database : db.name => db.id } : { for db in azurerm_mssql_database.single_database : db.name => db.id }
 }
 
@@ -40,7 +41,7 @@ output "default_administrator_databases_connection_strings" {
   value = var.elastic_pool_enabled ? {
     for db in azurerm_mssql_database.elastic_pool_database : db.name => formatlist(
       "Server=tcp:%s;Database=%s;User ID=%s;Password=%s;Encrypt=true;",
-      azurerm_mssql_server.sql.fully_qualified_domain_name,
+      azurerm_mssql_server.main.fully_qualified_domain_name,
       db.name,
       var.administrator_login,
       var.administrator_password
@@ -48,7 +49,7 @@ output "default_administrator_databases_connection_strings" {
     } : {
     for db in azurerm_mssql_database.single_database : db.name => formatlist(
       "Server=tcp:%s;Database=%s;User ID=%s;Password=%s;Encrypt=true;",
-      azurerm_mssql_server.sql.fully_qualified_domain_name,
+      azurerm_mssql_server.main.fully_qualified_domain_name,
       db.name,
       var.administrator_login,
       var.administrator_password
@@ -83,17 +84,26 @@ output "custom_databases_users_roles" {
   }
 }
 
-output "identity" {
-  description = "Identity block with principal ID and tenant ID used for this SQL Server"
-  value       = try(azurerm_mssql_server.sql.identity[0], null)
+output "identity_principal_id" {
+  description = "SQL Server system identity principal ID."
+  value       = try(azurerm_mssql_server.main.identity[0], null)
 }
 
 output "security_alert_policy_id" {
   description = "ID of the MS SQL Server Security Alert Policy"
-  value       = try(azurerm_mssql_server_security_alert_policy.sql_server["enabled"].id, null)
+  value       = one(azurerm_mssql_server_security_alert_policy.main[*].id)
 }
 
 output "vulnerability_assessment_id" {
-  description = "ID of the MS SQL Server Vulnerability Assessment"
-  value       = try(azurerm_mssql_server_vulnerability_assessment.sql_server["enabled"].id, null)
+  description = "ID of the MS SQL Server Vulnerability Assessment."
+  value       = one(azurerm_mssql_server_vulnerability_assessment.main[*].id)
+}
+
+output "terraform_module" {
+  description = "Information about this Terraform module."
+  value = {
+    name       = "db-sql"
+    provider   = "azurerm"
+    maintainer = "claranet"
+  }
 }
