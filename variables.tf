@@ -1,25 +1,5 @@
-variable "client_name" {
-  description = "Client name/account used in naming"
-  type        = string
-}
-
-variable "environment" {
-  description = "Project environment"
-  type        = string
-}
-
-variable "stack" {
-  description = "Project stack name"
-  type        = string
-}
-
-variable "resource_group_name" {
-  description = "Resource group name"
-  type        = string
-}
-
 variable "location" {
-  description = "Azure location for SQL Server."
+  description = "Azure location."
   type        = string
 }
 
@@ -28,14 +8,34 @@ variable "location_short" {
   type        = string
 }
 
+variable "client_name" {
+  description = "Client name/account used in naming."
+  type        = string
+}
+
+variable "environment" {
+  description = "Project environment."
+  type        = string
+}
+
+variable "stack" {
+  description = "Project stack name."
+  type        = string
+}
+
+variable "resource_group_name" {
+  description = "Resource group name."
+  type        = string
+}
+
 variable "server_version" {
-  description = "Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See https://www.terraform.io/docs/providers/azurerm/r/sql_server.html#version"
+  description = "Version of the SQL Server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). See [documentation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server#version-1)."
   type        = string
   default     = "12.0"
 }
 
 variable "allowed_cidr_list" {
-  description = "Allowed IP addresses to access the server in CIDR format. Default to all Azure services"
+  description = "Allowed IP addresses to access the server in CIDR format. Default to all Azure services."
   type        = list(string)
   default     = ["0.0.0.0/32"]
 }
@@ -50,7 +50,7 @@ variable "elastic_pool_sku" {
   description = <<DESC
     SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.
     Possible values for tier are `GeneralPurpose`, `BusinessCritical` for vCore models and `Basic`, `Standard`, or `Premium` for DTU based models.
-    See https://docs.microsoft.com/en-us/azure/sql-database/sql-database-dtu-resource-limits-elastic-pools"
+    See [documentation](https://learn.microsoft.com/en-us/azure/azure-sql/database/resource-limits-dtu-elastic-pools?view=azuresql)."
 DESC
 
   type = object({
@@ -71,13 +71,13 @@ DESC
 }
 
 variable "elastic_pool_license_type" {
-  description = "Specifies the license type applied to this database. Possible values are `LicenseIncluded` and `BasePrice`"
+  description = "Specifies the license type applied to this database. Possible values are `LicenseIncluded` and `BasePrice`."
   type        = string
   default     = null
 }
 
 variable "elastic_pool_max_size" {
-  description = "Maximum size of the Elastic Pool in gigabytes"
+  description = "Maximum size of the Elastic Pool in gigabytes."
   type        = string
   default     = null
 }
@@ -101,12 +101,12 @@ variable "elastic_pool_databases_max_capacity" {
 }
 
 variable "administrator_login" {
-  description = "Administrator login for SQL Server"
+  description = "Administrator login for SQL Server."
   type        = string
 }
 
 variable "administrator_password" {
-  description = "Administrator password for SQL Server"
+  description = "Administrator password for SQL Server."
   type        = string
 }
 
@@ -123,7 +123,7 @@ variable "create_databases_users" {
 }
 
 variable "allowed_subnets_ids" {
-  description = "List of Subnet ID to allow to connect to the SQL Instance"
+  description = "List of Subnet ID to allow to connect to the SQL Instance."
   type        = list(string)
   default     = []
 }
@@ -183,13 +183,13 @@ variable "tls_minimum_version" {
 }
 
 variable "public_network_access_enabled" {
-  description = "True to allow public network access for this server"
+  description = "True to allow public network access for this server."
   type        = bool
   default     = false
 }
 
 variable "outbound_network_restriction_enabled" {
-  description = "Whether outbound network traffic is restricted for this server"
+  description = "Whether outbound network traffic is restricted for this server."
   type        = bool
   default     = false
 }
@@ -206,13 +206,13 @@ variable "azuread_administrator" {
 }
 
 variable "connection_policy" {
-  description = "The connection policy the server will use. Possible values are `Default`, `Proxy`, and `Redirect`"
+  description = "The connection policy the server will use. Possible values are `Default`, `Proxy`, and `Redirect`."
   type        = string
   default     = "Default"
 }
 
 variable "databases_collation" {
-  description = "SQL Collation for the databases"
+  description = "SQL Collation for the databases."
   type        = string
   default     = "SQL_Latin1_General_CP1_CI_AS"
 }
@@ -224,7 +224,7 @@ variable "databases_zone_redundant" {
 }
 
 variable "point_in_time_restore_retention_days" {
-  description = "Point In Time Restore configuration. Value has to be between `7` and `35`"
+  description = "Point In Time Restore configuration. Value has to be between `7` and `35`."
   type        = number
   default     = 7
   validation {
@@ -244,79 +244,79 @@ variable "point_in_time_backup_interval_in_hours" {
 }
 
 variable "alerting_email_addresses" {
-  description = "List of email addresses to send reports for threat detection and vulnerability assesment"
+  description = "List of email addresses to send reports for threat detection and vulnerability assessment."
   type        = list(string)
   default     = []
 }
 
 variable "threat_detection_policy_enabled" {
-  description = "True to enable thread detection policy on the databases"
+  description = "True to enable thread detection policy on the databases."
   type        = bool
   default     = false
 }
 
 variable "threat_detection_policy_retention_days" {
-  description = "Specifies the number of days to keep in the Threat Detection audit logs"
+  description = "Specifies the number of days to keep in the Threat Detection audit logs."
   type        = number
   default     = 7
 }
 
 variable "threat_detection_policy_disabled_alerts" {
-  description = "Specifies a list of alerts which should be disabled. Possible values include `Access_Anomaly`, `Sql_Injection` and `Sql_Injection_Vulnerability`"
+  description = "Specifies a list of alerts which should be disabled. Possible values include `Access_Anomaly`, `Sql_Injection` and `Sql_Injection_Vulnerability`."
   type        = list(string)
   default     = []
 }
 
 variable "databases_extended_auditing_enabled" {
-  description = "True to enable extended auditing for SQL databases"
+  description = "True to enable extended auditing for SQL databases."
   type        = bool
   default     = false
 }
 
 variable "sql_server_extended_auditing_enabled" {
-  description = "True to enable extended auditing for SQL Server"
+  description = "True to enable extended auditing for SQL Server."
   type        = bool
   default     = false
 }
 
 variable "sql_server_vulnerability_assessment_enabled" {
-  description = "True to enable vulnerability assessment for this SQL Server"
+  description = "True to enable vulnerability assessment for this SQL Server."
   type        = bool
   default     = false
 }
 
 variable "sql_server_security_alerting_enabled" {
-  description = "True to enable security alerting for this SQL Server"
+  description = "True to enable security alerting for this SQL Server."
   type        = bool
   default     = false
 }
 
 variable "sql_server_extended_auditing_retention_days" {
-  description = "Server extended auditing logs retention"
+  description = "Server extended auditing logs retention."
   type        = number
   default     = 30
 }
 
 variable "databases_extended_auditing_retention_days" {
-  description = "Databases extended auditing logs retention"
+  description = "Databases extended auditing logs retention."
   type        = number
   default     = 30
 }
 
 variable "security_storage_account_blob_endpoint" {
-  description = "Storage Account blob endpoint used to store security logs and reports"
+  description = "Storage Account blob endpoint used to store security logs and reports."
   type        = string
   default     = null
 }
 
 variable "security_storage_account_access_key" {
-  description = "Storage Account access key used to store security logs and reports"
+  description = "Storage Account access key used to store security logs and reports."
   type        = string
   default     = null
 }
 
 variable "security_storage_account_container_name" {
-  description = "Storage Account container name where to store SQL Server vulneralibility assessment"
+  description = "Storage Account container name where to store SQL Server vulnerability assessment."
   type        = string
   default     = null
 }

@@ -1,32 +1,3 @@
-module "azure_region" {
-  source  = "claranet/regions/azurerm"
-  version = "x.x.x"
-
-  azure_region = var.azure_region
-}
-
-module "rg" {
-  source  = "claranet/rg/azurerm"
-  version = "x.x.x"
-
-  location    = module.azure_region.location
-  client_name = var.client_name
-  environment = var.environment
-  stack       = var.stack
-}
-
-module "logs" {
-  source  = "claranet/run/azurerm//modules/logs"
-  version = "x.x.x"
-
-  client_name         = var.client_name
-  environment         = var.environment
-  stack               = var.stack
-  location            = module.azure_region.location
-  location_short      = module.azure_region.location_short
-  resource_group_name = module.rg.resource_group_name
-}
-
 resource "random_password" "admin_password" {
   special          = true
   override_special = "#$%&-_+{}<>:"
@@ -46,7 +17,7 @@ module "sql_elastic" {
   location            = module.azure_region.location
   location_short      = module.azure_region.location_short
   stack               = var.stack
-  resource_group_name = module.rg.resource_group_name
+  resource_group_name = module.rg.name
 
   administrator_login    = "adminsqltest"
   administrator_password = random_password.admin_password.result
@@ -60,8 +31,8 @@ module "sql_elastic" {
   }
 
   logs_destinations_ids = [
-    module.logs.log_analytics_workspace_id,
-    module.logs.logs_storage_account_id,
+    module.logs.id,
+    module.logs.storage_account_id,
   ]
 
   databases = [
@@ -100,7 +71,6 @@ module "sql_elastic" {
 }
 
 # Single Database
-
 module "sql_single" {
   source  = "claranet/db-sql/azurerm"
   version = "x.x.x"
@@ -110,7 +80,7 @@ module "sql_single" {
   location            = module.azure_region.location
   location_short      = module.azure_region.location_short
   stack               = var.stack
-  resource_group_name = module.rg.resource_group_name
+  resource_group_name = module.rg.name
 
   administrator_login    = "adminsqltest"
   administrator_password = random_password.admin_password.result
@@ -119,8 +89,8 @@ module "sql_single" {
   elastic_pool_enabled = false
 
   logs_destinations_ids = [
-    module.logs.log_analytics_workspace_id,
-    module.logs.logs_storage_account_id,
+    module.logs.id,
+    module.logs.storage_account_id,
   ]
 
   databases = [

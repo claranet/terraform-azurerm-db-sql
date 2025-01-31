@@ -1,6 +1,6 @@
 #tfsec:ignore:azure-database-enable-audit
-resource "azurerm_mssql_server" "sql" {
-  name                = local.server_name
+resource "azurerm_mssql_server" "main" {
+  name                = local.name
   resource_group_name = var.resource_group_name
   location            = var.location
 
@@ -29,17 +29,17 @@ resource "azurerm_mssql_server" "sql" {
   tags = merge(local.default_tags, var.extra_tags, var.server_extra_tags)
 }
 
-resource "azurerm_mssql_firewall_rule" "firewall_rule" {
+resource "azurerm_mssql_firewall_rule" "main" {
   count = try(length(var.allowed_cidr_list), 0)
 
   name      = "rule-${count.index}"
-  server_id = azurerm_mssql_server.sql.id
+  server_id = azurerm_mssql_server.main.id
 
   start_ip_address = cidrhost(var.allowed_cidr_list[count.index], 0)
   end_ip_address   = cidrhost(var.allowed_cidr_list[count.index], -1)
 }
 
-resource "azurerm_mssql_elasticpool" "elastic_pool" {
+resource "azurerm_mssql_elasticpool" "main" {
   count = var.elastic_pool_enabled ? 1 : 0
 
   name = local.elastic_pool_name
@@ -49,7 +49,7 @@ resource "azurerm_mssql_elasticpool" "elastic_pool" {
 
   license_type = var.elastic_pool_license_type
 
-  server_name = azurerm_mssql_server.sql.name
+  server_name = azurerm_mssql_server.main.name
 
   per_database_settings {
     max_capacity = coalesce(var.elastic_pool_databases_max_capacity, var.elastic_pool_sku.capacity)
@@ -69,9 +69,27 @@ resource "azurerm_mssql_elasticpool" "elastic_pool" {
   tags = merge(local.default_tags, var.extra_tags, var.elastic_pool_extra_tags)
 }
 
-resource "azurerm_mssql_virtual_network_rule" "vnet_rule" {
+resource "azurerm_mssql_virtual_network_rule" "main" {
   for_each  = try({ for subnet in local.allowed_subnets : subnet.name => subnet }, {})
   name      = each.key
-  server_id = azurerm_mssql_server.sql.id
+  server_id = azurerm_mssql_server.main.id
   subnet_id = each.value.subnet_id
+}
+
+
+moved {
+  from = azurerm_mssql_server.sql
+  to   = azurerm_mssql_server.main
+}
+moved {
+  from = azurerm_mssql_firewall_rule.firewall_rule
+  to   = azurerm_mssql_firewall_rule.main
+}
+moved {
+  from = azurerm_mssql_elasticpool.elastic_pool
+  to   = azurerm_mssql_elasticpool.main
+}
+moved {
+  from = azurerm_mssql_virtual_network_rule.vnet_rule
+  to   = azurerm_mssql_virtual_network_rule.main
 }

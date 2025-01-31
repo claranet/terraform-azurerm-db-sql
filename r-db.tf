@@ -2,7 +2,7 @@ resource "azurerm_mssql_database" "single_database" {
   for_each = try({ for db in var.databases : db.name => db if !var.elastic_pool_enabled }, {})
 
   name      = var.use_caf_naming_for_databases ? data.azurecaf_name.sql_dbs[each.key].result : each.key
-  server_id = azurerm_mssql_server.sql.id
+  server_id = azurerm_mssql_server.main.id
 
   sku_name     = coalesce(each.value.sku_name, var.single_databases_sku_name)
   license_type = each.value.license_type
@@ -68,11 +68,11 @@ resource "azurerm_mssql_database" "elastic_pool_database" {
   for_each = try({ for db in var.databases : db.name => db if var.elastic_pool_enabled }, {})
 
   name      = var.use_caf_naming_for_databases ? data.azurecaf_name.sql_dbs[each.key].result : each.key
-  server_id = azurerm_mssql_server.sql.id
+  server_id = azurerm_mssql_server.main.id
 
   sku_name        = "ElasticPool"
   license_type    = each.value.license_type
-  elastic_pool_id = one(azurerm_mssql_elasticpool.elastic_pool[*].id)
+  elastic_pool_id = one(azurerm_mssql_elasticpool.main[*].id)
 
   collation      = coalesce(each.value.collation, var.databases_collation)
   max_size_gb    = can(regex("Secondary|OnlineSecondary", each.value.create_mode)) ? null : each.value.max_size_gb
