@@ -97,7 +97,7 @@ module "users" {
 
 | Name | Version |
 |------|---------|
-| mssql | ~> 0.2.5 |
+| mssql | ~> 0.3.0 |
 | random | >= 3.4.3 |
 
 ## Modules
