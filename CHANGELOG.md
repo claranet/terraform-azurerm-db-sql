@@ -1,3 +1,29 @@
+## 8.1.0 (2025-04-14)
+
+### Features
+
+* **GH-7:** add option to modify SQL server identity 08b98b1
+* unhardcode SQL server identity 848122b
+
+### Code Refactoring
+
+* code lint 40638ab
+
+### Miscellaneous Chores
+
+* **deps:** update dependency pre-commit to v4.2.0 9a89513
+* **deps:** update dependency terraform-docs to v0.20.0 7f33940
+* **deps:** update dependency tflint to v0.55.1 1c2ea43
+* **deps:** update dependency trivy to v0.59.0 6ff6f63
+* **deps:** update dependency trivy to v0.59.1 f58c891
+* **deps:** update dependency trivy to v0.60.0 3220d91
+* **deps:** update pre-commit hook alessandrojcm/commitlint-pre-commit-hook to v9.21.0 7e9b69f
+* **deps:** update pre-commit hook alessandrojcm/commitlint-pre-commit-hook to v9.22.0 271b542
+* **deps:** update pre-commit hook tofuutils/pre-commit-opentofu to v2.2.0 5fce321
+* **deps:** update terraform mssql to ~> 0.3.0 752d22c
+* **deps:** update tools 54f875f
+* update Github templates de4cc08
+
 ## 8.0.0 (2025-01-31)
 
 ### ⚠ BREAKING CHANGES
