@@ -1,3 +1,13 @@
+## 8.1.1 (2025-04-14)
+
+### Bug Fixes
+
+* parametrize SQL DB identity ([#9](https://git.fr.clara.net/claranet/projects/cloud/azure/terraform/modules/db-sql/issues/9)) 4169302
+
+### Documentation
+
+* **GH-9:** update README 9f1b77f
+
 ## 8.1.0 (2025-04-14)
 
 ### Features
