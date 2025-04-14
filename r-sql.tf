@@ -23,10 +23,10 @@ resource "azurerm_mssql_server" "main" {
   }
 
   dynamic "identity" {
-    for_each = var.identity_type[*]
+    for_each = var.identity[*]
     content {
-      type         = var.identity_type
-      identity_ids = endswith(var.identity_type, "UserAssigned") ? var.identity_ids : null
+      type         = var.identity.type
+      identity_ids = endswith(var.identity.type, "UserAssigned") ? var.identity.identity_ids : null
     }
   }
 
