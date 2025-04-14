@@ -86,7 +86,7 @@ output "custom_databases_users_roles" {
 
 output "identity_principal_id" {
   description = "SQL Server system identity principal ID."
-  value       = try(azurerm_mssql_server.main.identity[0], null)
+  value       = try(azurerm_mssql_server.main.identity[0].principal_id, null)
 }
 
 output "security_alert_policy_id" {

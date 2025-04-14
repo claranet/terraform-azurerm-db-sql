@@ -320,3 +320,13 @@ variable "security_storage_account_container_name" {
   type        = string
   default     = null
 }
+
+variable "identity" {
+  description = "Identity block information."
+  type = object({
+    type         = optional(string, "SystemAssigned")
+    identity_ids = optional(list(string))
+  })
+  default  = {}
+  nullable = false
+}
