@@ -320,3 +320,17 @@ variable "security_storage_account_container_name" {
   type        = string
   default     = null
 }
+
+# Identity
+
+variable "identity_type" {
+  description = "Specifies the type of Managed Service Identity that should be configured on this SQL Server. Possible values are `SystemAssigned`, `UserAssigned`, `SystemAssigned, UserAssigned` (to enable both)."
+  type        = string
+  default     = "SystemAssigned"
+}
+
+variable "identity_ids" {
+  description = "Specifies a list of User Assigned Managed Identity IDs to be assigned to this SQL Server."
+  type        = list(string)
+  default     = null
+}

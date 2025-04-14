@@ -22,8 +22,12 @@ resource "azurerm_mssql_server" "main" {
     }
   }
 
-  identity {
-    type = "SystemAssigned"
+  dynamic "identity" {
+    for_each = var.identity_type[*]
+    content {
+      type         = var.identity_type
+      identity_ids = endswith(var.identity_type, "UserAssigned") ? var.identity_ids : null
+    }
   }
 
   tags = merge(local.default_tags, var.extra_tags, var.server_extra_tags)
