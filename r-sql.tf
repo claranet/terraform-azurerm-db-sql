@@ -13,7 +13,7 @@ resource "azurerm_mssql_server" "main" {
   administrator_login          = var.administrator_login
   administrator_login_password = var.administrator_password
   dynamic "azuread_administrator" {
-    for_each = var.azuread_administrator != null ? ["enabled"] : []
+    for_each = var.azuread_administrator[*]
     content {
       login_username              = var.azuread_administrator.login_username
       object_id                   = var.azuread_administrator.object_id
