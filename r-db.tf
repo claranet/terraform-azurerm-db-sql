@@ -29,7 +29,7 @@ resource "azurerm_mssql_database" "single_database" {
   storage_account_type = each.value.storage_account_type
 
   dynamic "identity" {
-    for_each = each.value.identity_ids != null ? length(each.value.identity_ids) > 0 ? ["UserAssigned"] : [] : []
+    for_each = length(each.value.identity_ids) > 0 ? ["UserAssigned"] : []
     content {
       type         = "UserAssigned"
       identity_ids = each.value.identity_ids
@@ -100,7 +100,7 @@ resource "azurerm_mssql_database" "elastic_pool_database" {
   storage_account_type = each.value.storage_account_type
 
   dynamic "identity" {
-    for_each = each.value.identity_ids != null ? length(each.value.identity_ids) > 0 ? ["UserAssigned"] : [] : []
+    for_each = length(each.value.identity_ids) > 0 ? ["UserAssigned"] : []
     content {
       type         = "UserAssigned"
       identity_ids = each.value.identity_ids
