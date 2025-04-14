@@ -148,7 +148,6 @@ variable "databases" {
     name                        = string
     license_type                = optional(string)
     sku_name                    = optional(string)
-    identity_type               = optional(string)
     identity_ids                = optional(list(string))
     max_size_gb                 = optional(number)
     create_mode                 = optional(string)
