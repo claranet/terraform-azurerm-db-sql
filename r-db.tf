@@ -28,6 +28,14 @@ resource "azurerm_mssql_database" "single_database" {
 
   storage_account_type = each.value.storage_account_type
 
+  dynamic "identity" {
+    for_each = length(each.value.identity_ids) > 0 ? ["UserAssigned"] : []
+    content {
+      type         = "UserAssigned"
+      identity_ids = each.value.identity_ids
+    }
+  }
+
   dynamic "threat_detection_policy" {
     for_each = var.threat_detection_policy_enabled ? ["enabled"] : []
     content {
@@ -90,6 +98,14 @@ resource "azurerm_mssql_database" "elastic_pool_database" {
   read_replica_count = startswith(local.elastic_pool_sku.name, "HS") ? each.value.read_replica_count : null
 
   storage_account_type = each.value.storage_account_type
+
+  dynamic "identity" {
+    for_each = length(each.value.identity_ids) > 0 ? ["UserAssigned"] : []
+    content {
+      type         = "UserAssigned"
+      identity_ids = each.value.identity_ids
+    }
+  }
 
   dynamic "threat_detection_policy" {
     for_each = var.threat_detection_policy_enabled ? ["enabled"] : []
