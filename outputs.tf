@@ -23,7 +23,7 @@ output "elastic_pool_resource" {
 
 output "databases_resource" {
   description = "SQL Databases resource list."
-  value       = var.elastic_pool_enabled ? azurerm_mssql_database.elastic_pool_database : azurerm_mssql_database.single_database
+  value       = azurerm_mssql_database.main
 }
 
 output "elastic_pool_id" {
@@ -33,21 +33,13 @@ output "elastic_pool_id" {
 
 output "databases_id" {
   description = "Map of the SQL Databases names => IDs."
-  value       = var.elastic_pool_enabled ? { for db in azurerm_mssql_database.elastic_pool_database : db.name => db.id } : { for db in azurerm_mssql_database.single_database : db.name => db.id }
+  value       = { for db in azurerm_mssql_database.main : db.name => db.id }
 }
 
 output "default_administrator_databases_connection_strings" {
   description = "Map of the SQL Databases with administrator credentials connection strings"
-  value = var.elastic_pool_enabled ? {
-    for db in azurerm_mssql_database.elastic_pool_database : db.name => formatlist(
-      "Server=tcp:%s;Database=%s;User ID=%s;Password=%s;Encrypt=true;",
-      azurerm_mssql_server.main.fully_qualified_domain_name,
-      db.name,
-      var.administrator_login,
-      var.administrator_password
-    )
-    } : {
-    for db in azurerm_mssql_database.single_database : db.name => formatlist(
+  value = {
+    for db in azurerm_mssql_database.main : db.name => formatlist(
       "Server=tcp:%s;Database=%s;User ID=%s;Password=%s;Encrypt=true;",
       azurerm_mssql_server.main.fully_qualified_domain_name,
       db.name,

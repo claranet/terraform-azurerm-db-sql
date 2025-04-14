@@ -183,18 +183,16 @@ module "sql_single" {
 | Name | Source | Version |
 |------|--------|---------|
 | custom\_users | ./modules/databases_users | n/a |
+| databases\_logging | claranet/diagnostic-settings/azurerm | ~> 8.0.0 |
 | databases\_users | ./modules/databases_users | n/a |
-| elastic\_pool\_db\_logging | claranet/diagnostic-settings/azurerm | ~> 8.0.0 |
 | pool\_logging | claranet/diagnostic-settings/azurerm | ~> 8.0.0 |
-| single\_db\_logging | claranet/diagnostic-settings/azurerm | ~> 8.0.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [azurerm_mssql_database.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database) | resource |
-| [azurerm_mssql_database_extended_auditing_policy.elastic_pool_db](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database_extended_auditing_policy) | resource |
-| [azurerm_mssql_database_extended_auditing_policy.single_db](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database_extended_auditing_policy) | resource |
+| [azurerm_mssql_database_extended_auditing_policy.db](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database_extended_auditing_policy) | resource |
 | [azurerm_mssql_elasticpool.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_elasticpool) | resource |
 | [azurerm_mssql_firewall_rule.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_firewall_rule) | resource |
 | [azurerm_mssql_server.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server) | resource |
