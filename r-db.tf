@@ -107,3 +107,8 @@ resource "azurerm_mssql_database" "main" {
   # Tags - same for both types
   tags = merge(local.default_tags, var.extra_tags, try(each.value.database_extra_tags, {}))
 }
+
+moved {
+  from = azurerm_mssql_database.single_database
+  to   = azurerm_mssql_database.main
+}

@@ -31,3 +31,8 @@ module "databases_logging" {
   log_categories        = var.logs_categories
   metric_categories     = var.logs_metrics_categories
 }
+
+moved {
+  from = module.single_db_logging
+  to   = module.databases_logging
+}

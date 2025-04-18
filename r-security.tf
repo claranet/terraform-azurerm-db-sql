@@ -52,3 +52,8 @@ moved {
   from = azurerm_mssql_server_extended_auditing_policy.sql_server["enabled"]
   to   = azurerm_mssql_server_extended_auditing_policy.main[0]
 }
+
+moved {
+  from = azurerm_mssql_database_extended_auditing_policy.single_db
+  to   = azurerm_mssql_database_extended_auditing_policy.db
+}
