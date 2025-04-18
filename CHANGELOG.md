@@ -1,3 +1,17 @@
+## 8.2.0 (2025-04-18)
+
+### Features
+
+* **GH-3:** merge single_database and elastic_pools 3872098
+
+### Code Refactoring
+
+* **GH-3:** revamp module c48ad05
+
+### Miscellaneous Chores
+
+* moved blocks fffedf1
+
 ## 8.1.1 (2025-04-14)
 
 ### Bug Fixes
