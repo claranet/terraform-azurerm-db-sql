@@ -30,10 +30,10 @@ resource "azurerm_mssql_server_extended_auditing_policy" "main" {
   retention_in_days                       = var.sql_server_extended_auditing_retention_days
 }
 
-resource "azurerm_mssql_database_extended_auditing_policy" "elastic_pool_db" {
-  for_each = var.databases_extended_auditing_enabled ? try({ for db in var.databases : db.name => db if var.elastic_pool_enabled == true }, {}) : {}
+resource "azurerm_mssql_database_extended_auditing_policy" "db" {
+  for_each = var.databases_extended_auditing_enabled ? try({ for db in var.databases : db.name => db }, {}) : {}
 
-  database_id                             = azurerm_mssql_database.elastic_pool_database[each.key].id
+  database_id                             = azurerm_mssql_database.main[each.key].id
   storage_endpoint                        = var.security_storage_account_blob_endpoint
   storage_account_access_key              = var.security_storage_account_access_key
   storage_account_access_key_is_secondary = false
@@ -53,12 +53,7 @@ moved {
   to   = azurerm_mssql_server_extended_auditing_policy.main[0]
 }
 
-resource "azurerm_mssql_database_extended_auditing_policy" "single_db" {
-  for_each = var.databases_extended_auditing_enabled ? try({ for db in var.databases : db.name => db if var.elastic_pool_enabled == false }, {}) : {}
-
-  database_id                             = azurerm_mssql_database.single_database[each.key].id
-  storage_endpoint                        = var.security_storage_account_blob_endpoint
-  storage_account_access_key              = var.security_storage_account_access_key
-  storage_account_access_key_is_secondary = false
-  retention_in_days                       = var.databases_extended_auditing_retention_days
+moved {
+  from = azurerm_mssql_database_extended_auditing_policy.single_db
+  to   = azurerm_mssql_database_extended_auditing_policy.db
 }

@@ -4,8 +4,7 @@ module "databases_users" {
   source = "./modules/databases_users"
 
   depends_on = [
-    azurerm_mssql_database.single_database,
-    azurerm_mssql_database.elastic_pool_database
+    azurerm_mssql_database.main
   ]
 
   administrator_login    = var.administrator_login
@@ -24,8 +23,7 @@ module "custom_users" {
   source = "./modules/databases_users"
 
   depends_on = [
-    azurerm_mssql_database.single_database,
-    azurerm_mssql_database.elastic_pool_database
+    azurerm_mssql_database.main
   ]
 
   administrator_login    = var.administrator_login
@@ -33,7 +31,7 @@ module "custom_users" {
 
   sql_server_hostname = azurerm_mssql_server.main.fully_qualified_domain_name
 
-  database_name = var.elastic_pool_enabled ? azurerm_mssql_database.elastic_pool_database[each.value.database].name : azurerm_mssql_database.single_database[each.value.database].name
+  database_name = azurerm_mssql_database.main[each.value.database].name
   user_name     = each.value.name
   user_roles    = each.value.roles
 }
