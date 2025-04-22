@@ -79,7 +79,7 @@ resource "azurerm_mssql_database" "main" {
   dynamic "short_term_retention_policy" {
     # For elastic pool databases, exclude the block for HS SKUs
     # For single databases, always include the block
-    for_each = var.elastic_pool_enabled && startswith(local.elastic_pool_sku.name, "HS") ? [] : ["enabled"]
+    for_each = var.elastic_pool_enabled && try(startswith(local.elastic_pool_sku.name, "HS"), false) ? [] : ["enabled"]
     content {
       retention_days = var.point_in_time_restore_retention_days
       # backup_interval_in_hours is only supported for elastic pool databases
