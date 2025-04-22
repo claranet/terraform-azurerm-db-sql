@@ -333,7 +333,7 @@ variable "identity" {
 }
 
 variable "primary_user_assigned_identity_id" {
-  description = "Specifies the primary user managed identity id. Required if type within the identity block is set to either SystemAssigned, UserAssigned or UserAssigned and should be set at same time as setting identity_ids"
+  description = "Specifies the primary user managed identity id. Required if type within the identity block is set to either SystemAssigned, UserAssigned or UserAssigned and should be set at same time as setting identity_ids."
   type        = string
   default     = null
 }
