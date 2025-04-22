@@ -1,3 +1,19 @@
+## 8.2.1 (2025-04-22)
+
+### Bug Fixes
+
+* 🐛 add missing primary_user_assigned_identity_id parameter required for UserAssigned identity b097db0
+* 🐛 null error 55bc345
+
+### Documentation
+
+* 📚️ update README 0faa585
+* description dot a0af195
+
+### Miscellaneous Chores
+
+* **deps:** update dependency trivy to v0.61.1 10e8b2e
+
 ## 8.2.0 (2025-04-18)
 
 ### Features
