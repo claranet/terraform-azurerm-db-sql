@@ -22,6 +22,8 @@ resource "azurerm_mssql_server" "main" {
     }
   }
 
+  primary_user_assigned_identity_id = var.primary_user_assigned_identity_id
+
   dynamic "identity" {
     for_each = var.identity[*]
     content {

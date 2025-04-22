@@ -248,6 +248,7 @@ module "sql_single" {
 | outbound\_network\_restriction\_enabled | Whether outbound network traffic is restricted for this server. | `bool` | `false` | no |
 | point\_in\_time\_backup\_interval\_in\_hours | The hours between each differential backup. This is only applicable to live databases but not dropped databases. Value has to be 12 or 24. Defaults to 12 hours. | `number` | `12` | no |
 | point\_in\_time\_restore\_retention\_days | Point In Time Restore configuration. Value has to be between `7` and `35`. | `number` | `7` | no |
+| primary\_user\_assigned\_identity\_id | Specifies the primary user managed identity id. Required if type within the identity block is set to either SystemAssigned, UserAssigned or UserAssigned and should be set at same time as setting identity\_ids. | `string` | `null` | no |
 | public\_network\_access\_enabled | True to allow public network access for this server. | `bool` | `false` | no |
 | resource\_group\_name | Resource group name. | `string` | n/a | yes |
 | security\_storage\_account\_access\_key | Storage Account access key used to store security logs and reports. | `string` | `null` | no |
