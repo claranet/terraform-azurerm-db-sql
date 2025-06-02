@@ -36,13 +36,13 @@ resource "azurerm_mssql_server" "main" {
 }
 
 resource "azurerm_mssql_firewall_rule" "main" {
-  count = try(length(var.allowed_cidr_list), 0)
+  for_each = can(tomap(var.allowed_cidrs)) ? tomap(var.allowed_cidrs) : { for idx, cidr in var.allowed_cidrs : "rule-${idx}" => cidr }
 
-  name      = "rule-${count.index}"
+  name      = each.key
   server_id = azurerm_mssql_server.main.id
 
-  start_ip_address = cidrhost(var.allowed_cidr_list[count.index], 0)
-  end_ip_address   = cidrhost(var.allowed_cidr_list[count.index], -1)
+  start_ip_address = cidrhost(each.value, 0)
+  end_ip_address   = cidrhost(each.value, -1)
 }
 
 resource "azurerm_mssql_elasticpool" "main" {

@@ -9,6 +9,25 @@ only along with [Firewall rules](https://docs.microsoft.com/en-us/azure/sql-data
 and [Diagnostic settings](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-metrics-diag-logging)
 enabled.
 
+## Migration from 8.x.x to 8.3.x
+
+The variable `allowed_cidr_list` variable has been renamed to `allowed_cidrs` and the resource `azurerm_mssql_firewall_rule.main` is now using a `for_each` loop to create the firewall rules (was using a `count` before).
+In order to migrate your state without recreating the firewall rules, you can run :
+
+```bash
+tofu state rm module.sql.azurerm_mssql_firewall_rule.main
+```
+
+Then add to your IAC this code :
+
+```hcl
+import {
+  for_each = local.allowed_cidrs
+  to = module.sql.azurerm_mssql_firewall_rule.main[each.key]
+  id = "${nonsensitive(module.sql.resource.id)}/firewallRules/${each.key}"
+}
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Global versioning rule for Claranet Azure modules
 
@@ -72,6 +91,8 @@ module "sql_elastic" {
     capacity = 2
   }
 
+  allowed_cidrs = ["1.2.3.4/32", "5.6.7.8/16"]
+
   logs_destinations_ids = [
     module.logs.id,
     module.logs.storage_account_id,
@@ -129,6 +150,11 @@ module "sql_single" {
   create_databases_users = true
 
   elastic_pool_enabled = false
+
+  allowed_cidrs = {
+    "foo" = "1.2.3.4/32"
+    "bar" = "5.6.7.8/16"
+  }
 
   logs_destinations_ids = [
     module.logs.id,
@@ -211,7 +237,7 @@ module "sql_single" {
 | administrator\_login | Administrator login for SQL Server. | `string` | n/a | yes |
 | administrator\_password | Administrator password for SQL Server. | `string` | n/a | yes |
 | alerting\_email\_addresses | List of email addresses to send reports for threat detection and vulnerability assessment. | `list(string)` | `[]` | no |
-| allowed\_cidr\_list | Allowed IP addresses to access the server in CIDR format. Default to all Azure services. | `list(string)` | <pre>[<br/>  "0.0.0.0/32"<br/>]</pre> | no |
+| allowed\_cidrs | List/map of allowed CIDR ranges to access the SQL server. Default to all Azure services. | `any` | <pre>{<br/>  "azure-services": "0.0.0.0/32"<br/>}</pre> | no |
 | allowed\_subnets\_ids | List of Subnet ID to allow to connect to the SQL Instance. | `list(string)` | `[]` | no |
 | azuread\_administrator | Azure AD Administrator configuration block of this SQL Server. | <pre>object({<br/>    login_username              = optional(string)<br/>    object_id                   = optional(string)<br/>    tenant_id                   = optional(string)<br/>    azuread_authentication_only = optional(bool)<br/>  })</pre> | `null` | no |
 | backup\_retention | Definition of long term backup retention for all the databases in this SQL Server. | <pre>object({<br/>    weekly_retention  = optional(number)<br/>    monthly_retention = optional(number)<br/>    yearly_retention  = optional(number)<br/>    week_of_year      = optional(number)<br/>  })</pre> | `{}` | no |

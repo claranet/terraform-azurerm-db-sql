@@ -30,6 +30,8 @@ module "sql_elastic" {
     capacity = 2
   }
 
+  allowed_cidrs = ["1.2.3.4/32", "5.6.7.8/16"]
+
   logs_destinations_ids = [
     module.logs.id,
     module.logs.storage_account_id,
@@ -87,6 +89,11 @@ module "sql_single" {
   create_databases_users = true
 
   elastic_pool_enabled = false
+
+  allowed_cidrs = {
+    "foo" = "1.2.3.4/32"
+    "bar" = "5.6.7.8/16"
+  }
 
   logs_destinations_ids = [
     module.logs.id,
