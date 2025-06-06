@@ -1,3 +1,18 @@
+## 8.3.0 (2025-06-06)
+
+### Features
+
+* **AZ-1568:** add variable allowed_cidrs c1577bd
+
+### Miscellaneous Chores
+
+* **deps:** update dependency opentofu to v1.9.1 0303d59
+* **deps:** update dependency tflint to v0.57.0 f08a408
+* **deps:** update dependency tflint to v0.58.0 9315bba
+* **deps:** update dependency trivy to v0.62.0 1ebdb96
+* **deps:** update dependency trivy to v0.62.1 b994fce
+* **deps:** update dependency trivy to v0.63.0 74b2a1e
+
 ## 8.2.1 (2025-04-22)
 
 ### Bug Fixes
