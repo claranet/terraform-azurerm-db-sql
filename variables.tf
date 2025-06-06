@@ -34,10 +34,16 @@ variable "server_version" {
   default     = "12.0"
 }
 
-variable "allowed_cidr_list" {
-  description = "Allowed IP addresses to access the server in CIDR format. Default to all Azure services."
-  type        = list(string)
-  default     = ["0.0.0.0/32"]
+variable "allowed_cidrs" {
+  description = "List/map of allowed CIDR ranges to access the SQL server. Default to all Azure services."
+  type        = any
+  nullable    = false
+  default     = { azure-services = "0.0.0.0/32" }
+
+  validation {
+    condition     = can(tomap(var.allowed_cidrs)) || can(tolist(var.allowed_cidrs))
+    error_message = "The `allowed_cidrs` argument must either be list(string) or map(string) of CIDRs."
+  }
 }
 
 variable "elastic_pool_enabled" {
