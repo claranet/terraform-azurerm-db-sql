@@ -209,9 +209,9 @@ module "sql_single" {
 | Name | Source | Version |
 |------|--------|---------|
 | custom\_users | ./modules/databases_users | n/a |
-| databases\_logging | claranet/diagnostic-settings/azurerm | ~> 8.0.0 |
+| databases\_logging | claranet/diagnostic-settings/azurerm | ~> 8.1.0 |
 | databases\_users | ./modules/databases_users | n/a |
-| pool\_logging | claranet/diagnostic-settings/azurerm | ~> 8.0.0 |
+| pool\_logging | claranet/diagnostic-settings/azurerm | ~> 8.1.0 |
 
 ## Resources
 
