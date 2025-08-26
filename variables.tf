@@ -106,6 +106,12 @@ variable "elastic_pool_databases_max_capacity" {
   default     = null
 }
 
+variable "express_vulnerability_assessment_enabled" {
+  description = "True to enable Express vulnerability assessment for databases servers."
+  type        = bool
+  default     = false
+}
+
 variable "administrator_login" {
   description = "Administrator login for SQL Server."
   type        = string

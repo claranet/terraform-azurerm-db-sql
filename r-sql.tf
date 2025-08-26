@@ -10,6 +10,9 @@ resource "azurerm_mssql_server" "main" {
   public_network_access_enabled        = var.public_network_access_enabled
   outbound_network_restriction_enabled = var.outbound_network_restriction_enabled
 
+  # Express vulnerability assessment settings cannot be applied along with Classic SQL vulnerability assessment
+  express_vulnerability_assessment_enabled = var.express_vulnerability_assessment_enabled
+
   administrator_login          = var.administrator_login
   administrator_login_password = var.administrator_password
   dynamic "azuread_administrator" {
@@ -33,6 +36,13 @@ resource "azurerm_mssql_server" "main" {
   }
 
   tags = merge(local.default_tags, var.extra_tags, var.server_extra_tags)
+
+  lifecycle {
+    precondition {
+      condition     = !(var.express_vulnerability_assessment_enabled == true && var.sql_server_vulnerability_assessment_enabled == true)
+      error_message = "Classic SQL Vulnerability Assessment cannot be enabled when Express Vulnerability Assessment is enabled."
+    }
+  }
 }
 
 resource "azurerm_mssql_firewall_rule" "main" {

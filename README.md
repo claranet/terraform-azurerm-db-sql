@@ -262,6 +262,7 @@ module "sql_single" {
 | elastic\_pool\_sku | SKU for the Elastic Pool with tier and eDTUs capacity. Premium tier with zone redundancy is mandatory for high availability.<br/>    Possible values for tier are `GeneralPurpose`, `BusinessCritical` for vCore models and `Basic`, `Standard`, or `Premium` for DTU based models.<br/>    See [documentation](https://learn.microsoft.com/en-us/azure/azure-sql/database/resource-limits-dtu-elastic-pools?view=azuresql)." | <pre>object({<br/>    tier     = string,<br/>    capacity = number,<br/>    family   = optional(string, "Gen5")<br/>  })</pre> | `null` | no |
 | elastic\_pool\_zone\_redundant | True to have the Elastic Pool zone redundant, SKU tier must be Premium to use it. This is mandatory for high availability. | `bool` | `false` | no |
 | environment | Project environment. | `string` | n/a | yes |
+| express\_vulnerability\_assessment\_enabled | True to enable Express vulnerability assessment for databases servers. | `bool` | `false` | no |
 | extra\_tags | Extra tags to add. | `map(string)` | `{}` | no |
 | identity | Identity block information. | <pre>object({<br/>    type         = optional(string, "SystemAssigned")<br/>    identity_ids = optional(list(string))<br/>  })</pre> | `{}` | no |
 | location | Azure location. | `string` | n/a | yes |
