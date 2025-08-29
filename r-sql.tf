@@ -10,7 +10,7 @@ resource "azurerm_mssql_server" "main" {
   public_network_access_enabled        = var.public_network_access_enabled
   outbound_network_restriction_enabled = var.outbound_network_restriction_enabled
 
-  # Express vulnerability assessment settings cannot be applied along with Classic SQL vulnerability assessment
+  # Express vulnerability assessment setting cannot be applied along with classic SQL vulnerability assessment
   express_vulnerability_assessment_enabled = var.express_vulnerability_assessment_enabled
 
   administrator_login          = var.administrator_login

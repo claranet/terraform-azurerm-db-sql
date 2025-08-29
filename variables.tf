@@ -107,7 +107,7 @@ variable "elastic_pool_databases_max_capacity" {
 }
 
 variable "express_vulnerability_assessment_enabled" {
-  description = "True to enable Express vulnerability assessment for databases servers."
+  description = "True to enable express vulnerability assessment for this SQL Server."
   type        = bool
   default     = false
 }
