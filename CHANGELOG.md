@@ -1,3 +1,27 @@
+## 8.4.0 (2025-08-29)
+
+### Features
+
+* **AZ-1603:** Add express vuln assessment 1780cee
+
+### Miscellaneous Chores
+
+* **⚙️:** ✏️ update template identifier for MR review b58420f
+* 🔒️ apply more suggestions 42c54c6
+* 🗑️ remove old commitlint configuration files 1cbb865
+* apply descriptions suggestions 98d50ef
+* **deps:** 🔗 bump AzureRM provider version to v4.31+ 233c599
+* **deps:** update dependency claranet/diagnostic-settings/azurerm to ~> 8.1.0 3747f8e
+* **deps:** update dependency opentofu to v1.10.0 f5d9a2e
+* **deps:** update dependency opentofu to v1.10.1 5f6429e
+* **deps:** update dependency opentofu to v1.10.3 6415556
+* **deps:** update dependency tflint to v0.58.1 9deddbe
+* **deps:** update pre-commit hook pre-commit/pre-commit-hooks to v6 49b2690
+* **deps:** update pre-commit hook tofuutils/pre-commit-opentofu to v2.2.1 557cf84
+* **deps:** update tools 71a5f0f
+* **deps:** update tools bc3f9aa
+* **deps:** update tools 0d9c4bd
+
 ## 8.3.0 (2025-06-06)
 
 ### Features
