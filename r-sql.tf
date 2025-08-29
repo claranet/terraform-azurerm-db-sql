@@ -39,8 +39,8 @@ resource "azurerm_mssql_server" "main" {
 
   lifecycle {
     precondition {
-      condition     = !(var.express_vulnerability_assessment_enabled == true && var.sql_server_vulnerability_assessment_enabled == true)
-      error_message = "Classic SQL Vulnerability Assessment cannot be enabled when Express Vulnerability Assessment is enabled."
+      condition     = !(var.express_vulnerability_assessment_enabled && var.sql_server_vulnerability_assessment_enabled)
+      error_message = "Classic SQL vulnerability assessment cannot be enabled when express vulnerability assessment is enabled."
     }
   }
 }
