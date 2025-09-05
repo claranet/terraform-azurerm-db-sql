@@ -2,7 +2,7 @@ module "pool_logging" {
   count = var.logs_destinations_ids != toset([]) && var.elastic_pool_enabled ? 1 : 0
 
   source  = "claranet/diagnostic-settings/azurerm"
-  version = "~> 8.1.0"
+  version = "~> 8.2.0"
 
   resource_id = azurerm_mssql_elasticpool.main[0].id
 
@@ -19,7 +19,7 @@ module "databases_logging" {
   for_each = { for db in var.databases : db.name => db if var.logs_destinations_ids != toset([]) }
 
   source  = "claranet/diagnostic-settings/azurerm"
-  version = "~> 8.1.0"
+  version = "~> 8.2.0"
 
   resource_id = azurerm_mssql_database.main[each.key].id
 
