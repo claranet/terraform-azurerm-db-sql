@@ -1,3 +1,17 @@
+## 8.4.1 (2025-09-30)
+
+### Code Refactoring
+
+* **deps:** 🔗 update claranet/azurecaf to ~> 1.3.0 🔧 00ec186
+
+### Miscellaneous Chores
+
+* **deps:** update dependency opentofu to v1.10.6 cb9ccd5
+* **deps:** update dependency tflint to v0.59.1 e5db8cc
+* **deps:** update dependency trivy to v0.66.0 18c435f
+* **deps:** update dependency trivy to v0.67.0 d39c04c
+* **deps:** update terraform claranet/diagnostic-settings/azurerm to ~> 8.2.0 27a697f
+
 ## 8.4.0 (2025-08-29)
 
 ### Features
