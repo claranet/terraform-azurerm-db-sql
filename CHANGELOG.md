@@ -1,3 +1,21 @@
+## 8.4.3 (2026-03-27)
+
+### Bug Fixes
+
+* **trivy:** 🐛 drop unsafe trivy pre-commit 🔒️ fc8fb6b
+
+### Code Refactoring
+
+* update module structure and Github actions 👷 0a27d1b
+
+### Miscellaneous Chores
+
+* **AI:** 🤖 add AI Agents instructions for Contributing 59435af
+* **deps:** 🔗 bump tflint rules version 7f86172
+* **deps:** update dependency opentofu to v1.11.5 779f127
+* **deps:** update dependency trivy to v0.69.2 ccf8228
+* **deps:** update dependency trivy to v0.69.3 73d4049
+
 ## 8.4.2 (2026-02-25)
 
 ### Code Refactoring
