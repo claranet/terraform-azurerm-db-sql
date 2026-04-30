@@ -200,14 +200,14 @@ module "sql_single" {
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | azurecaf | >= 1.2.28 |
 | azurerm | ~> 4.31 |
 
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | custom\_users | ./modules/databases_users | n/a |
 | databases\_logging | claranet/diagnostic-settings/azurerm | ~> 8.2.0 |
 | databases\_users | ./modules/databases_users | n/a |
@@ -216,7 +216,7 @@ module "sql_single" {
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azurerm_mssql_database.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database) | resource |
 | [azurerm_mssql_database_extended_auditing_policy.db](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database_extended_auditing_policy) | resource |
 | [azurerm_mssql_elasticpool.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_elasticpool) | resource |
@@ -233,7 +233,7 @@ module "sql_single" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | administrator\_login | Administrator login for SQL Server. | `string` | n/a | yes |
 | administrator\_password | Administrator password for SQL Server. | `string` | n/a | yes |
 | alerting\_email\_addresses | List of email addresses to send reports for threat detection and vulnerability assessment. | `list(string)` | `[]` | no |
@@ -299,7 +299,7 @@ module "sql_single" {
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | administrator\_login | SQL Administrator login. |
 | administrator\_password | SQL Administrator password. |
 | custom\_databases\_users | Map of the custom SQL Databases users |

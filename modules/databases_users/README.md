@@ -96,7 +96,7 @@ module "users" {
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | mssql | ~> 0.3.0 |
 | random | >= 3.4.3 |
 
@@ -107,7 +107,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [mssql_login.main](https://registry.terraform.io/providers/betr-io/mssql/latest/docs/resources/login) | resource |
 | [mssql_user.main](https://registry.terraform.io/providers/betr-io/mssql/latest/docs/resources/user) | resource |
 | [random_password.main](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
@@ -115,7 +115,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | administrator\_login | Login for the SQL Server administrator. | `string` | n/a | yes |
 | administrator\_password | Password for the SQL Server administrator. | `string` | n/a | yes |
 | database\_name | Name of the database where the custom user should be created. | `string` | n/a | yes |
@@ -126,7 +126,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | name | Name of the custom user. |
 | password | Password of the custom user. |
 | roles | Roles of the custom user. |
