@@ -202,17 +202,17 @@ module "sql_single" {
 
 | Name | Version |
 | ---- | ------- |
-| azurecaf | >= 1.2.28 |
-| azurerm | ~> 4.31 |
+| azurecaf | ~> 1.3.0 |
+| azurerm | ~> 5.0 |
 
 ## Modules
 
 | Name | Source | Version |
 | ---- | ------ | ------- |
 | custom\_users | ./modules/databases_users | n/a |
-| databases\_logging | claranet/diagnostic-settings/azurerm | ~> 8.2.0 |
+| databases\_logging | claranet/diagnostic-settings/azurerm | ~> 9.0 |
 | databases\_users | ./modules/databases_users | n/a |
-| pool\_logging | claranet/diagnostic-settings/azurerm | ~> 8.2.0 |
+| pool\_logging | claranet/diagnostic-settings/azurerm | ~> 9.0 |
 
 ## Resources
 

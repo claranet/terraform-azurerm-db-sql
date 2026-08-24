@@ -24,7 +24,7 @@ resource "azurerm_mssql_server_extended_auditing_policy" "main" {
   count = var.sql_server_extended_auditing_enabled ? 1 : 0
 
   server_id                               = azurerm_mssql_server.main.id
-  storage_endpoint                        = var.security_storage_account_blob_endpoint
+  blob_storage_endpoint                   = var.security_storage_account_blob_endpoint
   storage_account_access_key              = var.security_storage_account_access_key
   storage_account_access_key_is_secondary = false
   retention_in_days                       = var.sql_server_extended_auditing_retention_days
@@ -34,7 +34,7 @@ resource "azurerm_mssql_database_extended_auditing_policy" "db" {
   for_each = var.databases_extended_auditing_enabled ? try({ for db in var.databases : db.name => db }, {}) : {}
 
   database_id                             = azurerm_mssql_database.main[each.key].id
-  storage_endpoint                        = var.security_storage_account_blob_endpoint
+  blob_storage_endpoint                   = var.security_storage_account_blob_endpoint
   storage_account_access_key              = var.security_storage_account_access_key
   storage_account_access_key_is_secondary = false
   retention_in_days                       = var.databases_extended_auditing_retention_days
