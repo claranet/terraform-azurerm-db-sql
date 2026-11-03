@@ -46,26 +46,36 @@ locals {
     }
   ] : []
 
-  standard_allowed_create_mode = {
-    "a" = "Default"
-    "b" = "Copy"
-    "c" = "Secondary"
-    "d" = "PointInTimeRestore"
-    "e" = "Restore"
-    "f" = "Recovery"
-    "g" = "RestoreExternalBackup"
-    "h" = "RestoreExternalBackup"
-    "i" = "RestoreLongTermRetentionBackup"
-    "j" = "OnlineSecondary"
+  # Create mode of each database: the requested one when the SKU supports it, `Default` when unset or not supported
+  databases_create_mode = {
+    for db in var.databases : db.name => (
+      contains(startswith(local.databases_sku[db.name], "dw") ? local.datawarehouse_allowed_create_mode : local.standard_allowed_create_mode, coalesce(db.create_mode, "Default"))
+      ? coalesce(db.create_mode, "Default")
+      : "Default"
+    )
   }
 
-  datawarehouse_allowed_create_mode = {
-    "a" = "Default"
-    "b" = "PointInTimeRestore"
-    "c" = "Restore"
-    "d" = "Recovery"
-    "e" = "RestoreExternalBackup"
-    "f" = "RestoreExternalBackup"
-    "g" = "OnlineSecondary"
-  }
+  # https://learn.microsoft.com/en-us/rest/api/sql/databases/create-or-update#createmode
+  standard_allowed_create_mode = [
+    "Default",
+    "Copy",
+    "Secondary",
+    "PointInTimeRestore",
+    "Restore",
+    "Recovery",
+    "RestoreExternalBackup",
+    "RestoreExternalBackupSecondary",
+    "RestoreLongTermRetentionBackup",
+    "OnlineSecondary",
+  ]
+
+  datawarehouse_allowed_create_mode = [
+    "Default",
+    "PointInTimeRestore",
+    "Restore",
+    "Recovery",
+    "RestoreExternalBackup",
+    "RestoreExternalBackupSecondary",
+    "OnlineSecondary",
+  ]
 }

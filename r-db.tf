@@ -19,7 +19,7 @@ resource "azurerm_mssql_database" "main" {
 
   # Common database configuration parameters
   collation      = coalesce(each.value.collation, var.databases_collation)
-  max_size_gb    = can(regex("Secondary|OnlineSecondary", each.value.create_mode)) ? null : each.value.max_size_gb
+  max_size_gb    = can(regex("Secondary|OnlineSecondary", local.databases_create_mode[each.key])) ? null : each.value.max_size_gb
   zone_redundant = can(regex("^DW", var.single_databases_sku_name)) && var.databases_zone_redundant != null ? var.databases_zone_redundant : false
 
   # Serverless configuration parameters - only applicable for single databases with specific SKUs
@@ -37,16 +37,15 @@ resource "azurerm_mssql_database" "main" {
     (can(regex("^HS", var.single_databases_sku_name)) ? each.value.read_replica_count : null)
   )
 
-  # Create mode - different logic for single databases with data warehouse SKUs
-  # https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.sql.models.database.createmode?view=azure-dotnet
-  create_mode = !var.elastic_pool_enabled && can(regex("^DW", var.single_databases_sku_name)) ? try(local.datawarehouse_allowed_create_mode[each.value.create_mode], "Default") : try(local.standard_allowed_create_mode[each.value.create_mode], "Default")
+  # Create mode - restricted list for data warehouse SKUs, `Default` when unset or not supported by the SKU
+  create_mode = local.databases_create_mode[each.key]
 
   # Common restore and recovery parameters
-  creation_source_database_id = can(regex("Copy|Secondary|PointInTimeRestore|Recovery|RestoreExternalBackup|Restore|RestoreExternalBackupSecondary", each.value.create_mode)) ? each.value.creation_source_database_id : null
+  creation_source_database_id = can(regex("Copy|Secondary|PointInTimeRestore|Recovery|RestoreExternalBackup|Restore|RestoreExternalBackupSecondary", local.databases_create_mode[each.key])) ? each.value.creation_source_database_id : null
 
-  restore_point_in_time       = each.value.create_mode == "PointInTimeRestore" ? each.value.restore_point_in_time : null
-  recover_database_id         = each.value.create_mode == "Recovery" ? each.value.recover_database_id : null
-  restore_dropped_database_id = each.value.create_mode == "Restore" ? each.value.restore_dropped_database_id : null
+  restore_point_in_time       = local.databases_create_mode[each.key] == "PointInTimeRestore" ? each.value.restore_point_in_time : null
+  recover_database_id         = local.databases_create_mode[each.key] == "Recovery" ? each.value.recover_database_id : null
+  restore_dropped_database_id = local.databases_create_mode[each.key] == "Restore" ? each.value.restore_dropped_database_id : null
 
   # Storage configuration
   storage_account_type = each.value.storage_account_type
@@ -106,6 +105,12 @@ resource "azurerm_mssql_database" "main" {
 
   # Tags - same for both types
   tags = merge(local.default_tags, var.extra_tags, try(each.value.database_extra_tags, {}))
+
+  lifecycle {
+    # create_mode is ForceNew and only matters at creation. Databases created before create_mode was passed
+    # through hold "Default" in state whatever their configuration says: without this, they would be replaced.
+    ignore_changes = [create_mode]
+  }
 }
 
 moved {

@@ -149,7 +149,7 @@ DESC
 }
 
 variable "databases" {
-  description = "List of the databases configurations for this server."
+  description = "List of the databases configurations for this server. `create_mode` only applies when the database is created (later changes are ignored). It defaults to `Default`, and a value the database SKU does not support (`Copy`, `Secondary` or `RestoreLongTermRetentionBackup` on Data Warehouse `DW*` SKUs) falls back to `Default`."
   type = list(object({
     name                        = string
     license_type                = optional(string)
