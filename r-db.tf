@@ -81,21 +81,21 @@ resource "azurerm_mssql_database" "main" {
     # For single databases, always include the block
     for_each = var.elastic_pool_enabled && try(startswith(local.elastic_pool_sku.name, "HS"), false) ? [] : ["enabled"]
     content {
-      retention_days = var.point_in_time_restore_retention_days
+      retention_days = local.databases_pitr_retention_days[each.key]
       # backup_interval_in_hours is only supported for elastic pool databases
       backup_interval_in_hours = var.elastic_pool_enabled ? var.point_in_time_backup_interval_in_hours : null
     }
   }
 
-  # Long-term retention policy - same for both types
+  # Long-term retention policy - same for both types, not supported by DW and Free SKUs
   dynamic "long_term_retention_policy" {
-    for_each = coalesce(
+    for_each = local.databases_ltr_supported[each.key] && coalesce(
       try(var.backup_retention.weekly_retention, ""),
       try(var.backup_retention.monthly_retention, ""),
       try(var.backup_retention.yearly_retention, ""),
       try(var.backup_retention.week_of_year, ""),
       "empty"
-    ) == "empty" ? [] : ["enabled"]
+    ) != "empty" ? ["enabled"] : []
     content {
       weekly_retention  = try(format("P%sW", var.backup_retention.weekly_retention), null)
       monthly_retention = try(format("P%sM", var.backup_retention.monthly_retention), null)

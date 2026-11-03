@@ -173,14 +173,22 @@ variable "databases" {
 }
 
 variable "backup_retention" {
-  description = "Definition of long term backup retention for all the databases in this SQL Server."
+  description = <<EOD
+Definition of [long term backup retention](https://learn.microsoft.com/en-us/azure/azure-sql/database/long-term-retention-overview) for all the databases in this SQL Server.
+The default keeps the monthly backup 3 months (`{ monthly_retention = 3 }`).
+Passing an object replaces the default (no merge), so include `monthly_retention` to keep the monthly backup. Periods not set are sent as `PT0S` (disabled).
+Set to `null` or `{}` to stop the module from managing long term retention: a policy already applied in Azure is not removed. To remove it, set its retentions to `PT0S` in Azure.
+Ignored for Data Warehouse (`DW*`) and `Free` databases, which do not support long term retention.
+EOD
   type = object({
     weekly_retention  = optional(number)
     monthly_retention = optional(number)
     yearly_retention  = optional(number)
     week_of_year      = optional(number)
   })
-  default = {}
+  default = {
+    monthly_retention = 3
+  }
 }
 
 variable "tls_minimum_version" {
@@ -231,11 +239,11 @@ variable "databases_zone_redundant" {
 }
 
 variable "point_in_time_restore_retention_days" {
-  description = "Point In Time Restore configuration. Value has to be between `7` and `35`."
+  description = "Point In Time Restore retention, in days, for all the databases. Value has to be between `7` and `35`. Defaults to `null`, which means `30` days, or `7` days for `Basic` and `Free` databases (including databases in a `Basic` elastic pool), as these tiers cap the retention at 7 days. An explicit value is used as is."
   type        = number
-  default     = 7
+  default     = null
   validation {
-    condition     = var.point_in_time_restore_retention_days >= 7 && var.point_in_time_restore_retention_days <= 35
+    condition     = var.point_in_time_restore_retention_days == null || (var.point_in_time_restore_retention_days >= 7 && var.point_in_time_restore_retention_days <= 35)
     error_message = "The PITR retention should be between 7 and 35 days."
   }
 }
@@ -246,7 +254,7 @@ variable "point_in_time_backup_interval_in_hours" {
   default     = 12
   validation {
     condition     = var.point_in_time_backup_interval_in_hours == 12 || var.point_in_time_backup_interval_in_hours == 24
-    error_message = "The PITR retention should be 12 or 24 hours."
+    error_message = "The differential backup interval should be 12 or 24 hours."
   }
 }
 
