@@ -72,13 +72,9 @@ resource "azurerm_mssql_database" "main" {
     }
   }
 
-  # Short-term retention policy - different implementation for elastic pool vs single databases
-  # For elastic pool databases: Use dynamic block with condition
-  # For single databases: Always include the block
+  # Short-term retention policy - not supported by DW and Free SKUs, not managed for databases in a Hyperscale elastic pool
   dynamic "short_term_retention_policy" {
-    # For elastic pool databases, exclude the block for HS SKUs
-    # For single databases, always include the block
-    for_each = var.elastic_pool_enabled && try(startswith(local.elastic_pool_sku.name, "HS"), false) ? [] : ["enabled"]
+    for_each = local.databases_str_supported[each.key] ? ["enabled"] : []
     content {
       retention_days = local.databases_pitr_retention_days[each.key]
       # backup_interval_in_hours is only supported for elastic pool databases

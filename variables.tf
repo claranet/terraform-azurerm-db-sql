@@ -239,7 +239,7 @@ variable "databases_zone_redundant" {
 }
 
 variable "point_in_time_restore_retention_days" {
-  description = "Point In Time Restore retention, in days, for all the databases. Value has to be between `7` and `35`. Defaults to `null`, which means `30` days, or `7` days for `Basic` and `Free` databases (including databases in a `Basic` elastic pool), as these tiers cap the retention at 7 days. An explicit value is used as is."
+  description = "Point In Time Restore retention, in days, for all the databases. Value has to be between `7` and `35`. Defaults to `null`, which means `30` days, or `7` days for `Basic` databases (including databases in a `Basic` elastic pool), as this tier caps the retention at 7 days. An explicit value is used as is. Ignored for Data Warehouse (`DW*`) and `Free` databases, which do not support a short term retention policy."
   type        = number
   default     = null
   validation {

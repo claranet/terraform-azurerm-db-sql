@@ -31,6 +31,11 @@ locals {
     for name, sku in local.databases_sku : name => !startswith(sku, "dw") && sku != "free"
   }
 
+  # Short term retention has the same DW and Free limitation, and is not managed for databases in a Hyperscale elastic pool
+  databases_str_supported = {
+    for name, supported in local.databases_ltr_supported : name => supported && !(var.elastic_pool_enabled && startswith(try(local.elastic_pool_sku.name, ""), "HS"))
+  }
+
   allowed_subnets = [
     for id in var.allowed_subnets_ids : {
       name      = split("/", id)[10]
