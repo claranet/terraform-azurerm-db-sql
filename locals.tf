@@ -4,14 +4,16 @@ locals {
     BusinessCritical = "BC"
     Hyperscale       = "HS"
   }
+  # vCore pools are named `<tier code>_<family>` (`GP_Gen5`), DTU pools `<tier>Pool` (`BasicPool`, `StandardPool`, `PremiumPool`) without family
+  elastic_pool_vcore          = var.elastic_pool_sku != null ? contains(keys(local.vcore_tiers), var.elastic_pool_sku.tier) : false
   elastic_pool_vcore_family   = try(var.elastic_pool_sku.family, "Gen5")
-  elastic_pool_vcore_sku_name = var.elastic_pool_sku != null ? format("%s_%s", local.vcore_tiers[var.elastic_pool_sku.tier], local.elastic_pool_vcore_family) : null
+  elastic_pool_vcore_sku_name = local.elastic_pool_vcore ? format("%s_%s", local.vcore_tiers[var.elastic_pool_sku.tier], local.elastic_pool_vcore_family) : null
   elastic_pool_dtu_sku_name   = var.elastic_pool_sku != null ? format("%sPool", var.elastic_pool_sku.tier) : null
   elastic_pool_sku = var.elastic_pool_sku != null ? {
-    name     = contains(keys(local.vcore_tiers), var.elastic_pool_sku.tier) ? local.elastic_pool_vcore_sku_name : local.elastic_pool_dtu_sku_name
+    name     = local.elastic_pool_vcore ? local.elastic_pool_vcore_sku_name : local.elastic_pool_dtu_sku_name
     capacity = var.elastic_pool_sku.capacity
     tier     = var.elastic_pool_sku.tier
-    family   = contains(keys(local.vcore_tiers), var.elastic_pool_sku.tier) ? local.elastic_pool_vcore_family : null
+    family   = local.elastic_pool_vcore ? local.elastic_pool_vcore_family : null
   } : null
 
   # Effective SKU of each database: the elastic pool tier for pooled databases, the database or module SKU otherwise
