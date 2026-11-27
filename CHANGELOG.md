@@ -1,3 +1,31 @@
+## 9.1.0 (2026-11-27)
+
+### Features
+
+* raise PITR default to 30 days and add a 3-month monthly LTR 09560dd
+
+### Bug Fixes
+
+* pass databases create_mode through instead of always Default d62c730
+* plan DTU elastic pools (BasicPool, StandardPool, PremiumPool) 2dbc17a
+* skip short_term_retention_policy on DW and Free databases 23efebc
+
+### Continuous Integration
+
+* **release:** drop semantic-release-slack-bot, the receiver posts releases 8643127
+
+### Miscellaneous Chores
+
+* **deps:** ⬆️ update tools 🔗 ed4c000
+* **deps:** update dependency opentofu to v1.13.0 ec360ce
+* **deps:** update dependency opentofu to v1.13.1 47baba0
+* **deps:** update dependency opentofu to v1.13.2 e386167
+* **deps:** update dependency opentofu to v1.13.9 47f4fe2
+* **deps:** update dependency terraform-docs to v0.25.1 5cc2339
+* **deps:** update dependency tflint to v0.65.0 8b4cd2f
+* **deps:** update dependency tflint to v0.66.0 64d3200
+* **deps:** update pre-commit hook crate-ci/committed to v1.1.12 d2d4edf
+
 ## 9.0.0 (2026-08-24)
 
 ### ⚠ BREAKING CHANGES
